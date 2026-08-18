@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏁 Corporate Team Car Race | The Fastest Team Wins!</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/track.css">
+    <link rel="stylesheet" href="css/control.css">
+    <link rel="stylesheet" href="css/modals.css">
+</head>
+<body>
+    <div id="app-container" class="app-wrapper">
+        <!-- TOP HEADER & TITLE BAR -->
+        <header class="main-header">
+            <div class="header-brand">
+                <h1 class="game-title">
+                    <span class="flag-icon">🏁</span> COMPANY TEAM RACE
+                </h1>
+                <p class="game-subtitle" id="role-subtitle">THE FASTEST TEAM WINS! • MAIN DISPLAY SCREEN</p>
+            </div>
+            
+            <div class="header-actions">
+                <button id="btn-login-toggle" class="btn-icon-toggle highlight-btn" title="Login or Switch Device Mode">
+                    <span class="icon">🔐</span>
+                    <span id="label-role-status">SELECT ROLE / LOGIN</span>
+                </button>
+
+                <button id="btn-sound-toggle" class="btn-icon-toggle" title="Toggle Sound Effects">
+                    <span class="icon-sound">🔊</span>
+                    <span class="sound-label">SOUND ON</span>
+                </button>
+
+                <button id="btn-shortcuts-toggle" class="btn-icon-toggle" title="Keyboard Shortcuts">
+                    <span class="icon">⌨️</span>
+                    <span>SHORTCUTS</span>
+                </button>
+                
+                <button id="btn-gm-toggle" class="btn-gm-primary" title="Open Game Master Panel">
+                    <span class="icon">🎮</span> GAME MASTER
+                </button>
+            </div>
+        </header>
+
+        <!-- DEPARTMENT PLAYER DEVICE VIEW (SHOWN ONLY WHEN LOGGED IN AS A DEPARTMENT) -->
+        <section id="dept-player-card" class="dept-player-card hidden">
+            <div class="dept-header-banner" id="dept-banner">
+                <div class="dept-info">
+                    <span class="dept-car-icon" id="dept-car-icon">🏎️</span>
+                    <h2 class="dept-title-name" id="dept-title-name">IT DEPARTMENT</h2>
+                </div>
+                <div class="dept-position-badge">
+                    <span class="pos-val" id="dept-pos-val">0</span>
+                    <span class="pos-lbl">STEPS</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAIN GAME ARENA (PROJECTOR & MAIN SCREEN VIEW) -->
+        <main class="game-arena">
+            <!-- CHALLENGE & QUESTION CARD -->
+            <section class="challenge-card" id="challenge-section">
+                <div class="challenge-header">
+                    <div class="challenge-badge-wrap">
+                        <span class="challenge-badge" id="challenge-badge">CHALLENGE 1 / 10</span>
+                        <span class="category-badge" id="category-badge">General Knowledge</span>
+                    </div>
+                    
+                    <!-- COUNTDOWN TIMER DISPLAY -->
+                    <div class="timer-display-box" id="timer-box">
+                        <div class="timer-icon">⏱️</div>
+                        <div class="timer-val" id="timer-value">15</div>
+                        <div class="timer-unit">SEC</div>
+                    </div>
+                </div>
+
+                <div class="challenge-body">
+                    <h2 class="question-text" id="question-text">Loading challenge...</h2>
+                    
+                    <div class="options-grid" id="options-grid">
+                        <div class="option-item" data-opt="A">
+                            <span class="opt-prefix">A</span>
+                            <span class="opt-text" id="opt-a">-</span>
+                        </div>
+                        <div class="option-item" data-opt="B">
+                            <span class="opt-prefix">B</span>
+                            <span class="opt-text" id="opt-b">-</span>
+                        </div>
+                        <div class="option-item" data-opt="C">
+                            <span class="opt-prefix">C</span>
+                            <span class="opt-text" id="opt-c">-</span>
+                        </div>
+                        <div class="option-item" data-opt="D">
+                            <span class="opt-prefix">D</span>
+                            <span class="opt-text" id="opt-d">-</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5-LANE RACING TRACK -->
+            <section class="track-section">
+                <div class="track-header-bar">
+                    <div class="start-banner">START</div>
+                    <div class="track-distance-markers" id="track-markers">
+                        <!-- Markers auto-generated JS -->
+                    </div>
+                    <div class="finish-banner">🏁 FINISH</div>
+                </div>
+
+                <div class="racing-lanes-container" id="lanes-container">
+                    <!-- Lanes generated dynamically in track.js -->
+                </div>
+            </section>
+
+            <!-- LIVE LEADERBOARD -->
+            <section class="leaderboard-section">
+                <h3 class="leaderboard-title">🏆 CURRENT RANKING</h3>
+                <div class="leaderboard-grid" id="leaderboard-grid">
+                    <!-- Leaderboard cards auto-generated JS -->
+                </div>
+            </section>
+        </main>
+
+        <!-- GAME MASTER CONTROL DRAWER (OVERLAY / PANEL) -->
+        <aside id="gm-drawer" class="gm-drawer hidden">
+            <div class="gm-drawer-header">
+                <div class="gm-drawer-title">
+                    <span>🎮 GAME MASTER CONTROLS</span>
+                </div>
+                <button id="btn-close-gm" class="btn-close">&times;</button>
+            </div>
+
+            <div class="gm-drawer-body">
+                <!-- SECTION 1: DIRECT TEAM MOVEMENT CONTROLS -->
+                <div class="gm-section">
+                    <h4 class="gm-section-title">⚡ QUICK TEAM ADVANCE</h4>
+                    <div class="gm-teams-list" id="gm-teams-list">
+                        <!-- Team rows generated dynamically JS -->
+                    </div>
+                </div>
+
+                <!-- SECTION 2: TEAM CODE & MOVEMENT AMOUNT PARSER -->
+                <div class="gm-section">
+                    <h4 class="gm-section-title">⌨️ TEAM CODE ENTRY</h4>
+                    <div class="team-code-box">
+                        <div class="input-group">
+                            <label for="input-team-code">Team Code (IT, FIN, MKT, HR, OPS):</label>
+                            <input type="text" id="input-team-code" placeholder="e.g. IT" autocomplete="off">
+                        </div>
+                        <div class="amount-picker">
+                            <label>Steps:</label>
+                            <div class="amount-btn-group">
+                                <button class="btn-amount active" data-amount="1">+1</button>
+                                <button class="btn-amount" data-amount="2">+2</button>
+                                <button class="btn-amount" data-amount="3">+3</button>
+                                <button class="btn-amount" data-amount="5">+5</button>
+                            </div>
+                        </div>
+                        <button id="btn-execute-code" class="btn-action-primary">🚀 MOVE CAR</button>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: QUESTION NAVIGATION & TIMER CONTROLS -->
+                <div class="gm-section">
+                    <h4 class="gm-section-title">❓ CHALLENGE & TIMER CONTROLS</h4>
+                    <div class="gm-controls-grid">
+                        <div class="control-box">
+                            <label>Question Navigation:</label>
+                            <div class="btn-row">
+                                <button id="btn-prev-q" class="btn-control">◀ Prev</button>
+                                <select id="select-question" class="question-select"></select>
+                                <button id="btn-next-q" class="btn-control">Next ▶</button>
+                            </div>
+                        </div>
+
+                        <div class="control-box">
+                            <label>Timer Controls:</label>
+                            <div class="btn-row">
+                                <button id="btn-timer-start" class="btn-timer btn-start">▶ Start</button>
+                                <button id="btn-timer-pause" class="btn-timer btn-pause">⏸ Pause</button>
+                                <button id="btn-timer-reset" class="btn-timer btn-reset">🔄 Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: ACTIONS & MANAGEMENT -->
+                <div class="gm-section">
+                    <h4 class="gm-section-title">🛠️ MANAGEMENT & RACE TOOLS</h4>
+                    <div class="action-buttons-row">
+                        <button id="btn-undo" class="btn-action btn-undo">↩️ UNDO LAST MOVE</button>
+                        <button id="btn-reset-race" class="btn-action btn-danger">🔄 RESET RACE</button>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <label for="select-race-length">Race Length (Steps):</label>
+                        <select id="select-race-length" class="settings-select">
+                            <option value="10">10 Steps (Short)</option>
+                            <option value="15" selected>15 Steps (Standard)</option>
+                            <option value="20">20 Steps (Long)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- DEPARTMENT LOGIN & ROLE SELECTION MODAL -->
+        <div id="role-login-modal" class="modal-backdrop hidden">
+            <div class="modal-card role-modal-card">
+                <div class="modal-header">
+                    <h3>🔐 SELECT DEVICE ROLE / LOGIN</h3>
+                    <button id="btn-close-role-modal" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="role-selector-group">
+                        <label for="select-role-type">Select Device Mode / Department:</label>
+                        <select id="select-role-type" class="role-select">
+                            <option value="main_screen">📺 Main Display Screen (Projector View)</option>
+                            <option value="gm">🎮 Game Master Controller</option>
+                            <option value="it">🏎️ IT Department</option>
+                            <option value="finance">🚙 Finance Department</option>
+                            <option value="marketing">🏎️ Marketing Department</option>
+                            <option value="hr">🚕 HR Department</option>
+                            <option value="operations">🚗 Operations Department</option>
+                        </select>
+                    </div>
+
+                    <div class="password-input-group" id="password-group">
+                        <label for="input-role-password">Enter Password / PIN:</label>
+                        <input type="password" id="input-role-password" placeholder="Enter password..." autocomplete="off">
+                        <p id="role-login-error" class="error-msg hidden">Invalid Password. Please try again.</p>
+                    </div>
+
+                    <div class="passwords-cheat-box">
+                        <small>🔑 Default Passwords Cheatsheet:</small>
+                        <div class="pass-list">
+                            <span>IT: <code>1001</code></span>
+                            <span>Finance: <code>2002</code></span>
+                            <span>Marketing: <code>3003</code></span>
+                            <span>HR: <code>4004</code></span>
+                            <span>Ops: <code>5005</code></span>
+                            <span>GM: <code>1234</code></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-cancel-role" class="btn-secondary">Cancel</button>
+                    <button id="btn-confirm-role" class="btn-primary">Login & Switch Role</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PIN LOCK MODAL FOR GM -->
+        <div id="pin-modal" class="modal-backdrop hidden">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3>🔒 GAME MASTER PIN</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Enter 4-digit PIN to access Game Master controls:</p>
+                    <input type="password" id="input-pin" maxlength="4" placeholder="••••" autofocus>
+                    <p class="pin-hint">Default PIN: <code>1234</code></p>
+                    <p id="pin-error" class="error-msg hidden">Incorrect PIN. Try again.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-cancel-pin" class="btn-secondary">Cancel</button>
+                    <button id="btn-submit-pin" class="btn-primary">Unlock</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KEYBOARD SHORTCUTS MODAL -->
+        <div id="shortcuts-modal" class="modal-backdrop hidden">
+            <div class="modal-card shortcuts-card">
+                <div class="modal-header">
+                    <h3>⌨️ KEYBOARD SHORTCUTS</h3>
+                    <button id="btn-close-shortcuts" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="shortcuts-grid">
+                        <div class="shortcut-item"><kbd>1</kbd> <span>Advance IT (+1)</span></div>
+                        <div class="shortcut-item"><kbd>2</kbd> <span>Advance Finance (+1)</span></div>
+                        <div class="shortcut-item"><kbd>3</kbd> <span>Advance Marketing (+1)</span></div>
+                        <div class="shortcut-item"><kbd>4</kbd> <span>Advance HR (+1)</span></div>
+                        <div class="shortcut-item"><kbd>5</kbd> <span>Advance Operations (+1)</span></div>
+                        <div class="shortcut-item"><kbd>N</kbd> <span>Next Question</span></div>
+                        <div class="shortcut-item"><kbd>P</kbd> <span>Previous Question</span></div>
+                        <div class="shortcut-item"><kbd>Space</kbd> <span>Start / Pause Timer</span></div>
+                        <div class="shortcut-item"><kbd>R</kbd> <span>Reset Timer</span></div>
+                        <div class="shortcut-item"><kbd>U</kbd> <span>Undo Last Move</span></div>
+                        <div class="shortcut-item"><kbd>M</kbd> <span>Toggle GM Panel</span></div>
+                        <div class="shortcut-item"><kbd>S</kbd> <span>Toggle Sound FX</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WINNER OVERLAY MODAL & CANVAS -->
+        <div id="winner-modal" class="winner-overlay hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <div class="winner-content">
+                <div class="trophy-bounce">🏆🏆🏆</div>
+                <h1 class="winner-title" id="winner-title">IT WINS!</h1>
+                <p class="winner-subtitle">CONGRATULATIONS ON A GREAT RACE!</p>
+                <div class="winner-car-display" id="winner-car-display">🏎️</div>
+                <div class="winner-actions">
+                    <button id="btn-winner-reset" class="btn-action-primary btn-large">🔄 START NEW RACE</button>
+                    <button id="btn-winner-close" class="btn-secondary btn-large">✖ CLOSE OVERLAY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOAST / NOTIFICATION HINT -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <!-- JavaScript Application Modules -->
+    <script src="js/audio.js"></script>
+    <script src="js/confetti.js"></script>
+    <script src="js/sync.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/questions.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/track.js"></script>
+    <script src="js/shortcuts.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

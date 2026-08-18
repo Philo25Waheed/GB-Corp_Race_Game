@@ -1,0 +1,385 @@
+/* ==========================================================================
+   MODALS, WINNER OVERLAY & ROLE LOGIN
+   ========================================================================== */
+
+/* ROLE SELECTOR & DEPARTMENT LOGIN MODAL */
+.role-modal-card {
+    max-width: 520px;
+}
+
+.role-selector-group, .password-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.role-select {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+#input-role-password {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    padding: 0.6rem 0.85rem;
+    border-radius: var(--radius-sm);
+}
+
+#input-role-password:focus {
+    outline: none;
+    border-color: var(--cyan-glow);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.passwords-cheat-box {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.passwords-cheat-box small {
+    color: #94a3b8;
+    font-weight: 700;
+}
+
+.pass-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: #cbd5e1;
+}
+
+.highlight-btn {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(59, 130, 246, 0.2));
+    border-color: var(--cyan-glow);
+    color: var(--cyan-glow);
+}
+
+/* STANDARD MODAL BACKDROP */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(5, 8, 15, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    overflow-y: auto;
+}
+
+.modal-backdrop.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-card {
+    background: rgba(18, 25, 40, 0.95);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    width: 100%;
+    max-width: 440px;
+    max-height: 90vh;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.shortcuts-card {
+    max-width: 600px;
+}
+
+@keyframes modalPop {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+    background: rgba(26, 36, 56, 0.8);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--cyan-glow);
+}
+
+.modal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    overflow-y: auto;
+}
+
+#input-pin {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    letter-spacing: 12px;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+#input-pin:focus {
+    outline: none;
+    border-color: var(--cyan-glow);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.pin-hint {
+    font-size: 0.85rem;
+    color: #64748b;
+    text-align: center;
+}
+
+.error-msg {
+    color: #ef4444;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.error-msg.hidden {
+    display: none;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    background: rgba(15, 23, 42, 0.8);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 0.55rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-subheading);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border: 1px solid #60a5fa;
+    color: #fff;
+    padding: 0.55rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* KEYBOARD SHORTCUTS GRID */
+.shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+}
+
+.shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+kbd {
+    background: rgba(0, 240, 255, 0.15);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    color: var(--cyan-glow);
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 800;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    min-width: 32px;
+    text-align: center;
+}
+
+/* WINNER FULLSCREEN OVERLAY */
+.winner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(5, 8, 15, 0.98) 100%);
+    backdrop-filter: blur(15px);
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.winner-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#confetti-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.winner-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+    animation: winnerZoom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 100%;
+}
+
+@keyframes winnerZoom {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.trophy-bounce {
+    font-size: 4.5rem;
+    animation: trophyFloat 2s infinite ease-in-out;
+}
+
+@keyframes trophyFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.winner-title {
+    font-family: var(--font-heading);
+    font-size: 3.8rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #ffd700 0%, #ff8800 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    word-break: break-word;
+}
+
+.winner-subtitle {
+    font-family: var(--font-subheading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: #e2e8f0;
+}
+
+.winner-car-display {
+    font-size: 6rem;
+    margin: 1rem 0;
+    animation: carDriveIn 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes carDriveIn {
+    from { transform: translateX(-200px) scale(0.3); opacity: 0; }
+    to { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+.winner-actions {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-large {
+    padding: 0.85rem 2rem;
+    font-size: 1.1rem;
+}
+
+/* ==========================================================================
+   RESPONSIVE MODAL MEDIA QUERIES
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .pass-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .shortcuts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .winner-title {
+        font-size: 2.2rem;
+    }
+
+    .winner-subtitle {
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+    }
+
+    .trophy-bounce {
+        font-size: 3rem;
+    }
+
+    .winner-car-display {
+        font-size: 4rem;
+        margin: 0.5rem 0;
+    }
+
+    .btn-large {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.95rem;
+        width: 100%;
+    }
+}
