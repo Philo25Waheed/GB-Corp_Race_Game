@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏁 Corporate Team Car Race | The Fastest Team Wins!</title>
+    <title>☀️ GB Corp - Summer Road Trip | Corporate Team Race</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Montserrat:wght@500;600;700;800;900&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="css/main.css">
@@ -18,15 +18,31 @@
 </head>
 <body>
     <div id="app-container" class="app-wrapper">
-        <!-- TOP HEADER & TITLE BAR -->
+        <!-- TOP SUMMER ROAD TRIP HEADER & BRANDING -->
         <header class="main-header">
+            <!-- BRANDING & ARABIC LOGO TITLE -->
             <div class="header-brand">
-                <h1 class="game-title">
-                    <span class="flag-icon">🏁</span> COMPANY TEAM RACE
-                </h1>
-                <p class="game-subtitle" id="role-subtitle">THE FASTEST TEAM WINS! • MAIN DISPLAY SCREEN</p>
+                <div class="corp-logo-badge">
+                    <span class="corp-logo-icon">🚗</span>
+                    <span class="corp-logo-text">GB Corp</span>
+                </div>
+                <div class="summer-brand-titles">
+                    <div class="brand-arabic-title">صيفنا في جي بي كورب</div>
+                    <div class="brand-english-tagline">Summer Powered by our People</div>
+                </div>
             </div>
             
+            <!-- GRAND CENTER TITLE -->
+            <div class="header-center-title">
+                <h1 class="road-trip-main-title">
+                    <span class="title-sun-icon">☀️</span>
+                    <span>ROAD TRIP</span>
+                    <span class="title-palm-icon">🌴</span>
+                </h1>
+                <p class="road-trip-motto" id="role-subtitle">YOUR DEPARTMENT. YOUR RIDE. YOUR RACE.</p>
+            </div>
+
+            <!-- ACTION CONTROLS & DEVICE ROLE -->
             <div class="header-actions">
                 <button id="btn-login-toggle" class="btn-icon-toggle highlight-btn" title="Login or Switch Device Mode">
                     <span class="icon">🔐</span>
@@ -49,6 +65,27 @@
             </div>
         </header>
 
+        <!-- 3-STEP JOURNEY FLOW BANNER (AS IN DESIGN) -->
+        <section class="journey-steps-banner">
+            <div class="journey-step-item">
+                <span class="step-num">1</span>
+                <span class="step-icon">👥</span>
+                <span>Find Your Department</span>
+            </div>
+            <span class="journey-step-divider">▶</span>
+            <div class="journey-step-item">
+                <span class="step-num">2</span>
+                <span class="step-icon">🏆</span>
+                <span>Complete Challenges</span>
+            </div>
+            <span class="journey-step-divider">▶</span>
+            <div class="journey-step-item">
+                <span class="step-num">3</span>
+                <span class="step-icon">🏁</span>
+                <span>Move Toward the Finish</span>
+            </div>
+        </section>
+
         <!-- DEPARTMENT PLAYER DEVICE VIEW (SHOWN ONLY WHEN LOGGED IN AS A DEPARTMENT) -->
         <section id="dept-player-card" class="dept-player-card hidden">
             <div class="dept-header-banner" id="dept-banner">
@@ -58,12 +95,12 @@
                 </div>
                 <div class="dept-position-badge">
                     <span class="pos-val" id="dept-pos-val">0</span>
-                    <span class="pos-lbl">STEPS</span>
+                    <span class="pos-lbl">MILEAGE (MI)</span>
                 </div>
             </div>
         </section>
 
-        <!-- MAIN GAME ARENA (PROJECTOR & MAIN SCREEN VIEW) -->
+        <!-- MAIN GAME ARENA -->
         <main class="game-arena">
             <!-- CHALLENGE & QUESTION CARD -->
             <section class="challenge-card" id="challenge-section">
@@ -71,6 +108,7 @@
                     <div class="challenge-badge-wrap">
                         <span class="challenge-badge" id="challenge-badge">CHALLENGE 1 / 10</span>
                         <span class="category-badge" id="category-badge">General Knowledge</span>
+                        <span class="challenge-points-badge" id="challenge-points-badge">+10 PTS QUIZ</span>
                     </div>
                     
                     <!-- COUNTDOWN TIMER DISPLAY -->
@@ -105,26 +143,122 @@
                 </div>
             </section>
 
-            <!-- 5-LANE RACING TRACK -->
+            <!-- RACING TRACK (SERPENTINE ROAD & SPRINT LANES) -->
             <section class="track-section">
-                <div class="track-header-bar">
-                    <div class="start-banner">START</div>
-                    <div class="track-distance-markers" id="track-markers">
-                        <!-- Markers auto-generated JS -->
+                <div class="track-view-header">
+                    <div class="track-title-wrap">
+                        <span class="track-main-heading">🛣️ SUMMER RACE HIGHWAY</span>
                     </div>
-                    <div class="finish-banner">🏁 FINISH</div>
+                    
+                    <div class="track-view-toggle-group">
+                        <button id="btn-view-serpentine" class="btn-view-mode active" title="Serpentine Winding Road">🛣️ Winding Road</button>
+                        <button id="btn-view-sprint" class="btn-view-mode" title="Straight Sprint Lanes">🏁 Sprint Lanes</button>
+                    </div>
                 </div>
 
-                <div class="racing-lanes-container" id="lanes-container">
-                    <!-- Lanes generated dynamically in track.js -->
+                <!-- 1. SERPENTINE WINDING HIGHWAY (PRIMARY DESIGN) -->
+                <div id="serpentine-road-wrapper" class="serpentine-road-wrapper">
+                    <!-- Road SVG & Cars generated dynamically in track.js -->
+                </div>
+
+                <!-- 2. STRAIGHT SPRINT LANES (ALTERNATIVE VIEW) -->
+                <div id="sprint-lanes-wrapper" class="sprint-lanes-wrapper hidden">
+                    <div class="track-header-bar">
+                        <div class="start-banner">START</div>
+                        <div class="track-distance-markers" id="track-markers">
+                            <!-- Markers auto-generated JS -->
+                        </div>
+                        <div class="finish-banner">🏁 FINISH</div>
+                    </div>
+
+                    <div class="racing-lanes-container" id="lanes-container">
+                        <!-- Lanes generated dynamically in track.js -->
+                    </div>
                 </div>
             </section>
 
             <!-- LIVE LEADERBOARD -->
             <section class="leaderboard-section">
-                <h3 class="leaderboard-title">🏆 CURRENT RANKING</h3>
+                <h3 class="leaderboard-title">🏆 CURRENT STANDINGS & MILEAGE</h3>
                 <div class="leaderboard-grid" id="leaderboard-grid">
                     <!-- Leaderboard cards auto-generated JS -->
+                </div>
+            </section>
+
+            <!-- BOTTOM SUMMER DASHBOARD (EARN POINTS, FLEET GRID, REWARDS & ODOMETER) -->
+            <section class="summer-dashboard-grid">
+                <!-- CARD 1: HOW TO EARN MILEAGE POINTS -->
+                <div class="mileage-points-card">
+                    <h4 class="dashboard-card-title">
+                        <span>🏁</span> HOW TO EARN MILEAGE
+                    </h4>
+                    <div class="points-rules-list">
+                        <div class="point-rule-item">
+                            <div class="rule-label">
+                                <span class="rule-icon">❓</span>
+                                <span>Quiz</span>
+                            </div>
+                            <span class="rule-pts">10 pts</span>
+                        </div>
+                        <div class="point-rule-item">
+                            <div class="rule-label">
+                                <span class="rule-icon">📷</span>
+                                <span>Photo Challenge</span>
+                            </div>
+                            <span class="rule-pts">15 pts</span>
+                        </div>
+                        <div class="point-rule-item">
+                            <div class="rule-label">
+                                <span class="rule-icon">📱</span>
+                                <span>QR Challenge</span>
+                            </div>
+                            <span class="rule-pts">20 pts</span>
+                        </div>
+                        <div class="point-rule-item">
+                            <div class="rule-label">
+                                <span class="rule-icon">👥</span>
+                                <span>Team Activity</span>
+                            </div>
+                            <span class="rule-pts">30 pts</span>
+                        </div>
+                        <div class="point-rule-item">
+                            <div class="rule-label">
+                                <span class="rule-icon">⭐</span>
+                                <span>Bonus Points</span>
+                            </div>
+                            <span class="rule-pts bonus">+10 pts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: FLEET DEPARTMENT OVERVIEW -->
+                <div class="fleet-grid-card">
+                    <h4 class="dashboard-card-title">
+                        <span>🚗</span> FIND YOUR DEPARTMENT & JOIN THE RACE
+                    </h4>
+                    <div class="fleet-departments-container" id="fleet-departments-container">
+                        <!-- Fleet cards auto-generated JS -->
+                    </div>
+                </div>
+
+                <!-- CARD 3: REWARDS & TOTAL MILEAGE ODOMETER -->
+                <div class="rewards-odometer-card">
+                    <h4 class="dashboard-card-title">
+                        <span>🏆</span> REWARDS & MILEAGE
+                    </h4>
+                    
+                    <div class="odometer-box">
+                        <span class="odometer-label">TOTAL MILEAGE</span>
+                        <div class="odometer-led-digits" id="odometer-led-digits">00000</div>
+                    </div>
+
+                    <div class="summer-polaroid-card">
+                        <div class="polaroid-photo-area">
+                            <span class="polaroid-sun">☀️</span>
+                            <span class="polaroid-van">🚐🌴</span>
+                        </div>
+                        <p class="polaroid-caption">Let's make this Summer Journey Unforgettable!</p>
+                    </div>
                 </div>
             </section>
         </main>
@@ -149,14 +283,14 @@
 
                 <!-- SECTION 2: TEAM CODE & MOVEMENT AMOUNT PARSER -->
                 <div class="gm-section">
-                    <h4 class="gm-section-title">⌨️ TEAM CODE ENTRY</h4>
+                    <h4 class="gm-section-title">⌨️ TEAM CODE & POINT AWARD</h4>
                     <div class="team-code-box">
                         <div class="input-group">
                             <label for="input-team-code">Team Code (IT, FIN, MKT, HR, OPS):</label>
                             <input type="text" id="input-team-code" placeholder="e.g. IT" autocomplete="off">
                         </div>
                         <div class="amount-picker">
-                            <label>Steps:</label>
+                            <label>Steps / Points Amount:</label>
                             <div class="amount-btn-group">
                                 <button class="btn-amount active" data-amount="1">+1</button>
                                 <button class="btn-amount" data-amount="2">+2</button>
@@ -164,7 +298,7 @@
                                 <button class="btn-amount" data-amount="5">+5</button>
                             </div>
                         </div>
-                        <button id="btn-execute-code" class="btn-action-primary">🚀 MOVE CAR</button>
+                        <button id="btn-execute-code" class="btn-action-primary">🚀 ADVANCE TEAM CAR</button>
                     </div>
                 </div>
 
@@ -309,7 +443,7 @@
             <div class="winner-content">
                 <div class="trophy-bounce">🏆🏆🏆</div>
                 <h1 class="winner-title" id="winner-title">IT WINS!</h1>
-                <p class="winner-subtitle">CONGRATULATIONS ON A GREAT RACE!</p>
+                <p class="winner-subtitle">CONGRATULATIONS ON A GREAT SUMMER ROAD TRIP!</p>
                 <div class="winner-car-display" id="winner-car-display">🏎️</div>
                 <div class="winner-actions">
                     <button id="btn-winner-reset" class="btn-action-primary btn-large">🔄 START NEW RACE</button>
@@ -334,3 +468,4 @@
     <script src="js/app.js"></script>
 </body>
 </html>
+

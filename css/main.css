@@ -1,38 +1,57 @@
 /* ==========================================================================
-   MAIN DESIGN SYSTEM & CORE TYPOGRAPHY
+   SUMMER ROAD TRIP - MAIN DESIGN SYSTEM & CORE STYLES
    ========================================================================== */
 
 :root {
-    /* Color Palette */
-    --bg-dark: #07090e;
-    --bg-card: rgba(18, 24, 38, 0.75);
-    --bg-card-hover: rgba(26, 35, 56, 0.85);
-    --border-color: rgba(255, 255, 255, 0.12);
-    --border-glow: rgba(0, 240, 255, 0.3);
+    /* Summer Coastal & Desert Theme Palette */
+    --sky-top: #082f49;
+    --sky-mid: #0369a1;
+    --sky-light: #0284c7;
+    --sky-accent: #38bdf8;
+    --sky-foam: #e0f2fe;
+
+    --sun-gold: #f59e0b;
+    --sun-bright: #fbbf24;
+    --sun-glow: #fef08a;
+    
+    --sand-light: #fed7aa;
+    --sand-warm: #f59e0b;
+    --sand-dune: #b45309;
+
+    --bg-dark: #071526;
+    --bg-card: rgba(12, 35, 64, 0.82);
+    --bg-card-hover: rgba(16, 47, 86, 0.92);
+    --bg-card-sun: rgba(245, 158, 11, 0.08);
+    
+    --border-color: rgba(56, 189, 248, 0.25);
+    --border-glow: rgba(56, 189, 248, 0.6);
+    --border-sun: rgba(251, 191, 36, 0.4);
     
     /* Neon Accents */
-    --cyan-glow: #00f0ff;
-    --gold-glow: #ffd700;
-    --silver-glow: #c0c0c0;
-    --bronze-glow: #cd7f32;
+    --cyan-glow: #38bdf8;
+    --ocean-blue: #0284c7;
+    --gold-glow: #fbbf24;
+    --silver-glow: #e2e8f0;
+    --bronze-glow: #d97706;
     
-    /* Department Colors */
-    --color-it: #3b82f6;        /* Neon Blue */
-    --color-finance: #22c55e;   /* Neon Emerald */
-    --color-marketing: #f97316; /* Neon Orange */
-    --color-hr: #a855f7;        /* Neon Purple */
-    --color-ops: #ef4444;       /* Neon Crimson */
+    /* Department Colors (Summer Edition) */
+    --color-it: #38bdf8;        /* Sky Blue */
+    --color-finance: #10b981;   /* Emerald Aqua */
+    --color-marketing: #f97316; /* Sun Orange */
+    --color-hr: #a855f7;        /* Tropical Purple */
+    --color-ops: #ef4444;       /* Sunset Coral */
 
     /* Typography */
-    --font-heading: 'Orbitron', -apple-system, sans-serif;
-    --font-subheading: 'Rajdhani', -apple-system, sans-serif;
+    --font-heading: 'Orbitron', 'Montserrat', -apple-system, sans-serif;
+    --font-arabic: 'Cairo', 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+    --font-subheading: 'Rajdhani', 'Montserrat', -apple-system, sans-serif;
     --font-body: 'Inter', -apple-system, sans-serif;
     
     /* Spacing & Sizes */
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 20px;
-    --glass-backdrop: blur(12px);
+    --glass-backdrop: blur(14px);
     
     /* Transitions */
     --transition-fast: 0.15s ease;
@@ -49,11 +68,14 @@
 
 html, body {
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     background-color: var(--bg-dark);
     background-image: 
-        radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.08) 0%, transparent 60%),
-        radial-gradient(circle at 10% 90%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
+        radial-gradient(ellipse at 85% 5%, rgba(251, 191, 36, 0.18) 0%, rgba(245, 158, 11, 0.05) 45%, transparent 70%),
+        radial-gradient(ellipse at 15% 15%, rgba(56, 189, 248, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 95%, rgba(180, 83, 9, 0.15) 0%, transparent 70%),
+        linear-gradient(180deg, #071b30 0%, #082845 40%, #06192d 100%);
+    background-attachment: fixed;
     color: #f8fafc;
     font-family: var(--font-body);
     overflow-x: hidden;
@@ -61,18 +83,34 @@ html, body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Ambient Summer Sun Ray & Palm Backing */
+body::before {
+    content: '';
+    position: fixed;
+    top: -120px;
+    right: 5%;
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.22) 0%, rgba(245, 158, 11, 0.08) 50%, transparent 75%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(40px);
+}
+
 .app-wrapper {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    padding: 1.25rem 2rem;
+    padding: 1rem 1.75rem 2rem;
     gap: 1.25rem;
     max-width: 1920px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
 /* ==========================================================================
-   HEADER SECTION
+   SUMMER ROAD TRIP HEADER
    ========================================================================== */
 
 .main-header {
@@ -82,97 +120,197 @@ html, body {
     background: var(--bg-card);
     backdrop-filter: var(--glass-backdrop);
     border: 1px solid var(--border-color);
-    padding: 1rem 1.75rem;
+    padding: 0.9rem 1.6rem;
     border-radius: var(--radius-md);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(56, 189, 248, 0.15);
     position: relative;
     overflow: hidden;
     flex-wrap: wrap;
     gap: 1rem;
 }
 
+/* Summer Rainbow Sun Top Bar */
 .main-header::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #3b82f6, #22c55e, #f97316, #a855f7, #ef4444);
+    height: 3px;
+    background: linear-gradient(90deg, #38bdf8 0%, #0284c7 25%, #fbbf24 50%, #f97316 75%, #a855f7 100%);
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
 }
 
 .header-brand {
     display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
+    align-items: center;
+    gap: 1.25rem;
 }
 
-.game-title {
-    font-family: var(--font-heading);
-    font-size: 1.85rem;
-    font-weight: 900;
-    letter-spacing: 2px;
-    background: linear-gradient(135deg, #ffffff 30%, var(--cyan-glow) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* GB Corp Logo Badge */
+.corp-logo-badge {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.game-subtitle {
+.corp-logo-icon {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--cyan-glow);
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+}
+
+.corp-logo-text {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    color: #fff;
+}
+
+/* Arabic & English Summer Brand Text */
+.summer-brand-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.brand-arabic-title {
+    font-family: var(--font-arabic);
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #fef08a;
+    text-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+    line-height: 1.2;
+}
+
+.brand-english-tagline {
     font-family: var(--font-subheading);
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: 3px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
     color: #94a3b8;
     text-transform: uppercase;
 }
 
+/* Center Grand Road Trip Title */
+.header-center-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.road-trip-main-title {
+    font-family: var(--font-heading);
+    font-size: 2.1rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(180deg, #ffffff 0%, #7dd3fc 45%, #0284c7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 20px rgba(56, 189, 248, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    line-height: 1;
+}
+
+.title-sun-icon {
+    font-size: 1.9rem;
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.9));
+    animation: sunSpinSlow 20s linear infinite;
+}
+
+@keyframes sunSpinSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.title-palm-icon {
+    font-size: 1.8rem;
+    filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.5));
+    animation: palmSway 3s ease-in-out infinite alternate;
+}
+
+@keyframes palmSway {
+    from { transform: rotate(-5deg); }
+    to { transform: rotate(5deg); }
+}
+
+.road-trip-motto {
+    font-family: var(--font-subheading);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #fde047;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+}
+
+/* Header Action Controls */
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
+    gap: 0.75rem;
     flex-wrap: wrap;
 }
 
 .btn-icon-toggle {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--border-color);
     color: #e2e8f0;
-    padding: 0.6rem 1rem;
+    padding: 0.55rem 0.95rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-subheading);
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     letter-spacing: 1px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
     transition: var(--transition-fast);
     white-space: nowrap;
 }
 
 .btn-icon-toggle:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(56, 189, 248, 0.18);
+    border-color: var(--cyan-glow);
     color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+}
+
+.btn-icon-toggle.active {
+    background: rgba(251, 191, 36, 0.2);
+    border-color: var(--sun-bright);
+    color: var(--sun-glow);
+}
+
+.highlight-btn {
+    border-color: rgba(251, 191, 36, 0.4);
+    background: rgba(251, 191, 36, 0.08);
 }
 
 .btn-gm-primary {
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    border: 1px solid #60a5fa;
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    border: 1px solid #38bdf8;
     color: #fff;
-    padding: 0.65rem 1.4rem;
+    padding: 0.6rem 1.3rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     letter-spacing: 1.5px;
     cursor: pointer;
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 15px rgba(2, 132, 199, 0.45);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -182,8 +320,57 @@ html, body {
 
 .btn-gm-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.7);
-    background: linear-gradient(135deg, #60a5fa, #2563eb);
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.7);
+    background: linear-gradient(135deg, #38bdf8, #0284c7);
+}
+
+/* ==========================================================================
+   3-STEP JOURNEY FLOW BANNER (AS IN DESIGN)
+   ========================================================================== */
+
+.journey-steps-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    background: rgba(8, 32, 60, 0.7);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 1.25rem;
+    flex-wrap: wrap;
+}
+
+.journey-step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-subheading);
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #e2e8f0;
+}
+
+.journey-step-item .step-num {
+    background: var(--ocean-blue);
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.journey-step-item .step-icon {
+    font-size: 1.1rem;
+}
+
+.journey-step-divider {
+    color: rgba(56, 189, 248, 0.4);
+    font-weight: 900;
 }
 
 /* ==========================================================================
@@ -203,11 +390,11 @@ html, body {
     backdrop-filter: var(--glass-backdrop);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    padding: 1.25rem 1.75rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    padding: 1.2rem 1.6rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.9rem;
     position: relative;
 }
 
@@ -215,7 +402,7 @@ html, body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.15);
     padding-bottom: 0.75rem;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -229,25 +416,38 @@ html, body {
 }
 
 .challenge-badge {
-    background: rgba(0, 240, 255, 0.15);
+    background: rgba(56, 189, 248, 0.15);
     color: var(--cyan-glow);
-    border: 1px solid rgba(0, 240, 255, 0.4);
+    border: 1px solid rgba(56, 189, 248, 0.4);
     padding: 0.35rem 0.85rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-heading);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 1.5px;
 }
 
 .category-badge {
-    background: rgba(255, 255, 255, 0.08);
-    color: #cbd5e1;
+    background: rgba(251, 191, 36, 0.12);
+    color: #fde047;
+    border: 1px solid rgba(251, 191, 36, 0.3);
     padding: 0.35rem 0.75rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-subheading);
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.challenge-points-badge {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 800;
 }
 
 /* COUNTDOWN TIMER STYLING */
@@ -255,17 +455,17 @@ html, body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(15, 23, 42, 0.8);
-    border: 2px solid rgba(245, 158, 11, 0.4);
-    padding: 0.4rem 1.1rem;
+    background: rgba(8, 24, 48, 0.9);
+    border: 2px solid rgba(251, 191, 36, 0.5);
+    padding: 0.35rem 1rem;
     border-radius: var(--radius-sm);
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.25);
     transition: var(--transition-fast);
 }
 
 .timer-display-box.warning {
     border-color: #ef4444;
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.7);
     animation: pulseDanger 0.8s infinite alternate;
 }
 
@@ -274,27 +474,24 @@ html, body {
     to { transform: scale(1.05); }
 }
 
+.timer-icon {
+    font-size: 1.25rem;
+}
+
 .timer-val {
     font-family: var(--font-heading);
-    font-size: 1.6rem;
+    font-size: 1.55rem;
     font-weight: 900;
-    color: #f59e0b;
+    color: #fbbf24;
 }
 
 .timer-display-box.warning .timer-val {
     color: #ef4444;
 }
 
-.timer-unit {
-    font-family: var(--font-subheading);
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #94a3b8;
-}
-
 .question-text {
     font-family: var(--font-subheading);
-    font-size: 1.45rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: #f8fafc;
     line-height: 1.4;
@@ -308,8 +505,8 @@ html, body {
 }
 
 .option-item {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(56, 189, 248, 0.18);
     padding: 0.85rem 1.1rem;
     border-radius: var(--radius-sm);
     display: flex;
@@ -325,16 +522,16 @@ html, body {
 }
 
 .option-item.interactive:hover {
-    background: rgba(0, 240, 255, 0.12);
-    border-color: rgba(0, 240, 255, 0.4);
+    background: rgba(56, 189, 248, 0.15);
+    border-color: var(--cyan-glow);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 240, 255, 0.15);
+    box-shadow: 0 5px 18px rgba(56, 189, 248, 0.25);
 }
 
 .option-item.correct {
-    background: rgba(34, 197, 94, 0.25) !important;
+    background: rgba(34, 197, 94, 0.3) !important;
     border-color: #22c55e !important;
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.5) !important;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.6) !important;
     animation: correctPulse 0.5s ease;
 }
 
@@ -345,9 +542,9 @@ html, body {
 }
 
 .option-item.incorrect {
-    background: rgba(239, 68, 68, 0.25) !important;
+    background: rgba(239, 68, 68, 0.3) !important;
     border-color: #ef4444 !important;
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5) !important;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.6) !important;
     animation: shakeError 0.4s ease;
 }
 
@@ -358,9 +555,9 @@ html, body {
 }
 
 .opt-prefix {
-    background: rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
-    border: 1px solid rgba(59, 130, 246, 0.4);
+    background: rgba(56, 189, 248, 0.2);
+    color: var(--cyan-glow);
+    border: 1px solid rgba(56, 189, 248, 0.4);
     width: 32px;
     height: 32px;
     min-width: 32px;
@@ -373,23 +570,255 @@ html, body {
     font-weight: 700;
 }
 
-.option-item.correct .opt-prefix {
-    background: #22c55e;
-    color: #fff;
-    border-color: #4ade80;
-}
-
-.option-item.incorrect .opt-prefix {
-    background: #ef4444;
-    color: #fff;
-    border-color: #f87171;
-}
-
 .opt-text {
     font-size: 1.05rem;
     color: #e2e8f0;
     font-weight: 600;
     word-break: break-word;
+}
+
+/* ==========================================================================
+   BOTTOM SUMMER DASHBOARD (EARN POINTS, FLEET GRID, REWARDS & ODOMETER)
+   ========================================================================== */
+
+.summer-dashboard-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr 300px;
+    gap: 1.25rem;
+    align-items: stretch;
+}
+
+/* CARD 1: HOW TO EARN MILEAGE POINTS */
+.mileage-points-card {
+    background: var(--bg-card);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.dashboard-card-title {
+    font-family: var(--font-heading);
+    font-size: 0.92rem;
+    font-weight: 900;
+    color: #fbbf24;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+    padding-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.points-rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.point-rule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(56, 189, 248, 0.12);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+}
+
+.point-rule-item:hover {
+    background: rgba(56, 189, 248, 0.1);
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+.rule-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #cbd5e1;
+}
+
+.rule-icon {
+    font-size: 1.1rem;
+}
+
+.rule-pts {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 900;
+    color: var(--cyan-glow);
+}
+
+.rule-pts.bonus {
+    color: #4ade80;
+}
+
+/* CARD 2: FLEET DEPARTMENT OVERVIEW */
+.fleet-grid-card {
+    background: var(--bg-card);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.fleet-departments-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.65rem;
+    max-height: 230px;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+}
+
+.fleet-dept-box {
+    background: rgba(8, 24, 48, 0.8);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
+    transition: var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.fleet-dept-box:hover {
+    border-color: var(--cyan-glow);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+}
+
+.fleet-car-icon {
+    font-size: 1.6rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.fleet-dept-name {
+    font-family: var(--font-subheading);
+    font-size: 0.88rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.fleet-dept-mileage {
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 900;
+    color: #fbbf24;
+}
+
+/* CARD 3: REWARDS & TOTAL MILEAGE ODOMETER */
+.rewards-odometer-card {
+    background: var(--bg-card);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* DIGITAL LED MILEAGE DISPLAY */
+.odometer-box {
+    background: #020617;
+    border: 2px solid #38bdf8;
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.3), 0 0 15px rgba(56, 189, 248, 0.2);
+}
+
+.odometer-label {
+    font-family: var(--font-subheading);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+.odometer-led-digits {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: 5px;
+    color: #fbbf24;
+    text-shadow: 0 0 12px rgba(251, 191, 36, 0.8);
+}
+
+/* SUMMER POLAROID KEEPSAKE PHOTO */
+.summer-polaroid-card {
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 0.5rem 0.5rem 0.75rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transform: rotate(-2deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    transition: transform 0.3s ease;
+}
+
+.summer-polaroid-card:hover {
+    transform: rotate(0deg) scale(1.03);
+}
+
+.polaroid-photo-area {
+    width: 100%;
+    height: 75px;
+    background: linear-gradient(180deg, #38bdf8 0%, #fed7aa 65%, #f59e0b 100%);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.polaroid-van {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4));
+}
+
+.polaroid-sun {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    font-size: 1.1rem;
+}
+
+.polaroid-caption {
+    font-family: 'Brush Script MT', 'Segoe Script', cursive, sans-serif;
+    color: #0369a1;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.1;
 }
 
 /* ==========================================================================
@@ -399,63 +828,16 @@ html, body {
 .toast-container {
     position: fixed;
     bottom: 2rem;
-    right: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    z-index: 9999;
+    gap: 0.5rem;
+    z-index: 2000;
     pointer-events: none;
-    max-width: 90vw;
 }
 
 .toast {
-    background: rgba(15, 23, 42, 0.95);
-    border-left: 4px solid var(--cyan-glow);
-    border: 1px solid var(--border-color);
-    padding: 0.85rem 1.25rem;
-    border-radius: var(--radius-sm);
-    color: #fff;
-    font-family: var(--font-subheading);
-    font-weight: 600;
-    font-size: 1rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    animation: toastIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@keyframes toastIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* ==========================================================================
-   RESPONSIVE MEDIA QUERIES (TABLETS & PHONES)
-   ========================================================================== */
-
-@media (max-width: 1024px) {
-    .app-wrapper {
-        padding: 1rem;
-        gap: 1rem;
-    }
-
-    .game-title {
-        font-size: 1.5rem;
-    }
-
-    .question-text {
-        font-size: 1.25rem;
-    }
-
-    .options-grid {
-        gap: 0.75rem;
-    }
-}
-
 @media (max-width: 768px) {
     .app-wrapper {
         padding: 0.75rem;

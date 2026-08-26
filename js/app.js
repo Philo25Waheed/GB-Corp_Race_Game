@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Challenge Card & Options
         challengeBadge: document.getElementById('challenge-badge'),
         categoryBadge: document.getElementById('category-badge'),
+        challengePointsBadge: document.getElementById('challenge-points-badge'),
         questionText: document.getElementById('question-text'),
         optionsGrid: document.getElementById('options-grid'),
         optionItems: document.querySelectorAll('.option-item'),
@@ -164,6 +165,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (state.winner) {
             showWinnerOverlay(state.winner);
         }
+
+        window.addEventListener('resize', () => {
+            const currentState = GameState.getState();
+            TrackRenderer.renderAll(currentState.teams, currentState.raceLength, GameState.getRankings());
+        });
     }
 
     // 5. Apply Session Role UI Views
@@ -172,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (roleId === 'main_screen') {
             if (elements.labelRoleStatus) elements.labelRoleStatus.textContent = '📺 MAIN DISPLAY';
-            if (elements.roleSubtitle) elements.roleSubtitle.textContent = 'THE FASTEST TEAM WINS! • MAIN DISPLAY SCREEN';
+            if (elements.roleSubtitle) elements.roleSubtitle.textContent = 'YOUR DEPARTMENT. YOUR RIDE. YOUR RACE.';
             if (elements.deptPlayerCard) elements.deptPlayerCard.classList.add('hidden');
         } else if (roleId === 'gm') {
             if (elements.labelRoleStatus) elements.labelRoleStatus.textContent = '🎮 GAME MASTER';
@@ -203,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
             elements.deptTitleName.textContent = `${team.name} DEPARTMENT`;
             elements.deptTitleName.style.color = team.color;
         }
-        if (elements.deptPosVal) elements.deptPosVal.textContent = team.position;
+        if (elements.deptPosVal) elements.deptPosVal.textContent = team.position * 10;
     }
 
     function updateOptionCardsInteractivity() {
@@ -395,6 +401,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (elements.categoryBadge) {
             elements.categoryBadge.textContent = q.category;
+        }
+        if (elements.challengePointsBadge) {
+            elements.challengePointsBadge.textContent = (index === QuestionsManager.getQuestionCount() - 1) ? '+30 PTS FINALE' : '+10 PTS QUIZ';
         }
         if (elements.questionText) {
             elements.questionText.textContent = q.question;
