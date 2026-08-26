@@ -4,7 +4,7 @@
 
 /* ROLE SELECTOR & DEPARTMENT LOGIN MODAL */
 .role-modal-card {
-    max-width: 520px;
+    max-width: min(520px, 95vw);
 }
 
 .role-selector-group, .password-input-group {
@@ -21,8 +21,9 @@
     padding: 0.65rem 0.85rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-subheading);
-    font-size: 1rem;
+    font-size: clamp(0.88rem, 1vw, 1rem);
     font-weight: 700;
+    min-height: 42px;
 }
 
 #input-role-password {
@@ -31,9 +32,10 @@
     border: 2px solid rgba(255, 255, 255, 0.2);
     color: #fff;
     font-family: var(--font-heading);
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
     padding: 0.6rem 0.85rem;
     border-radius: var(--radius-sm);
+    min-height: 42px;
 }
 
 #input-role-password:focus {
@@ -55,11 +57,12 @@
 .passwords-cheat-box small {
     color: #94a3b8;
     font-weight: 700;
+    font-size: 0.82rem;
 }
 
 .pass-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
     gap: 0.4rem;
     font-size: 0.8rem;
     color: #cbd5e1;
@@ -80,11 +83,11 @@
     bottom: 0;
     background: rgba(5, 8, 15, 0.85);
     backdrop-filter: blur(10px);
-    z-index: 2000;
+    z-index: 3000;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+    padding: clamp(0.5rem, 2vw, 1rem);
     opacity: 1;
     transition: opacity 0.3s ease;
     overflow-y: auto;
@@ -100,17 +103,18 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     width: 100%;
-    max-width: 440px;
+    max-width: min(440px, 95vw);
     max-height: 90vh;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin: auto;
 }
 
 .shortcuts-card {
-    max-width: 600px;
+    max-width: min(600px, 95vw);
 }
 
 @keyframes modalPop {
@@ -120,28 +124,30 @@
 
 .modal-header {
     background: rgba(26, 36, 56, 0.8);
-    padding: 1rem 1.5rem;
+    padding: clamp(0.75rem, 1.2vw, 1rem) clamp(1rem, 1.5vw, 1.5rem);
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
 }
 
 .modal-header h3 {
     font-family: var(--font-heading);
-    font-size: 1.1rem;
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
     font-weight: 800;
     color: var(--cyan-glow);
 }
 
 .modal-body {
-    padding: 1.5rem;
+    padding: clamp(1rem, 1.5vw, 1.5rem);
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.85rem;
     color: #cbd5e1;
     font-size: 0.95rem;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 #input-pin {
@@ -150,11 +156,12 @@
     border: 2px solid rgba(255, 255, 255, 0.2);
     color: #fff;
     font-family: var(--font-heading);
-    font-size: 1.8rem;
-    letter-spacing: 12px;
+    font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+    letter-spacing: clamp(6px, 1.5vw, 12px);
     text-align: center;
     padding: 0.5rem;
     border-radius: var(--radius-sm);
+    min-height: 48px;
 }
 
 #input-pin:focus {
@@ -181,51 +188,64 @@
 }
 
 .modal-footer {
-    padding: 1rem 1.5rem;
+    padding: clamp(0.75rem, 1.2vw, 1rem) clamp(1rem, 1.5vw, 1.5rem);
     background: rgba(15, 23, 42, 0.8);
     display: flex;
     justify-content: flex-end;
-    gap: 0.75rem;
+    gap: 0.65rem;
     border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
+    flex-wrap: wrap;
 }
 
 .btn-secondary {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;
-    padding: 0.55rem 1.25rem;
+    padding: 0.55rem 1.2rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-subheading);
     font-weight: 700;
+    font-size: 0.88rem;
     cursor: pointer;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-primary {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     border: 1px solid #60a5fa;
     color: #fff;
-    padding: 0.55rem 1.25rem;
+    padding: 0.55rem 1.2rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-heading);
     font-weight: 800;
+    font-size: 0.88rem;
     cursor: pointer;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* KEYBOARD SHORTCUTS GRID */
 .shortcuts-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.65rem;
 }
 
 .shortcut-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.65rem;
     background: rgba(15, 23, 42, 0.6);
-    padding: 0.5rem 0.75rem;
+    padding: 0.45rem 0.65rem;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.88rem;
 }
 
 kbd {
@@ -233,12 +253,13 @@ kbd {
     border: 1px solid rgba(0, 240, 255, 0.4);
     color: var(--cyan-glow);
     font-family: var(--font-heading);
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 800;
-    padding: 0.25rem 0.6rem;
+    padding: 0.2rem 0.5rem;
     border-radius: 4px;
-    min-width: 32px;
+    min-width: 28px;
     text-align: center;
+    flex-shrink: 0;
 }
 
 /* WINNER FULLSCREEN OVERLAY */
@@ -250,14 +271,15 @@ kbd {
     bottom: 0;
     background: radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(5, 8, 15, 0.98) 100%);
     backdrop-filter: blur(15px);
-    z-index: 3000;
+    z-index: 3500;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem;
+    padding: clamp(1rem, 3vw, 2rem);
     opacity: 1;
     transition: opacity 0.5s ease;
+    overflow-y: auto;
 }
 
 .winner-overlay.hidden {
@@ -282,9 +304,10 @@ kbd {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 1.25rem;
+    gap: clamp(0.75rem, 1.8vw, 1.25rem);
     animation: winnerZoom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    max-width: 100%;
+    max-width: min(700px, 95vw);
+    margin: auto;
 }
 
 @keyframes winnerZoom {
@@ -293,39 +316,43 @@ kbd {
 }
 
 .trophy-bounce {
-    font-size: 4.5rem;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
     animation: trophyFloat 2s infinite ease-in-out;
+    line-height: 1;
 }
 
 @keyframes trophyFloat {
     0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-15px) rotate(5deg); }
+    50% { transform: translateY(-12px) rotate(4deg); }
 }
 
 .winner-title {
     font-family: var(--font-heading);
-    font-size: 3.8rem;
+    font-size: clamp(2rem, 5.5vw, 3.8rem);
     font-weight: 900;
-    letter-spacing: 3px;
+    letter-spacing: clamp(1px, 0.5vw, 3px);
     background: linear-gradient(135deg, #ffd700 0%, #ff8800 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
     word-break: break-word;
+    line-height: 1.15;
 }
 
 .winner-subtitle {
     font-family: var(--font-subheading);
-    font-size: 1.5rem;
+    font-size: clamp(0.95rem, 2vw, 1.5rem);
     font-weight: 700;
-    letter-spacing: 4px;
+    letter-spacing: clamp(1px, 0.4vw, 4px);
     color: #e2e8f0;
+    line-height: 1.3;
 }
 
 .winner-car-display {
-    font-size: 6rem;
-    margin: 1rem 0;
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    margin: 0.5rem 0;
     animation: carDriveIn 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    line-height: 1;
 }
 
 @keyframes carDriveIn {
@@ -335,51 +362,42 @@ kbd {
 
 .winner-actions {
     display: flex;
-    gap: 1.25rem;
-    margin-top: 1rem;
+    gap: clamp(0.6rem, 1.5vw, 1.25rem);
+    margin-top: 0.5rem;
     flex-wrap: wrap;
     justify-content: center;
+    width: 100%;
 }
 
 .btn-large {
-    padding: 0.85rem 2rem;
-    font-size: 1.1rem;
+    padding: 0.75rem clamp(1.2rem, 2.5vw, 2rem);
+    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+    min-height: 48px;
 }
 
 /* ==========================================================================
    RESPONSIVE MODAL MEDIA QUERIES
    ========================================================================== */
 
-@media (max-width: 768px) {
-    .pass-list {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
+@media (max-width: 600px) {
     .shortcuts-grid {
         grid-template-columns: 1fr;
     }
 
-    .winner-title {
-        font-size: 2.2rem;
+    .modal-footer {
+        flex-direction: column-reverse;
     }
 
-    .winner-subtitle {
-        font-size: 1.1rem;
-        letter-spacing: 2px;
+    .modal-footer button {
+        width: 100%;
     }
 
-    .trophy-bounce {
-        font-size: 3rem;
-    }
-
-    .winner-car-display {
-        font-size: 4rem;
-        margin: 0.5rem 0;
+    .winner-actions {
+        flex-direction: column;
     }
 
     .btn-large {
-        padding: 0.65rem 1.25rem;
-        font-size: 0.95rem;
         width: 100%;
     }
 }
+

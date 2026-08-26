@@ -121,8 +121,11 @@ const TrackRenderer = (function () {
 
             const pinEl = document.createElement('div');
             pinEl.className = 'checkpoint-pin-marker';
-            pinEl.style.left = `${(pt.x / 1200) * 100}%`;
-            pinEl.style.top = `${(pt.y / 520) * 100}%`;
+            // Safe clamp to ensure pin bubbles never overflow container edges
+            const safeLeft = Math.max(6, Math.min(94, (pt.x / 1200) * 100));
+            const safeTop = Math.max(8, Math.min(92, (pt.y / 520) * 100));
+            pinEl.style.left = `${safeLeft}%`;
+            pinEl.style.top = `${safeTop}%`;
 
             pinEl.innerHTML = `
                 <div class="pin-bubble ${stop.isGold ? 'gold' : ''}">
@@ -141,7 +144,6 @@ const TrackRenderer = (function () {
         if (!serpentineCarsContainer || !roadMainPath) return;
         serpentineCarsContainer.innerHTML = '';
 
-        const totalLength = roadMainPath.getTotalLength();
         const totalTeams = teams.length;
 
         teams.forEach((team, idx) => {
@@ -153,7 +155,7 @@ const TrackRenderer = (function () {
                 <div class="car-badge-miles" id="serp-miles-${team.id}">+${team.position * 10} MI</div>
                 <div class="serpentine-car-body" id="serp-body-${team.id}">
                     <div class="car-exhaust-trail"></div>
-                    <span class="car-sprite-graphic" style="filter: drop-shadow(0 0 10px ${team.color});">${team.car}</span>
+                    <span class="car-sprite-graphic" style="filter: drop-shadow(0 0 8px ${team.color});">${team.car}</span>
                     <div class="car-headlight-beam"></div>
                 </div>
                 <span class="car-name-tag" style="border-bottom: 2px solid ${team.color};">${team.name}</span>
@@ -182,14 +184,15 @@ const TrackRenderer = (function () {
 
         // Calculate normal lane offset so cars don't overlap
         const normalAngle = (angle + 90) * (Math.PI / 180);
-        const laneSpread = 16;
+        const isMobile = window.innerWidth < 768;
+        const laneSpread = isMobile ? 12 : 16;
         const laneOffset = (teamIndex - (totalTeams - 1) / 2) * laneSpread;
 
         const finalX = pt.x + Math.cos(normalAngle) * laneOffset;
         const finalY = pt.y + Math.sin(normalAngle) * laneOffset;
 
-        const leftPct = (finalX / 1200) * 100;
-        const topPct = (finalY / 520) * 100;
+        const leftPct = Math.max(3, Math.min(97, (finalX / 1200) * 100));
+        const topPct = Math.max(4, Math.min(96, (finalY / 520) * 100));
 
         carWrap.style.left = `${leftPct}%`;
         carWrap.style.top = `${topPct}%`;
@@ -226,10 +229,11 @@ const TrackRenderer = (function () {
         if (!markersContainer) return;
         markersContainer.innerHTML = '';
 
-        for (let i = 0; i <= raceLength; i += 3) {
+        const stepInterval = raceLength <= 10 ? 2 : (raceLength <= 15 ? 3 : 5);
+        for (let i = 0; i <= raceLength; i += stepInterval) {
             const marker = document.createElement('div');
             marker.className = 'marker-step';
-            marker.textContent = i === 0 ? 'START' : (i === raceLength ? 'FINISH' : `${i}`);
+            marker.innerHTML = `<span>${i * 10}</span><span class="marker-unit">mi</span>`;
             markersContainer.appendChild(marker);
         }
     }
