@@ -13,7 +13,7 @@ const GameState = (function () {
             name: 'IT',
             code: 'IT',
             password: '1001',
-            color: '#3b82f6',
+            color: '#38bdf8', // Baby Blue
             car: '🏎️',
             position: 0
         },
@@ -22,7 +22,7 @@ const GameState = (function () {
             name: 'Finance',
             code: 'FIN',
             password: '2002',
-            color: '#22c55e',
+            color: '#0284c7', // Blue
             car: '🚙',
             position: 0
         },
@@ -31,7 +31,7 @@ const GameState = (function () {
             name: 'Marketing',
             code: 'MKT',
             password: '3003',
-            color: '#f97316',
+            color: '#f97316', // Orange
             car: '🏎️',
             position: 0
         },
@@ -40,7 +40,7 @@ const GameState = (function () {
             name: 'HR',
             code: 'HR',
             password: '4004',
-            color: '#a855f7',
+            color: '#ffffff', // White
             car: '🚕',
             position: 0
         },
@@ -49,7 +49,7 @@ const GameState = (function () {
             name: 'Operations',
             code: 'OPS',
             password: '5005',
-            color: '#ef4444',
+            color: '#fb923c', // Warm Orange
             car: '🚗',
             position: 0
         }
@@ -72,6 +72,15 @@ const GameState = (function () {
             if (saved) {
                 const parsed = JSON.parse(saved);
                 state = Object.assign({}, state, parsed);
+                // Ensure team colors follow the current palette
+                if (state.teams && Array.isArray(state.teams)) {
+                    state.teams.forEach(t => {
+                        const defaultTeam = initialTeams.find(it => it.id === t.id);
+                        if (defaultTeam) {
+                            t.color = defaultTeam.color;
+                        }
+                    });
+                }
             }
         } catch (e) {
             console.warn('Failed to load state from localStorage', e);

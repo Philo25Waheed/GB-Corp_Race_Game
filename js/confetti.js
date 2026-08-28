@@ -8,7 +8,7 @@ const ConfettiEngine = (function () {
     let ctx = null;
     let particles = [];
     let animationId = null;
-    const colors = ['#3b82f6', '#22c55e', '#f97316', '#a855f7', '#ef4444', '#ffd700', '#00f0ff'];
+    const colors = ['#38bdf8', '#0284c7', '#f97316', '#ffffff', '#7dd3fc', '#fb923c', '#0369a1', '#ffedd5'];
 
     function Particle(x, y) {
         this.x = x;

@@ -1,5 +1,6 @@
 /* ==========================================================================
    SUMMER SERPENTINE RACETRACK & CAR ANIMATIONS
+   PALETTE: BABY BLUE & BLUE & WHITE & ORANGE (STRICT SUMMER VIBES)
    ========================================================================== */
 
 .track-section {
@@ -39,7 +40,7 @@
     font-family: var(--font-heading);
     font-size: clamp(0.95rem, 1.2vw, 1.15rem);
     font-weight: 900;
-    color: #fbbf24;
+    color: #fb923c;
     letter-spacing: 1.5px;
     display: flex;
     align-items: center;
@@ -59,7 +60,7 @@
 .btn-view-mode {
     background: none;
     border: none;
-    color: #94a3b8;
+    color: #bae6fd;
     padding: 0.35rem 0.85rem;
     border-radius: 18px;
     font-family: var(--font-subheading);
@@ -72,7 +73,7 @@
 
 .btn-view-mode.active {
     background: linear-gradient(135deg, #0284c7, #38bdf8);
-    color: #fff;
+    color: #ffffff;
     box-shadow: 0 2px 10px rgba(56, 189, 248, 0.4);
 }
 
@@ -86,9 +87,9 @@
     aspect-ratio: 1200 / 520;
     min-height: 280px;
     max-height: 560px;
-    background: linear-gradient(180deg, #0a335c 0%, #0d4375 30%, #b45309 85%, #78350f 100%);
+    background: linear-gradient(180deg, #082f49 0%, #0369a1 30%, #f97316 85%, #ea580c 100%);
     border-radius: var(--radius-md);
-    border: 1px solid rgba(56, 189, 248, 0.3);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     overflow: hidden;
     box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.6);
 }
@@ -100,7 +101,7 @@
     left: 0;
     right: 0;
     height: 35%;
-    background: linear-gradient(180deg, rgba(56, 189, 248, 0.25) 0%, rgba(251, 191, 36, 0.15) 60%, transparent 100%);
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.25) 0%, rgba(249, 115, 22, 0.15) 60%, transparent 100%);
     pointer-events: none;
 }
 
@@ -110,9 +111,9 @@
     right: 5%;
     width: clamp(40px, 6vw, 70px);
     height: clamp(40px, 6vw, 70px);
-    background: radial-gradient(circle, #fef08a 0%, #f59e0b 60%, transparent 80%);
+    background: radial-gradient(circle, #ffffff 0%, #fb923c 55%, #f97316 80%);
     border-radius: 50%;
-    box-shadow: 0 0 45px rgba(251, 191, 36, 0.9);
+    box-shadow: 0 0 45px rgba(249, 115, 22, 0.95);
 }
 
 .sky-birds {
@@ -120,7 +121,7 @@
     top: 8%;
     left: 18%;
     font-size: clamp(0.8rem, 1.2vw, 1.2rem);
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.6);
     letter-spacing: clamp(8px, 1.5vw, 20px);
 }
 
@@ -150,7 +151,7 @@
 /* SVG Path Styling */
 .road-border-path {
     fill: none;
-    stroke: #1e293b;
+    stroke: #071526;
     stroke-width: 64;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -158,7 +159,7 @@
 
 .road-surface-path {
     fill: none;
-    stroke: #334155;
+    stroke: #0f2744;
     stroke-width: 54;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -166,17 +167,17 @@
 
 .road-lane-divider-path {
     fill: none;
-    stroke: #fef08a;
+    stroke: #ffffff;
     stroke-width: 2.5;
     stroke-dasharray: 14 12;
     stroke-linecap: round;
     stroke-linejoin: round;
-    opacity: 0.9;
+    opacity: 0.95;
 }
 
 .road-edge-line-left, .road-edge-line-right {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.35);
+    stroke: rgba(56, 189, 248, 0.45);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -187,16 +188,16 @@
     position: absolute;
     top: 9%;
     left: 2%;
-    background: linear-gradient(135deg, #1e3a8a, #0369a1);
+    background: linear-gradient(135deg, #082f49, #0284c7);
     border: 2px solid #38bdf8;
-    color: #fff;
+    color: #ffffff;
     padding: clamp(0.25rem, 0.5vw, 0.45rem) clamp(0.45rem, 0.9vw, 0.9rem);
     border-radius: var(--radius-sm);
     font-family: var(--font-heading);
     font-size: clamp(0.68rem, 0.9vw, 0.95rem);
     font-weight: 900;
     letter-spacing: 1.5px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6), 0 0 15px rgba(56, 189, 248, 0.4);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6), 0 0 15px rgba(56, 189, 248, 0.5);
     z-index: 10;
     display: flex;
     align-items: center;
@@ -209,16 +210,16 @@
     position: absolute;
     bottom: 6%;
     right: 2%;
-    background: linear-gradient(135deg, #b45309, #f59e0b);
-    border: 2px solid #fef08a;
-    color: #fff;
+    background: linear-gradient(135deg, #ea580c, #f97316);
+    border: 2px solid #ffffff;
+    color: #ffffff;
     padding: clamp(0.25rem, 0.5vw, 0.5rem) clamp(0.5rem, 1vw, 1.1rem);
     border-radius: var(--radius-sm);
     font-family: var(--font-heading);
     font-size: clamp(0.72rem, 0.95vw, 1.05rem);
     font-weight: 900;
     letter-spacing: 1.5px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), 0 0 25px rgba(251, 191, 36, 0.6);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), 0 0 25px rgba(249, 115, 22, 0.65);
     z-index: 10;
     display: flex;
     align-items: center;
@@ -226,7 +227,7 @@
     white-space: nowrap;
 }
 
-/* MILESTONE CHECKPOINT STOP PINS (MATCHING DESIGN) */
+/* MILESTONE CHECKPOINT STOP PINS */
 .checkpoint-pin-marker {
     position: absolute;
     transform: translate(-50%, -100%);
@@ -249,7 +250,7 @@
     border: 2px solid #38bdf8;
     border-radius: 10px;
     padding: clamp(0.2rem, 0.4vw, 0.35rem) clamp(0.35rem, 0.6vw, 0.65rem);
-    color: #fff;
+    color: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -259,9 +260,9 @@
 }
 
 .pin-bubble.gold {
-    background: linear-gradient(180deg, #d97706 0%, #b45309 100%);
-    border-color: #fef08a;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5), 0 0 15px rgba(251, 191, 36, 0.6);
+    background: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
+    border-color: #ffffff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5), 0 0 15px rgba(249, 115, 22, 0.7);
 }
 
 .pin-stop-num {
@@ -269,7 +270,7 @@
     font-size: clamp(0.52rem, 0.65vw, 0.65rem);
     font-weight: 800;
     letter-spacing: 0.5px;
-    color: #fde047;
+    color: #ffffff;
     text-transform: uppercase;
     white-space: nowrap;
 }
@@ -278,7 +279,7 @@
     font-family: var(--font-heading);
     font-size: clamp(0.58rem, 0.72vw, 0.72rem);
     font-weight: 900;
-    color: #fff;
+    color: #ffffff;
     white-space: nowrap;
 }
 
@@ -286,7 +287,7 @@
     font-family: var(--font-subheading);
     font-size: clamp(0.5rem, 0.6vw, 0.62rem);
     font-weight: 700;
-    color: #e2e8f0;
+    color: #bae6fd;
     white-space: nowrap;
 }
 
@@ -298,7 +299,8 @@
 }
 
 .pin-stem.gold {
-    background: #fef08a;
+    background: #f97316;
+    box-shadow: 0 0 6px rgba(249, 115, 22, 0.8);
 }
 
 /* ==========================================================================
@@ -320,7 +322,7 @@
 .car-badge-miles {
     background: rgba(8, 24, 48, 0.95);
     border: 1px solid var(--cyan-glow);
-    color: #fde047;
+    color: #ffffff;
     font-family: var(--font-heading);
     font-size: clamp(0.55rem, 0.7vw, 0.72rem);
     font-weight: 900;
@@ -340,7 +342,6 @@
     transition: transform 0.4s ease;
 }
 
-/* Emoji cars naturally face left, so we mirror them initially to face forward (right) */
 .car-sprite-graphic {
     font-size: clamp(1.4rem, 2.5vw, 2.3rem);
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8));
@@ -355,7 +356,7 @@
     font-size: clamp(0.52rem, 0.65vw, 0.65rem);
     font-weight: 900;
     color: #ffffff;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.88);
     padding: 1px 5px;
     border-radius: 4px;
     letter-spacing: 0.5px;
@@ -373,9 +374,9 @@
     transform: translateY(-50%);
     width: clamp(14px, 2vw, 24px);
     height: clamp(8px, 1vw, 12px);
-    background: radial-gradient(ellipse at left, rgba(254, 240, 138, 0.85) 0%, transparent 80%);
+    background: radial-gradient(ellipse at left, rgba(255, 255, 255, 0.85) 0%, rgba(56, 189, 248, 0.4) 50%, transparent 80%);
     pointer-events: none;
-    opacity: 0.8;
+    opacity: 0.85;
 }
 
 .car-exhaust-trail {
@@ -391,7 +392,7 @@
 
 .serpentine-car-wrapper.moving .car-exhaust-trail {
     opacity: 1;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(56, 189, 248, 0.4) 40%, transparent 80%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(56, 189, 248, 0.5) 40%, transparent 80%);
     animation: carExhaustPuff 0.3s infinite linear;
 }
 
@@ -401,7 +402,7 @@
 }
 
 /* ==========================================================================
-   CLASSIC SPRINT LANES VIEW (FALLBACK / ALTERNATIVE)
+   CLASSIC SPRINT LANES VIEW
    ========================================================================== */
 
 .sprint-lanes-wrapper {
@@ -428,7 +429,7 @@
     font-family: var(--font-heading);
     font-size: clamp(0.75rem, 0.95vw, 0.95rem);
     font-weight: 900;
-    color: #94a3b8;
+    color: #bae6fd;
     letter-spacing: 1.5px;
     white-space: nowrap;
 }
@@ -439,7 +440,7 @@
     padding: 0 0.5rem;
     font-family: var(--font-heading);
     font-size: clamp(0.62rem, 0.75vw, 0.75rem);
-    color: #64748b;
+    color: #bae6fd;
     position: relative;
 }
 
@@ -449,21 +450,21 @@
     align-items: center;
     position: relative;
     font-size: clamp(0.58rem, 0.7vw, 0.72rem);
-    color: #94a3b8;
+    color: #ffffff;
     line-height: 1;
     white-space: nowrap;
 }
 
 .marker-step .marker-unit {
     font-size: 0.52rem;
-    color: #64748b;
+    color: #bae6fd;
 }
 
 .marker-step::after {
     content: '';
     width: 1px;
     height: 6px;
-    background: rgba(56, 189, 248, 0.4);
+    background: rgba(56, 189, 248, 0.5);
     margin-top: 2px;
 }
 
@@ -471,10 +472,10 @@
     font-family: var(--font-heading);
     font-size: clamp(0.75rem, 0.95vw, 0.95rem);
     font-weight: 900;
-    color: #fbbf24;
+    color: #f97316;
     text-align: right;
     letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+    text-shadow: 0 0 10px rgba(249, 115, 22, 0.6);
     white-space: nowrap;
 }
 
@@ -490,7 +491,7 @@
     grid-template-columns: clamp(75px, 15vw, 140px) 1fr clamp(55px, 10vw, 90px);
     align-items: center;
     background: rgba(8, 24, 48, 0.85);
-    border: 1px solid rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.18);
     border-radius: var(--radius-sm);
     padding: 0.45rem clamp(0.4rem, 0.8vw, 0.75rem);
     position: relative;
@@ -532,8 +533,8 @@
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0%, rgba(56, 189, 248, 0.08) 100%);
     border-radius: 6px;
     margin: 0 0.35rem;
-    border-top: 1px dashed rgba(56, 189, 248, 0.2);
-    border-bottom: 1px dashed rgba(56, 189, 248, 0.2);
+    border-top: 1px dashed rgba(56, 189, 248, 0.25);
+    border-bottom: 1px dashed rgba(56, 189, 248, 0.25);
     overflow: hidden;
 }
 
@@ -544,11 +545,11 @@
     top: 0;
     bottom: 0;
     width: 18px;
-    background-image: repeating-conic-gradient(#fff 0 90deg, #000 0 180deg);
+    background-image: repeating-conic-gradient(#ffffff 0 90deg, #071526 0 180deg);
     background-size: 10px 10px;
-    opacity: 0.85;
-    border-left: 2px solid #ffd700;
-    box-shadow: -2px 0 10px rgba(255, 215, 0, 0.5);
+    opacity: 0.9;
+    border-left: 2px solid #f97316;
+    box-shadow: -2px 0 10px rgba(249, 115, 22, 0.5);
 }
 
 .car-wrapper {
@@ -591,7 +592,7 @@
 .step-label {
     font-family: var(--font-subheading);
     font-size: clamp(0.62rem, 0.75vw, 0.75rem);
-    color: #94a3b8;
+    color: #bae6fd;
     text-transform: uppercase;
     white-space: nowrap;
 }
@@ -613,7 +614,7 @@
     font-family: var(--font-heading);
     font-size: clamp(0.88rem, 1.1vw, 1.05rem);
     font-weight: 800;
-    color: #fbbf24;
+    color: #fb923c;
     letter-spacing: 1.5px;
     margin-bottom: 0.65rem;
     display: flex;
@@ -643,16 +644,22 @@
 }
 
 .rank-card.rank-1 {
-    border-color: #fbbf24;
-    box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+    border-color: #f97316;
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.45);
 }
 
 .rank-card.rank-2 {
-    border-color: #e2e8f0;
+    border-color: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
 }
 
 .rank-card.rank-3 {
-    border-color: #d97706;
+    border-color: #38bdf8;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+
+.rank-card.rank-4, .rank-card.rank-5 {
+    border-color: #0284c7;
 }
 
 .rank-info {
@@ -742,5 +749,3 @@
         grid-template-columns: 1fr;
     }
 }
-
-

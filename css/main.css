@@ -1,45 +1,74 @@
 /* ==========================================================================
    SUMMER ROAD TRIP - MAIN DESIGN SYSTEM & CORE STYLES
+   PALETTE: BABY BLUE & BLUE & WHITE & ORANGE (STRICT SUMMER VIBES)
    ========================================================================== */
 
 :root {
-    /* Summer Coastal & Desert Theme Palette */
+    /* 1. Baby Blue Palette */
+    --baby-blue: #38bdf8;
+    --baby-blue-light: #7dd3fc;
+    --baby-blue-soft: #bae6fd;
+    --baby-blue-foam: #e0f2fe;
+    --baby-blue-glow: rgba(56, 189, 248, 0.6);
+
+    /* 2. Deep & Ocean Blue Palette */
+    --blue-dark: #071526;
+    --blue-navy: #082f49;
+    --blue-mid: #0369a1;
+    --blue-ocean: #0284c7;
+    --blue-royal: #1d4ed8;
+
+    /* 3. White Palette */
+    --white-pure: #ffffff;
+    --white-soft: #f8fafc;
+    --white-muted: #e2e8f0;
+    --white-glass: rgba(255, 255, 255, 0.08);
+
+    /* 4. Sun & Summer Orange Palette */
+    --orange-sun: #f97316;
+    --orange-bright: #ea580c;
+    --orange-amber: #fb923c;
+    --orange-warm: #f59e0b;
+    --orange-soft: #fed7aa;
+    --orange-glow: rgba(249, 115, 22, 0.6);
+
+    /* Theme Mappings */
     --sky-top: #082f49;
     --sky-mid: #0369a1;
     --sky-light: #0284c7;
     --sky-accent: #38bdf8;
     --sky-foam: #e0f2fe;
 
-    --sun-gold: #f59e0b;
-    --sun-bright: #fbbf24;
-    --sun-glow: #fef08a;
+    --sun-gold: #f97316;
+    --sun-bright: #fb923c;
+    --sun-glow: #ffedd5;
     
     --sand-light: #fed7aa;
-    --sand-warm: #f59e0b;
-    --sand-dune: #b45309;
+    --sand-warm: #f97316;
+    --sand-dune: #ea580c;
 
     --bg-dark: #071526;
-    --bg-card: rgba(12, 35, 64, 0.82);
-    --bg-card-hover: rgba(16, 47, 86, 0.92);
-    --bg-card-sun: rgba(245, 158, 11, 0.08);
+    --bg-card: rgba(8, 35, 64, 0.85);
+    --bg-card-hover: rgba(12, 48, 88, 0.94);
+    --bg-card-sun: rgba(249, 115, 22, 0.08);
     
-    --border-color: rgba(56, 189, 248, 0.25);
-    --border-glow: rgba(56, 189, 248, 0.6);
-    --border-sun: rgba(251, 191, 36, 0.4);
+    --border-color: rgba(56, 189, 248, 0.28);
+    --border-glow: rgba(56, 189, 248, 0.65);
+    --border-sun: rgba(249, 115, 22, 0.45);
     
-    /* Neon Accents */
+    /* Accents */
     --cyan-glow: #38bdf8;
     --ocean-blue: #0284c7;
-    --gold-glow: #fbbf24;
-    --silver-glow: #e2e8f0;
-    --bronze-glow: #d97706;
+    --gold-glow: #f97316;
+    --silver-glow: #ffffff;
+    --bronze-glow: #ea580c;
     
-    /* Department Colors (Summer Edition) */
-    --color-it: #38bdf8;        /* Sky Blue */
-    --color-finance: #10b981;   /* Emerald Aqua */
+    /* Department Colors (Strictly Baby Blue, Blue, White, Orange) */
+    --color-it: #38bdf8;        /* Sky Baby Blue */
+    --color-finance: #0284c7;   /* Deep Ocean Blue */
     --color-marketing: #f97316; /* Sun Orange */
-    --color-hr: #a855f7;        /* Tropical Purple */
-    --color-ops: #ef4444;       /* Sunset Coral */
+    --color-hr: #ffffff;        /* Pure White */
+    --color-ops: #fb923c;       /* Warm Amber Orange */
 
     /* Typography */
     --font-heading: 'Orbitron', 'Montserrat', -apple-system, sans-serif;
@@ -71,9 +100,9 @@ html, body {
     min-height: 100%;
     background-color: var(--bg-dark);
     background-image: 
-        radial-gradient(ellipse at 85% 5%, rgba(251, 191, 36, 0.18) 0%, rgba(245, 158, 11, 0.05) 45%, transparent 70%),
-        radial-gradient(ellipse at 15% 15%, rgba(56, 189, 248, 0.15) 0%, transparent 60%),
-        radial-gradient(ellipse at 50% 95%, rgba(180, 83, 9, 0.15) 0%, transparent 70%),
+        radial-gradient(ellipse at 85% 5%, rgba(249, 115, 22, 0.18) 0%, rgba(249, 115, 22, 0.05) 45%, transparent 70%),
+        radial-gradient(ellipse at 15% 15%, rgba(56, 189, 248, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 95%, rgba(2, 132, 199, 0.18) 0%, transparent 70%),
         linear-gradient(180deg, #071b30 0%, #082845 40%, #06192d 100%);
     background-attachment: fixed;
     color: #f8fafc;
@@ -83,7 +112,7 @@ html, body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Ambient Summer Sun Ray & Palm Backing */
+/* Ambient Summer Sun Ray */
 body::before {
     content: '';
     position: fixed;
@@ -91,7 +120,7 @@ body::before {
     right: 5%;
     width: 450px;
     height: 450px;
-    background: radial-gradient(circle, rgba(251, 191, 36, 0.22) 0%, rgba(245, 158, 11, 0.08) 50%, transparent 75%);
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.22) 0%, rgba(251, 146, 60, 0.08) 50%, transparent 75%);
     pointer-events: none;
     z-index: 0;
     filter: blur(40px);
@@ -131,7 +160,7 @@ body::before {
     width: 100%;
 }
 
-/* Summer Rainbow Sun Top Bar */
+/* Top Accent Bar */
 .main-header::before {
     content: '';
     position: absolute;
@@ -139,8 +168,8 @@ body::before {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #38bdf8 0%, #0284c7 25%, #fbbf24 50%, #f97316 75%, #a855f7 100%);
-    box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+    background: linear-gradient(90deg, #38bdf8 0%, #0284c7 30%, #ffffff 50%, #fb923c 70%, #f97316 100%);
+    box-shadow: 0 0 12px rgba(249, 115, 22, 0.6);
 }
 
 .header-brand {
@@ -156,7 +185,7 @@ body::before {
     align-items: center;
     gap: 0.45rem;
     background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(56, 189, 248, 0.3);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     padding: 0.4rem 0.8rem;
     border-radius: var(--radius-sm);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -175,7 +204,7 @@ body::before {
     font-size: clamp(0.95rem, 1.2vw, 1.15rem);
     font-weight: 900;
     letter-spacing: 1.5px;
-    color: #fff;
+    color: #ffffff;
     white-space: nowrap;
 }
 
@@ -190,8 +219,8 @@ body::before {
     font-family: var(--font-arabic);
     font-size: clamp(1.05rem, 1.6vw, 1.4rem);
     font-weight: 900;
-    color: #fef08a;
-    text-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+    color: #fb923c;
+    text-shadow: 0 0 12px rgba(249, 115, 22, 0.6);
     line-height: 1.2;
     white-space: nowrap;
 }
@@ -201,7 +230,7 @@ body::before {
     font-size: clamp(0.7rem, 0.9vw, 0.85rem);
     font-weight: 700;
     letter-spacing: 1.5px;
-    color: #94a3b8;
+    color: #bae6fd;
     text-transform: uppercase;
     white-space: nowrap;
 }
@@ -221,7 +250,7 @@ body::before {
     font-size: clamp(1.3rem, 2.3vw, 2.1rem);
     font-weight: 900;
     letter-spacing: clamp(1px, 0.3vw, 3px);
-    background: linear-gradient(180deg, #ffffff 0%, #7dd3fc 45%, #0284c7 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #7dd3fc 45%, #f97316 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 4px 20px rgba(56, 189, 248, 0.4);
@@ -235,7 +264,7 @@ body::before {
 
 .title-sun-icon {
     font-size: clamp(1.2rem, 2vw, 1.9rem);
-    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.9));
+    filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.9));
     animation: sunSpinSlow 20s linear infinite;
 }
 
@@ -246,7 +275,7 @@ body::before {
 
 .title-palm-icon {
     font-size: clamp(1.1rem, 1.8vw, 1.8rem);
-    filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.5));
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
     animation: palmSway 3s ease-in-out infinite alternate;
 }
 
@@ -260,7 +289,7 @@ body::before {
     font-size: clamp(0.68rem, 0.85vw, 0.82rem);
     font-weight: 700;
     letter-spacing: 1.5px;
-    color: #fde047;
+    color: #fb923c;
     text-transform: uppercase;
     margin-top: 0.2rem;
     text-align: center;
@@ -278,7 +307,7 @@ body::before {
 .btn-icon-toggle {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--border-color);
-    color: #e2e8f0;
+    color: #ffffff;
     padding: 0.5rem 0.85rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-subheading);
@@ -296,28 +325,28 @@ body::before {
 }
 
 .btn-icon-toggle:hover {
-    background: rgba(56, 189, 248, 0.18);
+    background: rgba(56, 189, 248, 0.2);
     border-color: var(--cyan-glow);
-    color: #fff;
+    color: #ffffff;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
 }
 
 .btn-icon-toggle.active {
-    background: rgba(251, 191, 36, 0.2);
-    border-color: var(--sun-bright);
-    color: var(--sun-glow);
+    background: rgba(249, 115, 22, 0.22);
+    border-color: var(--orange-amber);
+    color: #ffffff;
 }
 
 .highlight-btn {
-    border-color: rgba(251, 191, 36, 0.4);
-    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(249, 115, 22, 0.45);
+    background: rgba(249, 115, 22, 0.12);
 }
 
 .btn-gm-primary {
     background: linear-gradient(135deg, #0284c7, #0369a1);
     border: 1px solid #38bdf8;
-    color: #fff;
+    color: #ffffff;
     padding: 0.5rem 1.1rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-heading);
@@ -342,7 +371,7 @@ body::before {
 }
 
 /* ==========================================================================
-   3-STEP JOURNEY FLOW BANNER (AS IN DESIGN)
+   3-STEP JOURNEY FLOW BANNER
    ========================================================================== */
 
 .journey-steps-banner {
@@ -350,8 +379,8 @@ body::before {
     align-items: center;
     justify-content: center;
     gap: clamp(0.5rem, 1.5vw, 1.25rem);
-    background: rgba(8, 32, 60, 0.7);
-    border: 1px solid rgba(56, 189, 248, 0.2);
+    background: rgba(8, 32, 60, 0.75);
+    border: 1px solid rgba(56, 189, 248, 0.25);
     border-radius: var(--radius-sm);
     padding: 0.55rem clamp(0.6rem, 1.5vw, 1.25rem);
     flex-wrap: wrap;
@@ -366,13 +395,13 @@ body::before {
     font-size: clamp(0.8rem, 0.95vw, 0.92rem);
     font-weight: 700;
     letter-spacing: 0.5px;
-    color: #e2e8f0;
+    color: #ffffff;
     white-space: nowrap;
 }
 
 .journey-step-item .step-num {
     background: var(--ocean-blue);
-    color: #fff;
+    color: #ffffff;
     width: 22px;
     height: 22px;
     min-width: 22px;
@@ -382,6 +411,7 @@ body::before {
     justify-content: center;
     font-size: 0.75rem;
     font-weight: 800;
+    border: 1px solid #38bdf8;
 }
 
 .journey-step-item .step-icon {
@@ -389,7 +419,7 @@ body::before {
 }
 
 .journey-step-divider {
-    color: rgba(56, 189, 248, 0.4);
+    color: rgba(56, 189, 248, 0.5);
     font-weight: 900;
     font-size: 0.85rem;
 }
@@ -425,7 +455,7 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.18);
     padding-bottom: 0.75rem;
     flex-wrap: wrap;
     gap: 0.65rem;
@@ -441,7 +471,7 @@ body::before {
 .challenge-badge {
     background: rgba(56, 189, 248, 0.15);
     color: var(--cyan-glow);
-    border: 1px solid rgba(56, 189, 248, 0.4);
+    border: 1px solid rgba(56, 189, 248, 0.45);
     padding: 0.3rem 0.75rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-heading);
@@ -451,10 +481,10 @@ body::before {
 }
 
 .category-badge {
-    background: rgba(251, 191, 36, 0.12);
-    color: #fde047;
-    border: 1px solid rgba(251, 191, 36, 0.3);
-    padding: 0.3rem 0.7rem;
+    background: rgba(249, 115, 22, 0.15);
+    color: #fb923c;
+    border: 1px solid rgba(249, 115, 22, 0.4);
+    padding: 0.3rem 0.75rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-subheading);
     font-size: clamp(0.78rem, 0.95vw, 0.9rem);
@@ -463,10 +493,10 @@ body::before {
 }
 
 .challenge-points-badge {
-    background: rgba(34, 197, 94, 0.15);
-    color: #4ade80;
-    border: 1px solid rgba(34, 197, 94, 0.35);
-    padding: 0.3rem 0.7rem;
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    padding: 0.3rem 0.75rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-heading);
     font-size: clamp(0.75rem, 0.9vw, 0.85rem);
@@ -478,17 +508,17 @@ body::before {
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    background: rgba(8, 24, 48, 0.9);
-    border: 2px solid rgba(251, 191, 36, 0.5);
+    background: rgba(8, 24, 48, 0.92);
+    border: 2px solid rgba(249, 115, 22, 0.6);
     padding: 0.3rem 0.85rem;
     border-radius: var(--radius-sm);
-    box-shadow: 0 0 15px rgba(251, 191, 36, 0.25);
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.25);
     transition: var(--transition-fast);
 }
 
 .timer-display-box.warning {
-    border-color: #ef4444;
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.7);
+    border-color: #ea580c;
+    box-shadow: 0 0 20px rgba(234, 88, 12, 0.8);
     animation: pulseDanger 0.8s infinite alternate;
 }
 
@@ -505,32 +535,48 @@ body::before {
     font-family: var(--font-heading);
     font-size: clamp(1.25rem, 1.8vw, 1.55rem);
     font-weight: 900;
-    color: #fbbf24;
+    color: #fb923c;
 }
 
 .timer-display-box.warning .timer-val {
-    color: #ef4444;
+    color: #ea580c;
 }
 
 .timer-unit {
     font-family: var(--font-subheading);
     font-size: 0.75rem;
     font-weight: 800;
-    color: #94a3b8;
+    color: #bae6fd;
 }
 
 .challenge-body {
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    gap: 0.95rem;
 }
 
+/* BILINGUAL QUESTION TEXT */
 .question-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    line-height: 1.35;
+}
+
+.question-line-en {
     font-family: var(--font-subheading);
-    font-size: clamp(1.05rem, 1.5vw, 1.35rem);
-    font-weight: 700;
-    color: #f8fafc;
-    line-height: 1.4;
+    font-size: clamp(1.05rem, 1.45vw, 1.3rem);
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.3px;
+}
+
+.question-line-ar {
+    font-family: var(--font-arabic);
+    font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+    font-weight: 800;
+    color: #38bdf8;
+    line-height: 1.45;
 }
 
 /* OPTIONS GRID & INTERACTIVE ANSWER CARDS */
@@ -542,7 +588,7 @@ body::before {
 
 .option-item {
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(56, 189, 248, 0.18);
+    border: 1px solid rgba(56, 189, 248, 0.22);
     padding: clamp(0.65rem, 1vw, 0.85rem) clamp(0.75rem, 1.2vw, 1.1rem);
     border-radius: var(--radius-sm);
     display: flex;
@@ -551,7 +597,7 @@ body::before {
     transition: var(--transition-norm);
     position: relative;
     overflow: hidden;
-    min-height: 48px;
+    min-height: 52px;
 }
 
 .option-item.interactive {
@@ -559,16 +605,16 @@ body::before {
 }
 
 .option-item.interactive:hover {
-    background: rgba(56, 189, 248, 0.15);
+    background: rgba(56, 189, 248, 0.18);
     border-color: var(--cyan-glow);
     transform: translateY(-2px);
-    box-shadow: 0 5px 18px rgba(56, 189, 248, 0.25);
+    box-shadow: 0 5px 18px rgba(56, 189, 248, 0.3);
 }
 
 .option-item.correct {
-    background: rgba(34, 197, 94, 0.3) !important;
-    border-color: #22c55e !important;
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.6) !important;
+    background: rgba(56, 189, 248, 0.25) !important;
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.8) !important;
     animation: correctPulse 0.5s ease;
 }
 
@@ -579,9 +625,9 @@ body::before {
 }
 
 .option-item.incorrect {
-    background: rgba(239, 68, 68, 0.3) !important;
-    border-color: #ef4444 !important;
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.6) !important;
+    background: rgba(249, 115, 22, 0.25) !important;
+    border-color: #ea580c !important;
+    box-shadow: 0 0 25px rgba(234, 88, 12, 0.8) !important;
     animation: shakeError 0.4s ease;
 }
 
@@ -594,26 +640,47 @@ body::before {
 .opt-prefix {
     background: rgba(56, 189, 248, 0.2);
     color: var(--cyan-glow);
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    width: 30px;
-    height: 30px;
-    min-width: 30px;
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: var(--font-heading);
-    font-size: 0.88rem;
-    font-weight: 700;
+    font-size: 0.9rem;
+    font-weight: 800;
     flex-shrink: 0;
 }
 
 .opt-text {
-    font-size: clamp(0.92rem, 1.1vw, 1.05rem);
-    color: #e2e8f0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.6rem;
+    font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+    color: #ffffff;
     font-weight: 600;
-    word-break: break-word;
-    line-height: 1.35;
+    width: 100%;
+}
+
+.opt-en {
+    font-family: var(--font-body);
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.opt-divider {
+    color: #38bdf8;
+    font-weight: 900;
+    opacity: 0.7;
+}
+
+.opt-ar {
+    font-family: var(--font-arabic);
+    font-weight: 700;
+    color: #bae6fd;
 }
 
 /* ==========================================================================
@@ -650,12 +717,12 @@ body::before {
     font-family: var(--font-heading);
     font-size: clamp(0.82rem, 1vw, 0.92rem);
     font-weight: 900;
-    color: #fbbf24;
+    color: #fb923c;
     letter-spacing: 1px;
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+    border-bottom: 1px solid rgba(249, 115, 22, 0.25);
     padding-bottom: 0.5rem;
     text-transform: uppercase;
 }
@@ -670,16 +737,16 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(56, 189, 248, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(56, 189, 248, 0.15);
     padding: 0.45rem 0.7rem;
     border-radius: var(--radius-sm);
     transition: var(--transition-fast);
 }
 
 .point-rule-item:hover {
-    background: rgba(56, 189, 248, 0.1);
-    border-color: rgba(56, 189, 248, 0.3);
+    background: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.35);
 }
 
 .rule-label {
@@ -688,7 +755,7 @@ body::before {
     gap: 0.45rem;
     font-size: 0.86rem;
     font-weight: 600;
-    color: #cbd5e1;
+    color: #ffffff;
 }
 
 .rule-icon {
@@ -704,7 +771,7 @@ body::before {
 }
 
 .rule-pts.bonus {
-    color: #4ade80;
+    color: #fb923c;
 }
 
 /* CARD 2: FLEET DEPARTMENT OVERVIEW */
@@ -729,8 +796,8 @@ body::before {
 }
 
 .fleet-dept-box {
-    background: rgba(8, 24, 48, 0.8);
-    border: 1px solid rgba(56, 189, 248, 0.2);
+    background: rgba(8, 24, 48, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.25);
     border-radius: var(--radius-sm);
     padding: 0.6rem 0.45rem;
     display: flex;
@@ -746,7 +813,7 @@ body::before {
 .fleet-dept-box:hover {
     border-color: var(--cyan-glow);
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25);
 }
 
 .fleet-car-icon {
@@ -769,7 +836,7 @@ body::before {
     font-family: var(--font-heading);
     font-size: 0.8rem;
     font-weight: 900;
-    color: #fbbf24;
+    color: #fb923c;
 }
 
 /* CARD 3: REWARDS & TOTAL MILEAGE ODOMETER */
@@ -788,7 +855,7 @@ body::before {
 
 /* DIGITAL LED MILEAGE DISPLAY */
 .odometer-box {
-    background: #020617;
+    background: #071526;
     border: 2px solid #38bdf8;
     border-radius: var(--radius-sm);
     padding: 0.6rem 0.85rem;
@@ -803,7 +870,7 @@ body::before {
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 2px;
-    color: #94a3b8;
+    color: #bae6fd;
     text-transform: uppercase;
 }
 
@@ -812,8 +879,8 @@ body::before {
     font-size: clamp(1.4rem, 2vw, 1.8rem);
     font-weight: 900;
     letter-spacing: 4px;
-    color: #fbbf24;
-    text-shadow: 0 0 12px rgba(251, 191, 36, 0.8);
+    color: #fb923c;
+    text-shadow: 0 0 12px rgba(249, 115, 22, 0.8);
 }
 
 /* SUMMER POLAROID KEEPSAKE PHOTO */
@@ -837,7 +904,7 @@ body::before {
 .polaroid-photo-area {
     width: 100%;
     height: 70px;
-    background: linear-gradient(180deg, #38bdf8 0%, #fed7aa 65%, #f59e0b 100%);
+    background: linear-gradient(180deg, #38bdf8 0%, #ffffff 50%, #f97316 100%);
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -860,7 +927,7 @@ body::before {
 
 .polaroid-caption {
     font-family: 'Brush Script MT', 'Segoe Script', cursive, sans-serif;
-    color: #0369a1;
+    color: #0284c7;
     font-size: 0.92rem;
     font-weight: 700;
     text-align: center;
@@ -886,7 +953,7 @@ body::before {
 }
 
 .toast {
-    background: rgba(12, 35, 64, 0.95);
+    background: rgba(12, 35, 64, 0.96);
     border: 1px solid var(--cyan-glow);
     color: #f8fafc;
     padding: 0.7rem 1.2rem;
@@ -913,7 +980,6 @@ body::before {
    RESPONSIVE MEDIA QUERIES (FULL BREAKPOINT SUITE)
    ========================================================================== */
 
-/* 1. Laptops & Large Tablets (< 1200px) */
 @media (max-width: 1200px) {
     .summer-dashboard-grid {
         grid-template-columns: 1fr 1fr;
@@ -933,7 +999,6 @@ body::before {
     }
 }
 
-/* 2. Medium Tablets & iPads (< 960px) */
 @media (max-width: 960px) {
     .main-header {
         flex-direction: column;
@@ -963,7 +1028,6 @@ body::before {
     }
 }
 
-/* 3. Small Tablets & Phones (< 860px) */
 @media (max-width: 860px) {
     .options-grid {
         grid-template-columns: 1fr;
@@ -989,7 +1053,6 @@ body::before {
     }
 }
 
-/* 4. Small Tablets (< 768px) */
 @media (max-width: 768px) {
     .app-wrapper {
         padding: 0.6rem 0.75rem 1.5rem;
@@ -1018,7 +1081,6 @@ body::before {
     }
 }
 
-/* 5. Mobile Phones (< 520px) */
 @media (max-width: 520px) {
     .main-header {
         padding: 0.75rem 0.85rem;
@@ -1070,7 +1132,6 @@ body::before {
     }
 }
 
-/* 6. Extra Small Phones (< 360px) */
 @media (max-width: 360px) {
     .app-wrapper {
         padding: 0.4rem 0.5rem 1rem;
@@ -1082,9 +1143,9 @@ body::before {
     }
 
     .opt-prefix {
-        width: 26px;
-        height: 26px;
-        min-width: 26px;
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
         font-size: 0.8rem;
     }
 
@@ -1096,5 +1157,3 @@ body::before {
         font-size: 0.8rem;
     }
 }
-
-

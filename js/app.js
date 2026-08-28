@@ -374,6 +374,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function formatOptionHtml(optText) {
+        if (!optText) return '-';
+        if (optText.includes(' | ')) {
+            const parts = optText.split(' | ');
+            return `<span class="opt-en">${parts[0]}</span><span class="opt-divider">|</span><span class="opt-ar" dir="rtl">${parts[1]}</span>`;
+        }
+        return optText;
+    }
+
     // 11. Questions Renderer & Navigation
     function renderQuestionOptionsSelect() {
         if (!elements.selectQuestion) return;
@@ -383,7 +392,9 @@ document.addEventListener('DOMContentLoaded', function () {
         questions.forEach((q, idx) => {
             const opt = document.createElement('option');
             opt.value = idx;
-            opt.textContent = `#${q.id}: ${q.question.substring(0, 30)}...`;
+            const previewEn = q.questionEn ? q.questionEn.substring(0, 22) : (q.category || '');
+            const previewAr = q.questionAr ? q.questionAr.substring(0, 18) : '';
+            opt.textContent = `#${q.id}: ${previewEn}... | ${previewAr}...`;
             elements.selectQuestion.appendChild(opt);
         });
     }
@@ -400,19 +411,22 @@ document.addEventListener('DOMContentLoaded', function () {
             elements.challengeBadge.textContent = `CHALLENGE ${index + 1} / ${QuestionsManager.getQuestionCount()}`;
         }
         if (elements.categoryBadge) {
-            elements.categoryBadge.textContent = q.category;
+            elements.categoryBadge.textContent = q.category || `${q.categoryEn || ''} | ${q.categoryAr || ''}`;
         }
         if (elements.challengePointsBadge) {
             elements.challengePointsBadge.textContent = (index === QuestionsManager.getQuestionCount() - 1) ? '+30 PTS FINALE' : '+10 PTS QUIZ';
         }
         if (elements.questionText) {
-            elements.questionText.textContent = q.question;
+            elements.questionText.innerHTML = `
+                <div class="question-line-en">${q.questionEn || q.question}</div>
+                <div class="question-line-ar" dir="rtl">${q.questionAr || ''}</div>
+            `;
         }
 
-        if (elements.optA) elements.optA.textContent = q.options[0] || '-';
-        if (elements.optB) elements.optB.textContent = q.options[1] || '-';
-        if (elements.optC) elements.optC.textContent = q.options[2] || '-';
-        if (elements.optD) elements.optD.textContent = q.options[3] || '-';
+        if (elements.optA) elements.optA.innerHTML = formatOptionHtml(q.options[0]);
+        if (elements.optB) elements.optB.innerHTML = formatOptionHtml(q.options[1]);
+        if (elements.optC) elements.optC.innerHTML = formatOptionHtml(q.options[2]);
+        if (elements.optD) elements.optD.innerHTML = formatOptionHtml(q.options[3]);
 
         if (elements.selectQuestion) {
             elements.selectQuestion.value = index;
