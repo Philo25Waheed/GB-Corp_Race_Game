@@ -1,5 +1,6 @@
 /**
  * Summer Serpentine Racetrack & Car Animation Renderer
+ * GB Corp - Summer Road Trip
  */
 
 const TrackRenderer = (function () {
@@ -11,17 +12,22 @@ const TrackRenderer = (function () {
     let lanesContainer = null;
     let markersContainer = null;
     let leaderboardGrid = null;
+    let topUsersGrid = null;
     let fleetContainer = null;
     let odometerDigitsEl = null;
 
     let currentViewMode = 'serpentine'; // 'serpentine' or 'sprint'
+    let currentCategoryFilter = 'all'; // 'all', 'bu', or 'job_family'
+    let cachedTeams = [];
+    let cachedRaceLength = 15;
+    let cachedRankings = [];
 
     const milestoneStops = [
-        { pct: 0.20, stopNum: 'STOP 1', title: 'FUEL UP', sub: 'Refresh Yourself', icon: '💧', isGold: false },
-        { pct: 0.40, stopNum: 'STOP 2', title: 'EXPLORE THE ROUTE', sub: 'Discover GB', icon: '🧭', isGold: false },
-        { pct: 0.60, stopNum: 'STOP 3', title: 'TRAVEL TOGETHER', sub: 'Connect & Collaborate', icon: '👥', isGold: false },
-        { pct: 0.80, stopNum: 'STOP 4', title: 'CELEBRATE TOGETHER', sub: 'Enjoy & Win', icon: '🎉', isGold: false },
-        { pct: 1.00, stopNum: 'STOP 5', title: 'FINISH LINE', sub: 'Celebrate Our Success', icon: '🏆', isGold: true }
+        { pct: 0.20, stopNum: 'محطة 1 | Stop 1', title: 'تزود بالطاقة', sub: 'Fuel Up ⚡', icon: '💧', isGold: false },
+        { pct: 0.40, stopNum: 'محطة 2 | Stop 2', title: 'استكشف الطريق', sub: 'Discover GB 🧭', icon: '🧭', isGold: false },
+        { pct: 0.60, stopNum: 'محطة 3 | Stop 3', title: 'روح الفريق', sub: 'Team Spirit 👥', icon: '👥', isGold: false },
+        { pct: 0.80, stopNum: 'محطة 4 | Stop 4', title: 'احتفل مع قسمك', sub: 'Celebrate 🎉', icon: '🎉', isGold: false },
+        { pct: 1.00, stopNum: 'خط النهاية | Finish Line', title: 'منصة التتويج', sub: 'Champion Finish 🏆', icon: '🏆', isGold: true }
     ];
 
     const sceneryProps = [
@@ -49,13 +55,13 @@ const TrackRenderer = (function () {
             <!-- START SIGNPOST -->
             <div class="start-signpost">
                 <span>🚩</span>
-                <span>START</span>
+                <span>البداية START</span>
             </div>
 
             <!-- FINISH ARCH BANNER -->
             <div class="finish-arch-banner">
                 <span>🏁</span>
-                <span>FINISH LINE</span>
+                <span>خط النهاية FINISH</span>
                 <span>🏆</span>
             </div>
 
@@ -100,7 +106,7 @@ const TrackRenderer = (function () {
 
         sceneryProps.forEach(prop => {
             const el = document.createElement('div');
-            el.className = `scenery-prop ${prop.type}`;
+            el.className = `scenery-item scenery-${prop.type}`;
             el.style.left = `${(prop.x / 1200) * 100}%`;
             el.style.top = `${(prop.y / 520) * 100}%`;
             el.textContent = prop.emoji;
@@ -115,13 +121,12 @@ const TrackRenderer = (function () {
 
         const totalLength = roadMainPath.getTotalLength();
 
-        milestoneStops.forEach((stop, idx) => {
+        milestoneStops.forEach(stop => {
             const dist = totalLength * stop.pct;
             const pt = roadMainPath.getPointAtLength(dist);
 
             const pinEl = document.createElement('div');
             pinEl.className = 'checkpoint-pin-marker';
-            // Safe clamp to ensure pin bubbles never overflow container edges
             const safeLeft = Math.max(6, Math.min(94, (pt.x / 1200) * 100));
             const safeTop = Math.max(8, Math.min(92, (pt.y / 520) * 100));
             pinEl.style.left = `${safeLeft}%`;
@@ -150,15 +155,21 @@ const TrackRenderer = (function () {
             const carWrap = document.createElement('div');
             carWrap.className = 'serpentine-car-wrapper';
             carWrap.id = `serp-car-${team.id}`;
+            const carEmoji = team.car_emoji || team.car || '🏎️';
+            const deptName = team.name_en || team.name || team.name_ar;
+
+            const carGraphic = (typeof window.getDepartmentCarSvg === 'function')
+                ? `<div class="car-sprite-graphic car-svg-sprite">${window.getDepartmentCarSvg(team, { width: 50, height: 21, showGlow: true })}</div>`
+                : `<span class="car-sprite-graphic" style="filter: drop-shadow(0 0 8px ${team.color});">${carEmoji}</span>`;
 
             carWrap.innerHTML = `
                 <div class="car-badge-miles" id="serp-miles-${team.id}">+${team.position * 10} MI</div>
                 <div class="serpentine-car-body" id="serp-body-${team.id}">
                     <div class="car-exhaust-trail"></div>
-                    <span class="car-sprite-graphic" style="filter: drop-shadow(0 0 8px ${team.color});">${team.car}</span>
+                    ${carGraphic}
                     <div class="car-headlight-beam"></div>
                 </div>
-                <span class="car-name-tag" style="border-bottom: 2px solid ${team.color};">${team.name}</span>
+                <span class="car-name-tag" style="border-bottom: 2px solid ${team.color};">${deptName}</span>
             `;
 
             serpentineCarsContainer.appendChild(carWrap);
@@ -173,31 +184,36 @@ const TrackRenderer = (function () {
         if (!carWrap || !roadMainPath) return;
 
         const totalLength = roadMainPath.getTotalLength();
+        const isMobile = window.innerWidth < 768;
+
+        // Distribute cars across 3 to 5 lanes within the road width
+        const numLanes = isMobile ? 3 : 5;
+        const laneIdx = (teamIndex % numLanes) - Math.floor(numLanes / 2);
+        const laneSpread = isMobile ? 5 : 7;
+        const laneOffset = laneIdx * laneSpread;
+
+        // Longitudinal stagger so cars with same mileage form an orderly fleet grid
+        const rowIdx = Math.floor(teamIndex / numLanes);
+        const staggerOffset = ((rowIdx % 4) - 1.5) * (isMobile ? 8 : 12);
+
         const progressPct = Math.min(1, Math.max(0, team.position / raceLength));
-        const distance = progressPct * totalLength;
+        const distance = Math.max(0, Math.min(totalLength, (progressPct * totalLength) + staggerOffset));
 
         const pt = roadMainPath.getPointAtLength(distance);
         const ptNext = roadMainPath.getPointAtLength(Math.min(totalLength, distance + 4));
 
-        // Calculate tangent angle along curve
         const angle = Math.atan2(ptNext.y - pt.y, ptNext.x - pt.x) * (180 / Math.PI);
-
-        // Calculate normal lane offset so cars don't overlap
         const normalAngle = (angle + 90) * (Math.PI / 180);
-        const isMobile = window.innerWidth < 768;
-        const laneSpread = isMobile ? 12 : 16;
-        const laneOffset = (teamIndex - (totalTeams - 1) / 2) * laneSpread;
 
         const finalX = pt.x + Math.cos(normalAngle) * laneOffset;
         const finalY = pt.y + Math.sin(normalAngle) * laneOffset;
 
-        const leftPct = Math.max(3, Math.min(97, (finalX / 1200) * 100));
-        const topPct = Math.max(4, Math.min(96, (finalY / 520) * 100));
+        const leftPct = Math.max(2, Math.min(98, (finalX / 1200) * 100));
+        const topPct = Math.max(3, Math.min(97, (finalY / 520) * 100));
 
         carWrap.style.left = `${leftPct}%`;
         carWrap.style.top = `${topPct}%`;
 
-        // Determine if moving left or right along road switchbacks
         let isMovingLeft = false;
         let tilt = angle;
 
@@ -209,7 +225,6 @@ const TrackRenderer = (function () {
             tilt = angle + 180;
         }
 
-        // Apply forward orientation: scaleX(1) when moving right, scaleX(-1) when moving left
         if (carBody) {
             const dir = isMovingLeft ? -1 : 1;
             carBody.style.transform = `scaleX(${dir}) rotate(${dir * tilt}deg)`;
@@ -248,22 +263,28 @@ const TrackRenderer = (function () {
             lane.id = `lane-${team.id}`;
 
             const pct = Math.min(100, (team.position / raceLength) * 92);
+            const carEmoji = team.car_emoji || team.car || '🏎️';
+            const deptName = team.name_en || team.name || team.name_ar;
+
+            const sprintCarGraphic = (typeof window.getDepartmentCarSvg === 'function')
+                ? window.getDepartmentCarSvg(team, { width: 44, height: 18, showGlow: true })
+                : `<span class="car-icon">${carEmoji}</span>`;
 
             lane.innerHTML = `
                 <div class="lane-team-badge" style="color: ${team.color}">
                     <span class="team-color-indicator" style="background-color: ${team.color}"></span>
-                    <span>${team.name}</span>
+                    <span>${deptName}</span>
                 </div>
 
                 <div class="lane-runway">
                     <div class="car-wrapper" id="car-wrap-${team.id}" style="left: ${pct}%">
-                        <span class="car-icon">${team.car}</span>
+                        ${sprintCarGraphic}
                     </div>
                 </div>
 
                 <div class="lane-stats">
                     <span class="step-count" id="step-count-${team.id}">${team.position * 10} MI</span>
-                    <span class="step-label">${team.position} STEPS</span>
+                    <span class="step-label">${team.total_points || (team.position * 10)} PTS</span>
                 </div>
             `;
 
@@ -290,23 +311,73 @@ const TrackRenderer = (function () {
     }
 
     function renderLeaderboard(rankings) {
-        if (!leaderboardGrid) return;
-        leaderboardGrid.innerHTML = '';
+        if (leaderboardGrid) {
+            leaderboardGrid.innerHTML = '';
+            const medals = ['🥇', '🥈', '🥉'];
+            const topTeams = (rankings || []).slice(0, 3);
 
-        const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+            topTeams.forEach((team, idx) => {
+                const card = document.createElement('div');
+                card.className = `rank-card rank-${idx + 1}`;
+                const deptName = team.name_en || team.name || team.name_ar;
+                const deptNameAr = team.name_ar || '';
+                const carEmoji = team.car_emoji || team.car || '🏎️';
 
-        rankings.forEach((team, idx) => {
-            const card = document.createElement('div');
-            card.className = `rank-card rank-${idx + 1}`;
-            card.innerHTML = `
-                <div class="rank-info">
-                    <span class="rank-medal">${medals[idx] || '🏁'}</span>
-                    <span class="rank-name" style="color: ${team.color}">${team.name}</span>
-                </div>
-                <div class="rank-score">${team.position * 10} MI</div>
-            `;
-            leaderboardGrid.appendChild(card);
-        });
+                const carBadgeHtml = (typeof window.getDepartmentCarSvg === 'function')
+                    ? window.getDepartmentCarSvg(team, { width: 42, height: 17, showGlow: false })
+                    : `<span style="font-size:1.3rem;">${carEmoji}</span>`;
+
+                card.innerHTML = `
+                    <div class="rank-info">
+                        <span class="rank-medal">${medals[idx] || '🏁'}</span>
+                        <span class="rank-car-display">${carBadgeHtml}</span>
+                        <div>
+                            <div class="rank-name" style="color: ${team.color}">${deptNameAr}</div>
+                            <small style="color:var(--baby-blue-soft); font-size:0.75rem;">${deptName}</small>
+                        </div>
+                    </div>
+                    <div class="rank-score-wrap" style="text-align:left;">
+                        <div class="rank-score">${team.total_points || (team.position * 10)} PTS</div>
+                        <small style="color:var(--orange-amber); font-weight:800; font-size:0.78rem;">${team.position * 10} MI</small>
+                    </div>
+                `;
+                leaderboardGrid.appendChild(card);
+            });
+        }
+
+        if (topUsersGrid) {
+            topUsersGrid.innerHTML = '';
+            const topUsers = (typeof GameState !== 'undefined' && GameState.getTopUsers) ? GameState.getTopUsers() : [];
+            const medals = ['🥇', '🥈', '🥉'];
+
+            if (!topUsers || topUsers.length === 0) {
+                topUsersGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:0.65rem; color:var(--white-muted); font-size:0.85rem;">كن أول من يجمع النقاط ويتصدر القائمة! 🌟</div>';
+            } else {
+                topUsers.slice(0, 3).forEach((u, idx) => {
+                    const card = document.createElement('div');
+                    card.className = `rank-card rank-${idx + 1}`;
+                    const userCar = (typeof window.getDepartmentCarSvg === 'function' && u.department_id)
+                        ? window.getDepartmentCarSvg(u.department_id, { width: 36, height: 15, showGlow: false })
+                        : `<span style="font-size:1.2rem;">${u.car_emoji || '👤'}</span>`;
+
+                    card.innerHTML = `
+                        <div class="rank-info">
+                            <span class="rank-medal">${medals[idx] || '⭐'}</span>
+                            <span class="rank-car-display">${userCar}</span>
+                            <div>
+                                <div class="rank-name" style="color: #ffffff">${u.name}</div>
+                                <small style="color:var(--baby-blue-soft); font-size:0.75rem;">${u.dept_name_ar || ''}</small>
+                            </div>
+                        </div>
+                        <div class="rank-score-wrap" style="text-align:left;">
+                            <div class="rank-score">${u.total_score || 0} PTS</div>
+                            <small style="color:var(--baby-blue-light); font-weight:700; font-size:0.75rem;">${u.correct_answers_count || 0} صحيحة</small>
+                        </div>
+                    `;
+                    topUsersGrid.appendChild(card);
+                });
+            }
+        }
     }
 
     function renderFleetGrid(teams) {
@@ -317,10 +388,18 @@ const TrackRenderer = (function () {
             const box = document.createElement('div');
             box.className = 'fleet-dept-box';
             box.style.borderLeftColor = team.color;
+            const carEmoji = team.car_emoji || team.car || '🏎️';
+            const deptName = team.name_en || team.name || team.name_ar;
+            const deptNameAr = team.name_ar || '';
+
+            const fleetCarGraphic = (typeof window.getDepartmentCarSvg === 'function')
+                ? window.getDepartmentCarSvg(team, { width: 36, height: 15, showGlow: false })
+                : `<span class="fleet-car-icon" style="filter: drop-shadow(0 0 6px ${team.color});">${carEmoji}</span>`;
+
             box.innerHTML = `
-                <span class="fleet-car-icon" style="filter: drop-shadow(0 0 6px ${team.color});">${team.car}</span>
-                <span class="fleet-dept-name" style="color: ${team.color};">${team.name}</span>
-                <span class="fleet-dept-mileage">${team.position * 10} MI</span>
+                <span class="fleet-car-icon">${fleetCarGraphic}</span>
+                <span class="fleet-dept-name" style="color: ${team.color};">${deptName} <small style="opacity:0.75; font-size:0.72rem;">(${deptNameAr})</small></span>
+                <span class="fleet-dept-mileage">${team.position * 10} MI • ${team.total_points || 0} PTS</span>
             `;
             fleetContainer.appendChild(box);
         });
@@ -340,12 +419,12 @@ const TrackRenderer = (function () {
             lanesContainer = document.getElementById('lanes-container');
             markersContainer = document.getElementById('track-markers');
             leaderboardGrid = document.getElementById('leaderboard-grid');
+            topUsersGrid = document.getElementById('top-users-grid');
             fleetContainer = document.getElementById('fleet-departments-container');
             odometerDigitsEl = document.getElementById('odometer-led-digits');
 
             initSerpentineRoad();
 
-            // Set up view switcher buttons
             const btnSerp = document.getElementById('btn-view-serpentine');
             const btnSprint = document.getElementById('btn-view-sprint');
 
@@ -360,6 +439,17 @@ const TrackRenderer = (function () {
                     TrackRenderer.setViewMode('sprint');
                 });
             }
+
+            // Track Category Filter Buttons (All / BU / Job Families)
+            const filterBtns = document.querySelectorAll('#track-dept-filter-group .btn-track-filter');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentCategoryFilter = this.dataset.category || 'all';
+                    TrackRenderer.renderAll(cachedTeams, cachedRaceLength, cachedRankings);
+                });
+            });
         },
 
         setViewMode: function (mode) {
@@ -381,23 +471,34 @@ const TrackRenderer = (function () {
         },
 
         renderAll: function (teams, raceLength, rankings) {
-            renderSerpentineCars(teams, raceLength);
-            createDistanceMarkers(raceLength);
-            renderSprintLanes(teams, raceLength);
-            renderLeaderboard(rankings);
-            renderFleetGrid(teams);
-            updateOdometer(teams);
+            if (teams && teams.length > 0) cachedTeams = teams;
+            if (raceLength) cachedRaceLength = raceLength;
+            if (rankings) cachedRankings = rankings;
+
+            const targetTeams = (currentCategoryFilter === 'all')
+                ? cachedTeams
+                : cachedTeams.filter(t => t.category === currentCategoryFilter);
+
+            renderSerpentineCars(targetTeams, cachedRaceLength);
+            createDistanceMarkers(cachedRaceLength);
+            renderSprintLanes(targetTeams, cachedRaceLength);
+            renderLeaderboard(cachedRankings);
+            renderFleetGrid(targetTeams);
+            updateOdometer(cachedTeams);
         },
 
         updateTeam: function (team, raceLength, rankings, animate = true) {
-            const teams = GameState.getTeams();
-            const teamIndex = teams.findIndex(t => t.id === team.id);
-            positionSerpentineCar(team, teamIndex >= 0 ? teamIndex : 0, teams.length, raceLength, animate);
-            updateSprintCarPosition(team, raceLength, animate);
-            renderLeaderboard(rankings);
-            renderFleetGrid(teams);
-            updateOdometer(teams);
+            const targetTeams = (currentCategoryFilter === 'all')
+                ? cachedTeams
+                : cachedTeams.filter(t => t.category === currentCategoryFilter);
+            const teamIndex = targetTeams.findIndex(t => t.id === team.id);
+            if (teamIndex >= 0) {
+                positionSerpentineCar(team, teamIndex, targetTeams.length, raceLength, animate);
+                updateSprintCarPosition(team, raceLength, animate);
+            }
+            renderLeaderboard(rankings || cachedRankings);
+            renderFleetGrid(targetTeams);
+            updateOdometer(cachedTeams);
         }
     };
 })();
-

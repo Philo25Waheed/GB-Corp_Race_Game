@@ -1,228 +1,141 @@
 /**
- * Game State Management & Department Passwords Engine
+ * Game State Management & API Synchronization Engine
+ * Summer Road Trip - Native PHP & MySQL Backend Connector
  */
 
 const GameState = (function () {
-    const STORAGE_KEY = 'corporate_race_game_state_v2';
-    const SESSION_ROLE_KEY = 'corporate_race_session_role';
-
-    // Initial default teams configuration with department passwords
-    const initialTeams = [
-        {
-            id: 'it',
-            name: 'IT',
-            code: 'IT',
-            password: '1001',
-            color: '#38bdf8', // Baby Blue
-            car: '🏎️',
-            position: 0
-        },
-        {
-            id: 'finance',
-            name: 'Finance',
-            code: 'FIN',
-            password: '2002',
-            color: '#0284c7', // Blue
-            car: '🚙',
-            position: 0
-        },
-        {
-            id: 'marketing',
-            name: 'Marketing',
-            code: 'MKT',
-            password: '3003',
-            color: '#f97316', // Orange
-            car: '🏎️',
-            position: 0
-        },
-        {
-            id: 'hr',
-            name: 'HR',
-            code: 'HR',
-            password: '4004',
-            color: '#ffffff', // White
-            car: '🚕',
-            position: 0
-        },
-        {
-            id: 'operations',
-            name: 'Operations',
-            code: 'OPS',
-            password: '5005',
-            color: '#fb923c', // Warm Orange
-            car: '🚗',
-            position: 0
-        }
-    ];
-
     let state = {
-        teams: JSON.parse(JSON.stringify(initialTeams)),
+        user: null,
+        activeWeek: null,
+        allWeeks: [],
+        departments: [],
         raceLength: 15,
+        weeklyWinners: {},
+        overallLeader: null,
+        finaleRevealed: false,
+        finaleContent: {},
+        questions: [],
         currentQuestionIndex: 0,
-        timerDuration: 15,
         soundEnabled: true,
-        winner: null,
-        history: [],
-        gmPin: '1234'
+        isProjectorMode: false
     };
 
-    function loadFromStorage() {
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                state = Object.assign({}, state, parsed);
-                // Ensure team colors follow the current palette
-                if (state.teams && Array.isArray(state.teams)) {
-                    state.teams.forEach(t => {
-                        const defaultTeam = initialTeams.find(it => it.id === t.id);
-                        if (defaultTeam) {
-                            t.color = defaultTeam.color;
-                        }
-                    });
-                }
-            }
-        } catch (e) {
-            console.warn('Failed to load state from localStorage', e);
-        }
-    }
+    let onStateChangeListeners = [];
 
-    function saveToStorage() {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (e) {
-            console.warn('Failed to save state to localStorage', e);
-        }
+    function notifyListeners() {
+        onStateChangeListeners.forEach(cb => {
+            if (typeof cb === 'function') cb(state);
+        });
     }
-
-    loadFromStorage();
 
     return {
+        // Fetch fresh state from PHP & MySQL API
+        fetchFreshState: async function () {
+            try {
+                const res = await fetch('api/game_state.php');
+                const json = await res.json();
+                if (json && json.success && json.data) {
+                    const d = json.data;
+                    state.activeWeek = d.active_week;
+                    state.allWeeks = d.all_weeks || [];
+                    state.departments = d.departments || [];
+                    state.raceLength = d.race_length || 15;
+                    state.weeklyWinners = d.weekly_winners || {};
+                    state.overallLeader = d.overall_leader || null;
+                    state.finaleRevealed = d.finale_revealed || false;
+                    state.finaleContent = {
+                        titleAr: d.finale_surprise_title_ar,
+                        titleEn: d.finale_surprise_title_en,
+                        msgAr: d.finale_surprise_message_ar,
+                        msgEn: d.finale_surprise_message_en
+                    };
+                    state.topDepartments = d.top_departments || [];
+                    state.topUsers = d.top_users || [];
+                    if (d.user) {
+                        state.user = d.user;
+                    }
+                    notifyListeners();
+                    return state;
+                }
+            } catch (e) {
+                console.warn('Failed to fetch game state from backend', e);
+            }
+            return state;
+        },
+
         getState: function () {
             return state;
         },
 
-        getTeams: function () {
-            return state.teams;
+        getTopDepartments: function () {
+            return state.topDepartments || [];
         },
 
-        getTeamById: function (id) {
+        getTopUsers: function () {
+            return state.topUsers || [];
+        },
+
+        getUser: function () {
+            return state.user;
+        },
+
+        setUser: function (user) {
+            state.user = user;
+            notifyListeners();
+        },
+
+        getDepartments: function () {
+            return state.departments;
+        },
+
+        getDepartmentById: function (id) {
             if (!id) return null;
-            return state.teams.find(t => t.id === id.toLowerCase());
+            return state.departments.find(d => d.id === id.toLowerCase());
         },
 
-        getTeamByCode: function (code) {
-            if (!code) return null;
-            const cleanCode = code.trim().toUpperCase();
-            const codeMap = {
-                'IT': 'it',
-                'FIN': 'finance',
-                'FINANCE': 'finance',
-                'MKT': 'marketing',
-                'MARKETING': 'marketing',
-                'HR': 'hr',
-                'OPS': 'operations',
-                'OPERATIONS': 'operations'
-            };
-            const teamId = codeMap[cleanCode];
-            return teamId ? this.getTeamById(teamId) : null;
+        getActiveWeek: function () {
+            return state.activeWeek;
         },
 
-        // Department & Role Password Authenticator
-        authenticateRole: function (roleId, password) {
-            const cleanPass = (password || '').trim();
-            if (roleId === 'gm') {
-                return cleanPass === state.gmPin || cleanPass === '1234';
-            }
-
-            const team = this.getTeamById(roleId);
-            if (team) {
-                return cleanPass === team.password;
-            }
-            return false;
+        getAllWeeks: function () {
+            return state.allWeeks;
         },
 
-        // Active Session Role Getter/Setter
-        getSessionRole: function () {
-            return sessionStorage.getItem(SESSION_ROLE_KEY) || 'main_screen';
+        getQuestions: function () {
+            return state.questions;
         },
 
-        setSessionRole: function (roleId) {
-            sessionStorage.setItem(SESSION_ROLE_KEY, roleId);
+        setQuestions: function (questions) {
+            state.questions = questions;
+            notifyListeners();
         },
 
-        moveTeam: function (teamId, steps) {
-            const team = this.getTeamById(teamId);
-            if (!team) return null;
-
-            const oldPos = team.position;
-            let newPos = Math.max(0, team.position + steps);
-            newPos = Math.min(state.raceLength, newPos);
-
-            team.position = newPos;
-
-            state.history.push({
-                teamId: team.id,
-                teamName: team.name,
-                oldPos: oldPos,
-                newPos: newPos,
-                steps: steps,
-                timestamp: Date.now()
-            });
-
-            if (newPos >= state.raceLength && !state.winner) {
-                state.winner = team;
-            }
-
-            saveToStorage();
-            return { team, oldPos, newPos, steps, winner: state.winner };
+        getCurrentQuestionIndex: function () {
+            return state.currentQuestionIndex;
         },
 
-        undoLastMove: function () {
-            if (state.history.length === 0) return null;
-
-            const lastMove = state.history.pop();
-            const team = this.getTeamById(lastMove.teamId);
-            if (team) {
-                team.position = lastMove.oldPos;
-                if (state.winner && state.winner.id === team.id && team.position < state.raceLength) {
-                    state.winner = null;
-                }
-            }
-
-            saveToStorage();
-            return { team, restoredPos: lastMove.oldPos };
-        },
-
-        resetRace: function () {
-            state.teams.forEach(t => t.position = 0);
-            state.history = [];
-            state.winner = null;
-            state.currentQuestionIndex = 0;
-            saveToStorage();
-        },
-
-        setQuestionIndex: function (idx) {
+        setCurrentQuestionIndex: function (idx) {
             state.currentQuestionIndex = idx;
-            saveToStorage();
-        },
-
-        setRaceLength: function (len) {
-            state.raceLength = parseInt(len, 10) || 15;
-            saveToStorage();
-        },
-
-        setSoundEnabled: function (enabled) {
-            state.soundEnabled = enabled;
-            saveToStorage();
+            notifyListeners();
         },
 
         getRankings: function () {
-            return [...state.teams].sort((a, b) => b.position - a.position);
+            return [...state.departments].sort((a, b) => (b.position * 100 + b.total_points) - (a.position * 100 + a.total_points));
         },
 
-        save: function () {
-            saveToStorage();
+        isSoundEnabled: function () {
+            return state.soundEnabled;
+        },
+
+        setSoundEnabled: function (val) {
+            state.soundEnabled = !!val;
+            notifyListeners();
+        },
+
+        onStateChange: function (callback) {
+            if (typeof callback === 'function') {
+                onStateChangeListeners.push(callback);
+            }
         }
     };
 })();

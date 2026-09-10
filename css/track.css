@@ -48,6 +48,47 @@
     text-transform: uppercase;
 }
 
+.track-controls-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.track-category-filter-group {
+    display: flex;
+    background: rgba(8, 24, 48, 0.8);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 20px;
+    padding: 2px;
+    gap: 2px;
+}
+
+.btn-track-filter {
+    background: none;
+    border: none;
+    color: #bae6fd;
+    padding: 0.32rem 0.8rem;
+    border-radius: 18px;
+    font-family: var(--font-subheading);
+    font-size: clamp(0.72rem, 0.85vw, 0.82rem);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+}
+
+.btn-track-filter:hover {
+    color: #ffffff;
+    background: rgba(56, 189, 248, 0.15);
+}
+
+.btn-track-filter.active {
+    background: linear-gradient(135deg, #0284c7, #38bdf8);
+    color: #ffffff;
+    box-shadow: 0 2px 10px rgba(56, 189, 248, 0.4);
+}
+
 .track-view-toggle-group {
     display: flex;
     background: rgba(8, 24, 48, 0.8);
@@ -319,6 +360,11 @@
     align-items: center;
 }
 
+.serpentine-car-wrapper:hover {
+    z-index: 100 !important;
+    transform: translate(-50%, -50%) scale(1.22);
+}
+
 .car-badge-miles {
     background: rgba(8, 24, 48, 0.95);
     border: 1px solid var(--cyan-glow);
@@ -349,6 +395,41 @@
     transform: scaleX(-1);
     transition: transform 0.2s ease;
     line-height: 1;
+}
+
+.car-sprite-graphic.car-svg-sprite {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: none !important;
+    font-size: unset;
+    filter: none;
+}
+
+.car-svg-sprite svg {
+    display: block;
+    width: clamp(44px, 4vw, 54px);
+    height: auto;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.75));
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.serpentine-car-wrapper:hover .car-svg-sprite svg {
+    transform: scale(1.18);
+    filter: drop-shadow(0 4px 12px rgba(4, 158, 218, 0.65));
+}
+
+.rank-car-display {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4px;
+}
+
+.rank-car-display svg {
+    display: block;
+    height: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 }
 
 .car-name-tag {
@@ -484,6 +565,25 @@
     flex-direction: column;
     gap: 0.65rem;
     width: 100%;
+    max-height: 560px;
+    overflow-y: auto;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(56, 189, 248, 0.4) transparent;
+}
+
+.racing-lanes-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.racing-lanes-container::-webkit-scrollbar-track {
+    background: rgba(8, 24, 48, 0.5);
+    border-radius: 4px;
+}
+
+.racing-lanes-container::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.4);
+    border-radius: 4px;
 }
 
 .racing-lane {
@@ -622,9 +722,37 @@
     gap: 0.45rem;
 }
 
+.leaderboard-dual-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1rem;
+    width: 100%;
+}
+
+.leaderboard-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    background: rgba(4, 16, 32, 0.45);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+}
+
+.leaderboard-subhead {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--baby-blue-light);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+}
+
 .leaderboard-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: clamp(0.45rem, 0.9vw, 0.75rem);
     width: 100%;
 }
