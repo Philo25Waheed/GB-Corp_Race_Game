@@ -4,6 +4,7 @@
  * Native PHP & MySQL Backend for complete site & race control
  */
 
+define('IS_API', true);
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../db.php';
 
@@ -11,6 +12,9 @@ $pdo = getDBConnection();
 $action = $_GET['action'] ?? '';
 
 function jsonResponse($success, $message = '', $data = null) {
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
     echo json_encode([
         'success' => $success,
         'message' => $message,
@@ -19,16 +23,20 @@ function jsonResponse($success, $message = '', $data = null) {
     exit;
 }
 
-// Security: Verified Admin Session Check (Strictly validated against database)
+// Security: Verified Admin Session Check (Strictly validated against database or verified PIN session)
 $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 $isAdmin = false;
 
-if (!empty($_SESSION['user_id']) && !empty($_SESSION['is_admin'])) {
+if (!empty($_SESSION['is_admin'])) {
+    // Authenticated via Admin PIN or verified admin session
+    $isAdmin = true;
+} elseif (!empty($_SESSION['user_id'])) {
     $stmtAdminCheck = $pdo->prepare("SELECT role, is_admin FROM `users` WHERE `id` = ?");
     $stmtAdminCheck->execute([$_SESSION['user_id']]);
     $adminUser = $stmtAdminCheck->fetch();
     if ($adminUser && ($adminUser['role'] === 'admin' || !empty($adminUser['is_admin']))) {
         $isAdmin = true;
+        $_SESSION['is_admin'] = true;
     }
 }
 

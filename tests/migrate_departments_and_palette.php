@@ -32,12 +32,12 @@ try {
 
 $departmentsData = [
     // =========================================================================
-    // 1. قطاعات الأعمال والوحدات الرئيسية (Business Units - BU)
+    // 1. إدارات الأعمال والوحدات الرئيسية (Business Units - BU)
     // =========================================================================
     [
         'id' => 'hr',
         'name_en' => 'Human Resources',
-        'name_ar' => 'قطاع الموارد البشرية',
+        'name_ar' => 'إدارة الموارد البشرية',
         'code' => 'BU-HR',
         'category' => 'bu',
         'color' => '#2b51a4', // Col 1 100%
@@ -46,7 +46,7 @@ $departmentsData = [
     [
         'id' => 'it',
         'name_en' => 'Information Technology',
-        'name_ar' => 'قطاع تكنولوجيا المعلومات',
+        'name_ar' => 'إدارة تكنولوجيا المعلومات',
         'code' => 'BU-IT',
         'category' => 'bu',
         'color' => '#049eda', // Col 2 100%
@@ -55,7 +55,7 @@ $departmentsData = [
     [
         'id' => 'finance',
         'name_en' => 'Finance',
-        'name_ar' => 'قطاع الإدارة المالية',
+        'name_ar' => 'الإدارة المالية',
         'code' => 'BU-FIN',
         'category' => 'bu',
         'color' => '#4062ac', // Col 1 90%
@@ -64,7 +64,7 @@ $departmentsData = [
     [
         'id' => 'marketing',
         'name_en' => 'Marketing',
-        'name_ar' => 'قطاع التسويق والعلاقات',
+        'name_ar' => 'إدارة التسويق والعلاقات',
         'code' => 'BU-MKT',
         'category' => 'bu',
         'color' => '#f78c2a', // Col 3 100%
@@ -73,7 +73,7 @@ $departmentsData = [
     [
         'id' => 'operations',
         'name_en' => 'Operations',
-        'name_ar' => 'قطاع العمليات والتشغيل',
+        'name_ar' => 'إدارة العمليات والتشغيل',
         'code' => 'BU-OPS',
         'category' => 'bu',
         'color' => '#7f8487', // Col 6 100%
@@ -91,7 +91,7 @@ $departmentsData = [
     [
         'id' => 'procurement',
         'name_en' => 'Procurement',
-        'name_ar' => 'قطاع المشتريات وسلاسل الإمداد',
+        'name_ar' => 'إدارة المشتريات وسلاسل الإمداد',
         'code' => 'BU-PROC',
         'category' => 'bu',
         'color' => '#119aaa', // Col 4 100%
@@ -109,7 +109,7 @@ $departmentsData = [
     [
         'id' => 'manufacturing',
         'name_en' => 'Manufacturing',
-        'name_ar' => 'قطاع التصنيع والإنتاج',
+        'name_ar' => 'إدارة التصنيع والإنتاج',
         'code' => 'BU-MFG',
         'category' => 'bu',
         'color' => '#3bae49', // Col 5 100%
@@ -199,7 +199,7 @@ $departmentsData = [
     [
         'id' => 'passenger_cars',
         'name_en' => 'PC (Passenger Cars)',
-        'name_ar' => 'قطاع سيارات الركوب (PC)',
+        'name_ar' => 'إدارة سيارات الركوب (PC)',
         'code' => 'BU-PC',
         'category' => 'bu',
         'color' => '#049eda', // Col 2 100%
@@ -226,7 +226,7 @@ $departmentsData = [
     [
         'id' => 'tires',
         'name_en' => 'Tires',
-        'name_ar' => 'قطاع الإطارات والخدمات',
+        'name_ar' => 'إدارة الإطارات والخدمات',
         'code' => 'BU-TIRE',
         'category' => 'bu',
         'color' => '#a5a9ac', // Col 6 70%

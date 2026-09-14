@@ -4,6 +4,26 @@
  * Summer Road Trip - Corporate Team Race
  */
 
+// PHP 7.4+ Compatibility Polyfills (Ensures smooth execution on any hosting PHP version)
+if (!function_exists('str_starts_with')) {
+    function str_starts_with(?string $haystack, ?string $needle): bool {
+        if ($haystack === null || $needle === null) return false;
+        return $needle === '' || strncmp($haystack, $needle, strlen($needle)) === 0;
+    }
+}
+if (!function_exists('str_ends_with')) {
+    function str_ends_with(?string $haystack, ?string $needle): bool {
+        if ($haystack === null || $needle === null) return false;
+        return $needle === '' || substr($haystack, -strlen($needle)) === $needle;
+    }
+}
+if (!function_exists('str_contains')) {
+    function str_contains(?string $haystack, ?string $needle): bool {
+        if ($haystack === null || $needle === null) return false;
+        return $needle === '' || strpos($haystack, $needle) !== false;
+    }
+}
+
 // Direct Access Blocker (Defense in Depth)
 if (isset($_SERVER['SCRIPT_FILENAME']) && realpath(__FILE__) === realpath($_SERVER['SCRIPT_FILENAME']) && php_sapi_name() !== 'cli') {
     http_response_code(403);
@@ -22,7 +42,21 @@ $isLocalhost = in_array($hostOnly, ['127.0.0.1', 'localhost', '::1', ''])
     || str_starts_with($hostOnly, '172.')
     || (php_sapi_name() === 'cli' && empty(getenv('LIVE_ENV')));
 
-if ($isLocalhost) {
+// Optional external config file override (e.g. config.local.php or config.php)
+$customConfig = null;
+if (file_exists(__DIR__ . '/config.local.php')) {
+    $customConfig = @include __DIR__ . '/config.local.php';
+} elseif (file_exists(__DIR__ . '/config.php')) {
+    $customConfig = @include __DIR__ . '/config.php';
+}
+
+if (is_array($customConfig) && !empty($customConfig['db_host'])) {
+    define('DB_HOST', $customConfig['db_host']);
+    define('DB_PORT', (string)($customConfig['db_port'] ?? '3306'));
+    define('DB_NAME', $customConfig['db_name']);
+    define('DB_USER', $customConfig['db_user']);
+    define('DB_PASS', $customConfig['db_pass'] ?? '');
+} elseif ($isLocalhost) {
     // 💻 LOCALHOST / XAMPP SETTINGS
     define('DB_HOST', '127.0.0.1');
     define('DB_PORT', '3306');
@@ -30,12 +64,13 @@ if ($isLocalhost) {
     define('DB_USER', 'root');
     define('DB_PASS', '');
 } else {
-     // 🌐 INFINITYFREE LIVE HOSTING (gb-crop.ct.ws)
-    define('DB_HOST', 'sql103.infinityfree.com');
+    // 🌐 INFINITYFREE LIVE HOSTING (gb-crop.ct.ws)
+    // Note: InfinityFree internal MySQL hosts use .byetcluster.com or .epizy.com (NOT .infinityfree.com)
+    define('DB_HOST', 'sql302.infinityfree.com');
     define('DB_PORT', '3306');
-    define('DB_NAME', 'if0_42882264_race_db');   // اسم قاعدتك على InfinityFree
-    define('DB_USER', 'if0_42882264');           // حساب الاستضافة
-    define('DB_PASS', 'Sx415lrC474');  // كلمة سر حساب الاستضافة (vPanel Password)
+    define('DB_NAME', 'if0_42804643_race_game_db');   // اسم قاعدتك على InfinityFree
+    define('DB_USER', 'if0_42804643');           // حساب الاستضافة
+    define('DB_PASS', 'gbcrop0125');  // كلمة سر حساب الاستضافة (vPanel Password)
 }
 
 // Set timezone and session configuration with robust compatibility for Localhost and Live Hosting
@@ -82,11 +117,50 @@ function getDBConnection() {
         return $pdo;
     }
 
-    $configsToTry = [
-        ['host' => DB_HOST, 'port' => DB_PORT, 'dbname' => DB_NAME, 'user' => DB_USER, 'pass' => DB_PASS],
-        ['host' => '127.0.0.1', 'port' => '3306', 'dbname' => 'race_game_db', 'user' => 'root', 'pass' => ''],
-        ['host' => 'localhost', 'port' => '3306', 'dbname' => 'race_game_db', 'user' => 'root', 'pass' => '']
-    ];
+    global $isLocalhost;
+
+    if ($isLocalhost) {
+        $configsToTry = [
+            ['host' => DB_HOST, 'port' => DB_PORT, 'dbname' => DB_NAME, 'user' => DB_USER, 'pass' => DB_PASS],
+            ['host' => '127.0.0.1', 'port' => '3306', 'dbname' => 'race_game_db', 'user' => 'root', 'pass' => ''],
+            ['host' => 'localhost', 'port' => '3306', 'dbname' => 'race_game_db', 'user' => 'root', 'pass' => '']
+        ];
+    } else {
+        // Multi-candidate connection fallback on live hosting
+        $candidateHosts = [DB_HOST];
+        if (str_contains(DB_HOST, '.infinityfree.com')) {
+            $candidateHosts[] = str_replace('.infinityfree.com', '.byetcluster.com', DB_HOST);
+            $candidateHosts[] = str_replace('.infinityfree.com', '.epizy.com', DB_HOST);
+        } elseif (str_contains(DB_HOST, '.byetcluster.com')) {
+            $candidateHosts[] = str_replace('.byetcluster.com', '.epizy.com', DB_HOST);
+            $candidateHosts[] = str_replace('.byetcluster.com', '.infinityfree.com', DB_HOST);
+        } elseif (str_contains(DB_HOST, '.epizy.com')) {
+            $candidateHosts[] = str_replace('.epizy.com', '.byetcluster.com', DB_HOST);
+            $candidateHosts[] = str_replace('.epizy.com', '.infinityfree.com', DB_HOST);
+        }
+        $candidateHosts = array_values(array_unique(array_filter($candidateHosts)));
+
+        $candidateDbs = [DB_NAME];
+        if (str_ends_with(DB_NAME, '_race_db')) {
+            $candidateDbs[] = str_replace('_race_db', '_race_game_db', DB_NAME);
+        } elseif (str_ends_with(DB_NAME, '_race_game_db')) {
+            $candidateDbs[] = str_replace('_race_game_db', '_race_db', DB_NAME);
+        }
+        $candidateDbs = array_values(array_unique(array_filter($candidateDbs)));
+
+        $configsToTry = [];
+        foreach ($candidateHosts as $h) {
+            foreach ($candidateDbs as $d) {
+                $configsToTry[] = [
+                    'host' => $h,
+                    'port' => DB_PORT,
+                    'dbname' => $d,
+                    'user' => DB_USER,
+                    'pass' => DB_PASS
+                ];
+            }
+        }
+    }
 
     $lastException = null;
 
@@ -97,16 +171,22 @@ function getDBConnection() {
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
-                PDO::ATTR_TIMEOUT => 3
+                PDO::ATTR_TIMEOUT => 6
             ]);
 
-            // Auto-run schema installer/migrator
+            // Sync MySQL session timezone with PHP timezone
+            try {
+                $tzOffset = date('P');
+                $pdo->exec("SET time_zone = '{$tzOffset}'");
+            } catch (Exception $tzEx) {}
+
+            // Auto-run schema installer/migrator (optimized with fast-path caching)
             initializeDatabaseTables($pdo);
             return $pdo;
         } catch (PDOException $e) {
             $lastException = $e;
             // If database does not exist on local host, try creating it
-            if ($cfg['host'] === '127.0.0.1' || $cfg['host'] === 'localhost') {
+            if ($isLocalhost && ($cfg['host'] === '127.0.0.1' || $cfg['host'] === 'localhost')) {
                 try {
                     $dsnInit = "mysql:host=" . $cfg['host'] . ";port=" . $cfg['port'] . ";charset=utf8mb4";
                     $pdoInit = new PDO($dsnInit, $cfg['user'], $cfg['pass'], [
@@ -133,16 +213,21 @@ function getDBConnection() {
 
     $scriptPath = str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME'] ?? ($_SERVER['SCRIPT_NAME'] ?? ''));
     $reqUri = str_replace('\\', '/', $_SERVER['REQUEST_URI'] ?? '');
-    $isApi = (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
+    $isApi = defined('IS_API')
+        || (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
         || (strpos($reqUri, '/api/') !== false)
         || (strpos($scriptPath, '/api/') !== false)
         || (strpos($scriptPath, 'api/') !== false);
+
+    $rawErrorMsg = $lastException ? $lastException->getMessage() : 'Unknown error';
+    // Clean and sanitize any exposed passwords from error text
+    $cleanErrorMsg = preg_replace('/password[=:][^\s;,]+/i', 'password=***', $rawErrorMsg);
 
     if ($isApi) {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([
             'success' => false,
-            'message' => 'تعذر الاتصال بقاعدة البيانات. | Database Connection Error: ' . ($lastException ? $lastException->getMessage() : 'Unknown error')
+            'message' => 'تعذر الاتصال بقاعدة البيانات. | Database Connection Error: ' . $cleanErrorMsg
         ], JSON_UNESCAPED_UNICODE);
         exit;
     }
@@ -152,14 +237,15 @@ function getDBConnection() {
     echo '<div style="max-width:600px; margin:0 auto; background:#1e293b; padding:30px; border-radius:12px; border:1px solid #ef4444; box-shadow:0 10px 25px rgba(0,0,0,0.5);">';
     echo '<h1 style="color:#ef4444; font-size:22px; margin-top:0;">⚠️ تعذر الاتصال بقاعدة البيانات</h1>';
     echo '<div style="background:#0f172a; text-align:left; direction:ltr; padding:15px; border-radius:8px; border:1px solid #334155; font-family:monospace; color:#fca5a5; font-size:13px; overflow-x:auto; word-break:break-all;">';
-    echo htmlspecialchars($lastException ? $lastException->getMessage() : 'Unknown Database Error');
+    echo htmlspecialchars($cleanErrorMsg);
     echo '</div>';
     echo '<div style="text-align:right; margin-top:20px; font-size:14px; color:#cbd5e1;">';
     echo '<p><strong>🛠️ خطوات الحل على InfinityFree:</strong></p>';
     echo '<ol style="line-height:1.8;">';
-    echo '<li>تأكد من <strong>MySQL Hostname</strong> من لوحة vPanel على اليمين (مثال: <code>sql302.infinityfree.com</code>).</li>';
+    echo '<li>تأكد من <strong>MySQL Hostname</strong> من لوحة vPanel على اليمين (مثال: <code>sql103.byetcluster.com</code> أو <code>sql302.byetcluster.com</code>).</li>';
     echo '<li>تأكد أن اسم القاعدة هو <code>' . htmlspecialchars(DB_NAME) . '</code> وأنك رفعت ملف <code>race_game_db.sql</code> داخل <strong>phpMyAdmin</strong>.</li>';
     echo '<li>تأكد من كلمة مرور الحساب (Account / vPanel Password).</li>';
+    echo '<li>يمكنك فحص الاتصال مباشرة عبر أداة: <code><a href="db_status.php" style="color:#38bdf8;">db_status.php</a></code></li>';
     echo '</ol>';
     echo '</div>';
     echo '</div></body></html>';
@@ -167,6 +253,22 @@ function getDBConnection() {
 }
 
 function initializeDatabaseTables(PDO $pdo) {
+    static $alreadyRunInRequest = false;
+    if ($alreadyRunInRequest) {
+        return;
+    }
+    $alreadyRunInRequest = true;
+
+    // Fast-path: Check if schema is already marked initialized to avoid 25+ remote DDL round-trips
+    try {
+        $stmtCheckInit = $pdo->query("SELECT `setting_value` FROM `system_settings` WHERE `setting_key` = 'db_schema_version' LIMIT 1");
+        if ($stmtCheckInit && $stmtCheckInit->fetchColumn()) {
+            return;
+        }
+    } catch (Exception $e) {
+        // Table doesn't exist yet, proceed to initialize
+    }
+
     // 1. Departments Table
     $pdo->exec("CREATE TABLE IF NOT EXISTS `departments` (
         `id` VARCHAR(32) PRIMARY KEY,
@@ -250,6 +352,7 @@ function initializeDatabaseTables(PDO $pdo) {
 
     try {
         $pdo->exec("ALTER TABLE `weeks` MODIFY `challenge_type` VARCHAR(50) NOT NULL DEFAULT 'multi'");
+        $pdo->exec("UPDATE `weeks` SET `challenge_type` = 'multi' WHERE `challenge_type` != 'multi' OR `challenge_type` IS NULL");
     } catch (Exception $e) {}
 
     // 4. Questions Table for Quiz Weeks
@@ -304,6 +407,7 @@ function initializeDatabaseTables(PDO $pdo) {
         `user_id` INT NOT NULL,
         `department_id` VARCHAR(32) NOT NULL,
         `week_id` INT NOT NULL,
+        `challenge_type` VARCHAR(50) NOT NULL DEFAULT 'photo_challenge',
         `photo_path` VARCHAR(255) NOT NULL,
         `caption` VARCHAR(255) NULL,
         `status` ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'approved',
@@ -313,6 +417,13 @@ function initializeDatabaseTables(PDO $pdo) {
         FOREIGN KEY (`department_id`) REFERENCES `departments`(`id`) ON DELETE CASCADE,
         FOREIGN KEY (`week_id`) REFERENCES `weeks`(`id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+    try {
+        $stmtCheckCt = $pdo->query("SHOW COLUMNS FROM `photo_submissions` LIKE 'challenge_type'");
+        if ($stmtCheckCt && $stmtCheckCt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE `photo_submissions` ADD COLUMN `challenge_type` VARCHAR(50) NOT NULL DEFAULT 'photo_challenge' AFTER `week_id`");
+        }
+    } catch (Exception $e) {}
 
     // 7. Team Activity Submissions & Points
     $pdo->exec("CREATE TABLE IF NOT EXISTS `team_activity_submissions` (
@@ -364,25 +475,38 @@ function initializeDatabaseTables(PDO $pdo) {
 
     // Seed default departments if table is empty
     seedDefaultData($pdo);
+
+    // Record schema initialization flag to prevent repeated DDL execution on remote MySQL
+    try {
+        $stmtMark = $pdo->prepare("INSERT INTO `system_settings` (`setting_key`, `setting_value`) VALUES ('db_schema_version', '1') ON DUPLICATE KEY UPDATE `setting_value` = '1'");
+        $stmtMark->execute();
+    } catch (Exception $e) {}
 }
 
 function seedDefaultData(PDO $pdo) {
+    // Synchronize department names and motto if previously seeded with "قطاع" or old motto
+    try {
+        $pdo->exec("UPDATE `departments` SET `name_ar` = 'الإدارة المالية' WHERE `id` = 'finance' AND `name_ar` LIKE '%قطاع%'");
+        $pdo->exec("UPDATE `departments` SET `name_ar` = REPLACE(`name_ar`, 'قطاع ', 'إدارة ') WHERE `name_ar` LIKE 'قطاع %'");
+        $pdo->exec("UPDATE `questions` SET `opt_a_en` = 'Move your car if you can!' WHERE `opt_a_en` LIKE '%Move your car if I make you%'");
+    } catch (Exception $e) {}
+
     // 1. Seed & Synchronize Departments (24 Business Units + 19 Job Families = 43 Dedicated Cars)
     $stmtCheckConfig = $pdo->query("SELECT COUNT(*) FROM `departments` WHERE `racing_num` > 1");
     $isConfigured = ($stmtCheckConfig && $stmtCheckConfig->fetchColumn() >= 40);
 
     if (!$isConfigured) {
         $depts = [
-            // 1. قطاعات الأعمال والوحدات الرئيسية (Business Units - BU)
-            ['hr', 'Human Resources', 'قطاع الموارد البشرية', 'BU-HR', 'bu', '1234', '#2b51a4', '#d9d8d6', 'gt_coupe', 'stripes', 1, '🚗'],
-            ['it', 'Information Technology', 'قطاع تكنولوجيا المعلومات', 'BU-IT', 'bu', '1234', '#049eda', '#f3f3f3', 'formula', 'velocity', 2, '🏎️'],
-            ['finance', 'Finance', 'قطاع الإدارة المالية', 'BU-FIN', 'bu', '1234', '#4062ac', '#dcdcda', 'speedster', 'dual_bars', 3, '🏎️'],
-            ['marketing', 'Marketing', 'قطاع التسويق والعلاقات', 'BU-MKT', 'bu', '1234', '#f78c2a', '#2b51a4', 'hypercar', 'arrow', 4, '🏎️'],
-            ['operations', 'Operations', 'قطاع العمليات والتشغيل', 'BU-OPS', 'bu', '1234', '#7f8487', '#3bae49', 'aero_fastback', 'side_swoop', 5, '🚗'],
+            // 1. إدارات الأعمال والوحدات الرئيسية (Business Units - BU)
+            ['hr', 'Human Resources', 'إدارة الموارد البشرية', 'BU-HR', 'bu', '1234', '#2b51a4', '#d9d8d6', 'gt_coupe', 'stripes', 1, '🚗'],
+            ['it', 'Information Technology', 'إدارة تكنولوجيا المعلومات', 'BU-IT', 'bu', '1234', '#049eda', '#f3f3f3', 'formula', 'velocity', 2, '🏎️'],
+            ['finance', 'Finance', 'الإدارة المالية', 'BU-FIN', 'bu', '1234', '#4062ac', '#dcdcda', 'speedster', 'dual_bars', 3, '🏎️'],
+            ['marketing', 'Marketing', 'إدارة التسويق والعلاقات', 'BU-MKT', 'bu', '1234', '#f78c2a', '#2b51a4', 'hypercar', 'arrow', 4, '🏎️'],
+            ['operations', 'Operations', 'إدارة العمليات والتشغيل', 'BU-OPS', 'bu', '1234', '#7f8487', '#3bae49', 'aero_fastback', 'side_swoop', 5, '🚗'],
             ['administration', 'Administration', 'الشؤون الإدارية والخدمات العامة', 'BU-ADM', 'bu', '1234', '#8c9093', '#049eda', 'gt_coupe', 'stripes', 6, '🚗'],
-            ['procurement', 'Procurement', 'قطاع المشتريات وسلاسل الإمداد', 'BU-PROC', 'bu', '1234', '#119aaa', '#f79740', 'speedster', 'dual_bars', 7, '🏎️'],
+            ['procurement', 'Procurement', 'إدارة المشتريات وسلاسل الإمداد', 'BU-PROC', 'bu', '1234', '#119aaa', '#f79740', 'speedster', 'dual_bars', 7, '🏎️'],
             ['legal_loans', 'Legal & Problem Loans', 'الشؤون القانونية والقروض المتعثرة', 'BU-LEG', 'bu', '1234', '#5574b5', '#d9d8d6', 'aero_fastback', 'chevrons', 8, '🚗'],
-            ['manufacturing', 'Manufacturing', 'قطاع التصنيع والإنتاج', 'BU-MFG', 'bu', '1234', '#3bae49', '#7f8487', 'hauler_truck', 'heavy_shield', 9, '🚛'],
+            ['manufacturing', 'Manufacturing', 'إدارة التصنيع والإنتاج', 'BU-MFG', 'bu', '1234', '#3bae49', '#7f8487', 'hauler_truck', 'heavy_shield', 9, '🚛'],
             ['central_warehousing', 'Central Warehousing', 'المستودعات المركزية', 'BU-WH', 'bu', '1234', '#f79740', '#2b51a4', 'aero_van', 'cargo_bars', 10, '🚐'],
             ['quality_excellence', 'Quality / Business Excellence', 'الجودة والتميز المؤسسي', 'BU-QUAL', 'bu', '1234', '#4eb75b', '#dcdcda', 'hypercar', 'apex_fin', 11, '🏎️'],
             ['digital_transformation', 'Digital Transformation', 'التحول الرقمي والابتكار', 'BU-DIG', 'bu', '1234', '#1da9de', '#f7a454', 'formula', 'cyber_grid', 12, '🏎️'],
@@ -392,10 +516,10 @@ function seedDefaultData(PDO $pdo) {
             ['crm_complaints', 'CRM & Complaints', 'علاقات العملاء والشكاوى', 'BU-CRM', 'bu', '1234', '#35b2e2', '#f78c2a', 'gt_coupe', 'side_swoop', 16, '🚗'],
             ['gov_sales', 'Government Sales / Relations', 'المبيعات والعلاقات الحكومية', 'BU-GOV', 'bu', '1234', '#6b85c0', '#e0e0de', 'aero_fastback', 'executive_trim', 17, '🚗'],
             ['planning_performance', 'Planning and Performance Monitoring', 'التخطيط ومتابعة الأداء', 'BU-PLAN', 'bu', '1234', '#40aebb', '#f9ae6a', 'rally_suv', 'vector_speed', 18, '🚙'],
-            ['passenger_cars', 'PC (Passenger Cars)', 'قطاع سيارات الركوب (PC)', 'BU-PC', 'bu', '1234', '#049eda', '#2b51a4', 'gt_coupe', 'twin_gt', 19, '🚗'],
+            ['passenger_cars', 'PC (Passenger Cars)', 'إدارة سيارات الركوب (PC)', 'BU-PC', 'bu', '1234', '#049eda', '#2b51a4', 'gt_coupe', 'twin_gt', 19, '🚗'],
             ['cv_ce', 'CV & CE (Commercial & Equipment)', 'السيارات التجارية والمعدات الإنشائية', 'BU-CVCE', 'bu', '1234', '#f78c2a', '#7f8487', 'hauler_truck', 'heavy_shield', 20, '🚛'],
             ['two_three_wheelers', '2&3 Wheelers', 'الدراجات والمركبات الخفيفة (2&3 Wheelers)', 'BU-23W', 'bu', '1234', '#3bae49', '#049eda', 'trike_racer', 'sprint_slash', 21, '🛵'],
-            ['tires', 'Tires', 'قطاع الإطارات والخدمات', 'BU-TIRE', 'bu', '1234', '#a5a9ac', '#f78c2a', 'hypercar', 'tread_edge', 22, '🏎️'],
+            ['tires', 'Tires', 'إدارة الإطارات والخدمات', 'BU-TIRE', 'bu', '1234', '#a5a9ac', '#f78c2a', 'hypercar', 'tread_edge', 22, '🏎️'],
             ['ghabbour_foundation', 'Ghabbour Foundation', 'مؤسسة غبور للتنمية المجتمعية', 'BU-GF', 'bu', '1234', '#62bd6e', '#2b51a4', 'aero_fastback', 'star_beam', 23, '🚗'],
             ['gb_group_companies', 'GB Bus / Itamco / Group Companies', 'جي بي باص / إيتامكو / شركات المجموعة', 'BU-GBC', 'bu', '1234', '#2b51a4', '#1da9de', 'transporter', 'aero_express', 24, '🚌'],
 
@@ -441,45 +565,36 @@ function seedDefaultData(PDO $pdo) {
         }
     }
 
-    // 2. Seed Default 4 Weeks (Quiz, Photo Challenge, Team Activity, Final Quiz / Challenge)
+    // 2. Seed Default 3 Weeks (Multi-Challenge: Quiz + Photo + Team Activity)
     $countWeeks = $pdo->query("SELECT COUNT(*) FROM `weeks`")->fetchColumn();
     if ($countWeeks == 0) {
         $weeks = [
             [
                 1, 1,
-                'Week 1: Knowledge Quiz Sprint',
-                'الأسبوع الأول: كويز سباق المعرفة',
-                'quiz',
-                'Test your company and general knowledge to rev up your department car!',
-                'اختبر معلوماتك العامة ومعلومات الشركة لدفع سيارة قسمك نحو خط النهاية!',
-                10, 1, 0
+                'Week 1: Season Kickoff',
+                'الأسبوع الأول: انطلاقة المنافسة',
+                'multi',
+                'Complete the Kickoff Quiz, upload team photo, and execute the team collaboration mission!',
+                'أنجز كويز الأسبوع الأول وتحدي التصوير الصيفي والنشاط الجماعي لحصد أعلى النقاط لقسمك!',
+                50, 1, 0
             ],
             [
                 2, 2,
-                'Week 2: Summer Photo Challenge',
-                'الأسبوع الثاني: تحدي التصوير الصيفي',
-                'photo_challenge',
-                'Capture and upload your best summer office or team moments to score miles!',
-                'التقط وشارك أجمل صور الصيف مع فريق العمل في قسمك لزيادة نقاط ومسافة سيارتكم!',
-                15, 0, 0
+                'Week 2: Mid-Journey Sprint',
+                'الأسبوع الثاني: سباق الصدارة',
+                'multi',
+                'Week 2 is live! Answer the knowledge quiz, share creativity photos, and complete the department mission!',
+                'تحديات الأسبوع الثاني: كويز المعرفة، ومشاركة صور إبداع الفريق، ومهمة القسم التعاونية!',
+                50, 0, 0
             ],
             [
                 3, 3,
-                'Week 3: Corporate Team Activity',
-                'الأسبوع الثالث: تحدي النشاط الجماعي',
-                'team_activity',
-                'Collaborate together to accomplish this week corporate team mission!',
-                'تحدي النشاط الجماعي المشترك لإنجاز مهمة الأسبوع التعاونية وحصد أعلى الأميال!',
-                30, 0, 0
-            ],
-            [
-                4, 4,
-                'Week 4: The Grand Finale & Bonus Reveal',
-                'الأسبوع الرابع: السباق الختامي ومفاجأة البونص',
-                'quiz',
-                'The final week showdown with the grand secret bonus surprise revealed at the end!',
-                'الأسبوع الختامي الحاسم مع إعلان بطل الموسم وكشف مفاجأة البونص الكبرى!',
-                20, 0, 0
+                'Week 3: Championship Finale',
+                'الأسبوع الثالث: السباق الختامي والتتويج',
+                'multi',
+                'The Grand Finale! Face the ultimate quiz, submit celebration photo, and claim the championship trophy!',
+                'المرحلة الختامية الكبرى: كويز التتويج، وصورة الاحتفال الجماعية، وحسم درع بطل الموسم!',
+                50, 0, 0
             ]
         ];
 

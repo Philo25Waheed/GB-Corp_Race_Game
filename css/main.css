@@ -56,10 +56,17 @@
     margin: 0;
     padding: 0;
     font-family: 'Cairo', sans-serif !important;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html, body, input, button, select, textarea, optgroup, option {
     font-family: 'Cairo', sans-serif !important;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
 }
 
 html, body {
@@ -71,6 +78,7 @@ html, body {
     direction: rtl;
     text-align: right;
     overflow-x: hidden;
+    position: relative;
 }
 
 body {
@@ -80,13 +88,21 @@ body {
     justify-content: center;
 }
 
+img, svg, canvas {
+    max-width: 100%;
+    height: auto;
+}
+
 .app-wrapper {
     width: 100%;
     max-width: 1560px;
-    padding: clamp(0.75rem, 2vw, 1.75rem);
+    margin: 0 auto;
+    padding: clamp(0.5rem, 2vw, 1.75rem);
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 .hidden {
@@ -115,13 +131,27 @@ body {
 }
 
 .corp-logo-badge {
-    background: linear-gradient(135deg, #0284c7, #38bdf8);
-    padding: 0.45rem 1rem;
+    background: #ffffff;
+    padding: 0.35rem 0.85rem;
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25), 0 0 12px rgba(56, 189, 248, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.corp-logo-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.45);
+}
+
+.corp-logo-img {
+    height: 32px;
+    width: auto;
+    max-width: 140px;
+    display: block;
+    object-fit: contain;
 }
 
 .corp-logo-icon {
@@ -640,15 +670,9 @@ body {
     font-weight: 800;
 }
 
-/* Timer Display */
+/* Timer Display (Disabled) */
 .timer-display-box {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    padding: 0.4rem 0.9rem;
-    border-radius: var(--radius-md);
+    display: none !important;
 }
 
 .timer-icon {
@@ -946,6 +970,159 @@ body {
     border-radius: 50%;
     font-size: 1.2rem;
     cursor: pointer;
+}
+
+/* Submission Type Choice Cards (Photo Challenge vs Team Activity) */
+.submission-type-selector-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin: 0.25rem 0 0.5rem 0;
+}
+
+.submission-type-main-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--baby-blue-soft, #bae6fd);
+}
+
+.submission-type-main-label .required-tag {
+    font-size: 0.78rem;
+    color: #f87171;
+    font-weight: 600;
+}
+
+.submission-type-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+}
+
+@media (max-width: 640px) {
+    .submission-type-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+.submission-type-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.15rem;
+    border-radius: var(--radius-md, 12px);
+    background: rgba(15, 23, 42, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.submission-type-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(56, 189, 248, 0.4);
+    background: rgba(15, 23, 42, 0.9);
+}
+
+.submission-type-card.active#card-type-photo,
+.submission-type-card:has(input[value="photo_challenge"]:checked) {
+    border-color: #38bdf8;
+    background: linear-gradient(135deg, rgba(8, 47, 73, 0.9), rgba(14, 116, 144, 0.35));
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.35), inset 0 0 15px rgba(56, 189, 248, 0.1);
+}
+
+.submission-type-card.active#card-type-team,
+.submission-type-card:has(input[value="team_activity"]:checked) {
+    border-color: #f97316;
+    background: linear-gradient(135deg, rgba(124, 45, 18, 0.9), rgba(234, 88, 12, 0.35));
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.35), inset 0 0 15px rgba(249, 115, 22, 0.1);
+}
+
+.card-type-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.45rem;
+}
+
+.card-type-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.card-type-pts {
+    font-size: 0.82rem;
+    font-weight: 800;
+    padding: 0.22rem 0.65rem;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+
+.card-type-pts.badge-photo {
+    background: rgba(56, 189, 248, 0.25);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.45);
+}
+
+.submission-type-card.active .card-type-pts.badge-photo,
+.submission-type-card:has(input[value="photo_challenge"]:checked) .card-type-pts.badge-photo {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #38bdf8;
+    box-shadow: 0 2px 10px rgba(2, 132, 199, 0.6);
+}
+
+.card-type-pts.badge-team {
+    background: rgba(249, 115, 22, 0.25);
+    color: #fb923c;
+    border: 1px solid rgba(249, 115, 22, 0.45);
+}
+
+.submission-type-card.active .card-type-pts.badge-team,
+.submission-type-card:has(input[value="team_activity"]:checked) .card-type-pts.badge-team {
+    background: #ea580c;
+    color: #ffffff;
+    border-color: #f97316;
+    box-shadow: 0 2px 10px rgba(234, 88, 12, 0.6);
+}
+
+.card-type-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.15rem;
+    letter-spacing: 0.3px;
+}
+
+.card-type-sub {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--baby-blue-soft, #bae6fd);
+    margin-bottom: 0.35rem;
+}
+
+.card-type-desc {
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: #cbd5e1;
+}
+
+.type-radio-hidden {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+}
+
+.badge-team-active {
+    background: linear-gradient(135deg, #f97316, #ea580c) !important;
+    border-color: #ea580c !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.5) !important;
 }
 
 .caption-input-group {
@@ -1263,10 +1440,50 @@ body {
     text-align: left;
 }
 
-/* ================= BOTTOM 3-CARD SUMMER DASHBOARD ================= */
+/* ================= HOW TO EARN POINTS BANNER (BEFORE QUIZ) ================= */
+.how-to-earn-section {
+    width: 100%;
+    margin-bottom: 1.25rem;
+}
+
+.how-to-earn-section .mileage-points-card {
+    background: rgba(7, 21, 38, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    border-radius: var(--radius-lg, 16px);
+    padding: 1.15rem 1.25rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.how-to-earn-section .points-rules-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 215px), 1fr));
+    gap: 0.65rem;
+}
+
+.how-to-earn-section .point-rule-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(4, 16, 32, 0.7);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--radius-sm, 8px);
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.how-to-earn-section .point-rule-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(56, 189, 248, 0.35);
+    background: rgba(8, 25, 48, 0.85);
+}
+
+/* ================= BOTTOM 2-CARD SUMMER DASHBOARD ================= */
 .summer-dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
     gap: 1.25rem;
     width: 100%;
 }
@@ -1415,30 +1632,476 @@ body {
     color: #0b1329;
 }
 
-/* ================= RESPONSIVENESS ================= */
-@media (max-width: 1100px) {
-    .summer-dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-    .journey-steps-banner {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .weekly-champions-grid {
-        grid-template-columns: repeat(2, 1fr);
+/* ================= RESPONSIVENESS (FULL SITE COMPREHENSIVE - ANY SCREEN SIZE) ================= */
+
+/* Ultra-Wide Displays (>= 1920px) */
+@media (min-width: 1920px) {
+    .app-wrapper {
+        max-width: 1680px;
     }
 }
 
+/* Laptops & Desktops (<= 1280px) */
+@media (max-width: 1280px) {
+    .app-wrapper {
+        max-width: 100%;
+        padding: clamp(0.75rem, 1.8vw, 1.5rem);
+    }
+}
+
+/* Small Laptops & Tablets Landscape (<= 1024px) */
+@media (max-width: 1024px) {
+    .summer-dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .journey-steps-banner {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.65rem;
+    }
+    .weekly-champions-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+    .main-header {
+        padding: 0.85rem 1.25rem;
+    }
+}
+
+/* Tablets & Landscape Mobile (<= 768px) */
 @media (max-width: 768px) {
+    .app-wrapper {
+        padding: 0.65rem 0.5rem;
+        gap: 0.95rem;
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+
+    /* HEADER */
+    .main-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        padding: 0.85rem 0.75rem;
+        gap: 0.75rem;
+    }
+    .header-brand {
+        justify-content: center;
+        width: 100%;
+    }
+    .header-brand a {
+        justify-content: center;
+    }
+    .header-center-title {
+        order: 1;
+        width: 100%;
+    }
+    .header-controls, .header-actions {
+        order: 3;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 0.5rem;
+    }
+    .btn-icon-toggle, .btn-gm-primary, .btn-b2s-ghost, .btn-b2s-primary, .btn-b2s-secondary {
+        padding: 0.5rem 0.85rem;
+        font-size: 0.85rem;
+        min-height: 44px;
+        border-radius: var(--radius-sm);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .home-user-badge {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0.6rem;
+        gap: 0.5rem;
+    }
+
+    /* DEPARTMENT STATUS HERO BAR */
+    .dept-player-card {
+        padding: 0.85rem 0.75rem;
+        border-radius: var(--radius-md);
+    }
+    .dept-header-banner {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: 0.75rem;
+        padding: 0.75rem 0.5rem;
+    }
+    .dept-info {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .dept-car-icon {
+        font-size: 2.2rem;
+    }
+    .dept-title-name {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+    .dept-stats-right {
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .dept-position-badge, .dept-points-badge {
+        flex: 1 1 100px;
+        min-width: 90px;
+        padding: 0.4rem 0.5rem;
+    }
+    .pos-val, .points-val {
+        font-size: 1.25rem;
+    }
+    .btn-tiny-switch {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        padding: 0.5rem;
+        min-height: 44px;
+    }
+
+    /* MULTI-CHALLENGE HUB NAVIGATION TABS */
+    .weekly-challenge-hub-nav {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.4rem;
+        width: 100%;
+    }
+    .hub-tab-btn {
+        width: 100%;
+        padding: 0.75rem 0.95rem;
+        border-radius: var(--radius-md);
+        min-height: 48px;
+    }
+    .hub-tab-icon {
+        font-size: 1.4rem;
+    }
+    .hub-tab-title {
+        font-size: 0.92rem;
+    }
+    .hub-tab-badge {
+        font-size: 0.78rem;
+    }
+    .hub-check-icon {
+        width: 22px;
+        height: 22px;
+        min-width: 22px;
+        font-size: 0.8rem;
+    }
+
+    /* HOW TO EARN POINTS BANNER */
+    .how-to-earn-section {
+        margin-bottom: 0.85rem;
+    }
+    .how-to-earn-section .mileage-points-card {
+        padding: 0.85rem 0.75rem;
+        gap: 0.65rem;
+    }
+    .how-to-earn-section .point-rule-item {
+        padding: 0.55rem 0.75rem;
+    }
+    .how-to-earn-section .rule-label {
+        font-size: 0.84rem;
+    }
+    .how-to-earn-section .rule-pts {
+        font-size: 0.82rem;
+    }
+
+    /* QUIZ CARD */
+    .challenge-card {
+        padding: 1rem 0.85rem;
+        border-radius: var(--radius-md);
+    }
+    .challenge-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.65rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    .challenge-badge-wrap {
+        justify-content: center;
+        gap: 0.35rem;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    .challenge-badge, .category-badge, .challenge-points-badge {
+        font-size: 0.76rem;
+        padding: 0.25rem 0.65rem;
+    }
+    .timer-display-box {
+        align-self: center;
+        padding: 0.35rem 0.85rem;
+    }
+    .timer-val {
+        font-size: 1.35rem;
+    }
+    .bilingual-question-box {
+        margin-bottom: 1rem;
+        text-align: right;
+    }
+    .question-text-ar, .question-text-en {
+        font-size: clamp(1rem, 3.5vw, 1.25rem);
+        line-height: 1.45;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
     .options-grid {
         grid-template-columns: 1fr;
+        gap: 0.65rem;
+        margin-bottom: 1rem;
     }
+    .option-item {
+        padding: 0.8rem 0.9rem;
+        min-height: 48px;
+        width: 100%;
+        gap: 0.75rem;
+    }
+    .opt-prefix, .opt-prefix-badge {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        font-size: 0.95rem;
+    }
+    .opt-content {
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+    .opt-text-ar, .opt-text-en {
+        font-size: 0.92rem;
+        line-height: 1.35;
+    }
+    .quiz-nav-row {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .btn-nav-quiz {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        min-height: 44px;
+    }
+
+    /* PHOTO & TEAM CHALLENGES */
+    .photo-uploader-form {
+        max-width: 100%;
+        margin-bottom: 1.25rem;
+    }
+    .upload-dropzone {
+        padding: 1.25rem 0.75rem;
+    }
+    .dropzone-icon {
+        font-size: 2.3rem;
+        margin-bottom: 0.4rem;
+    }
+    .photos-grid-mini {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 0.65rem;
+    }
+    .mission-steps-box {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    /* HOME & LANDING ELEMENTS */
     .journey-steps-banner {
         grid-template-columns: 1fr;
     }
     .weekly-champions-grid {
         grid-template-columns: 1fr;
     }
-    .mission-steps-box {
+    .home-features-grid {
         grid-template-columns: 1fr;
+        gap: 0.85rem;
+    }
+    .home-cta-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.65rem;
+    }
+    .home-cta-actions a, .home-cta-actions button {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        min-height: 46px;
     }
 }
+
+/* Large Smartphones (<= 480px) */
+@media (max-width: 480px) {
+    .app-wrapper {
+        padding: 0.45rem 0.35rem;
+        gap: 0.8rem;
+    }
+    .main-header {
+        padding: 0.75rem 0.6rem;
+    }
+    .corp-logo-badge {
+        padding: 0.25rem 0.6rem;
+    }
+    .corp-logo-img {
+        height: 26px;
+        max-width: 115px;
+    }
+    .brand-arabic-title {
+        font-size: 0.95rem;
+    }
+    .active-week-pill {
+        font-size: 0.72rem;
+        padding: 0.2rem 0.55rem;
+    }
+    .road-trip-main-title {
+        font-size: 1.25rem;
+    }
+    .road-trip-motto {
+        font-size: 0.75rem;
+    }
+    .home-hero-container {
+        padding: 1.1rem 0.75rem;
+        border-radius: var(--radius-md);
+        gap: 1rem;
+    }
+    .b2s-pill-badge {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.75rem;
+        max-width: 100%;
+        justify-content: center;
+    }
+    .slogan-showcase-card {
+        padding: 1rem 0.75rem;
+        border-radius: var(--radius-md);
+    }
+    .slogan-english {
+        font-size: 0.98rem;
+        line-height: 1.35;
+    }
+    .slogan-arabic {
+        font-size: 0.98rem;
+        line-height: 1.45;
+    }
+    .btn-icon-toggle, .btn-gm-primary, .btn-action-primary, .btn-action-ghost {
+        font-size: 0.8rem;
+        padding: 0.45rem 0.7rem;
+        min-height: 44px;
+    }
+    .dept-title-name {
+        font-size: 1rem;
+    }
+    .dept-car-icon {
+        font-size: 1.9rem;
+    }
+    .pos-val, .points-val {
+        font-size: 1.15rem;
+    }
+    .pos-lbl, .points-lbl {
+        font-size: 0.68rem;
+    }
+    .winner-title {
+        font-size: 1.35rem;
+    }
+    .finale-champ-name {
+        font-size: 1.1rem;
+    }
+    .btn-finale-glow {
+        width: 100%;
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Standard Mobile Devices (<= 375px) */
+@media (max-width: 375px) {
+    .app-wrapper {
+        padding: 0.35rem 0.25rem;
+        gap: 0.75rem;
+    }
+    .header-brand {
+        gap: 0.5rem;
+    }
+    .corp-logo-img {
+        height: 24px;
+        max-width: 105px;
+    }
+    .brand-arabic-title {
+        font-size: 0.88rem;
+    }
+    .b2s-pill-badge {
+        font-size: 0.74rem;
+        padding: 0.3rem 0.6rem;
+    }
+    .slogan-english, .slogan-arabic {
+        font-size: 0.92rem;
+    }
+    .home-user-badge {
+        font-size: 0.82rem;
+        padding: 0.4rem;
+    }
+    .option-item {
+        padding: 0.7rem 0.75rem;
+    }
+    .opt-prefix, .opt-prefix-badge {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Compact Mobile Devices (<= 320px) */
+@media (max-width: 320px) {
+    .app-wrapper {
+        padding: 0.25rem;
+        gap: 0.6rem;
+    }
+    .main-header {
+        padding: 0.65rem 0.45rem;
+    }
+    .brand-arabic-title {
+        font-size: 0.82rem;
+    }
+    .corp-logo-badge {
+        padding: 0.2rem 0.45rem;
+    }
+    .corp-logo-img {
+        height: 22px;
+        max-width: 95px;
+    }
+    .slogan-english, .slogan-arabic {
+        font-size: 0.85rem;
+    }
+    .btn-icon-toggle {
+        padding: 0.35rem 0.5rem;
+        font-size: 0.72rem;
+        min-height: 40px;
+    }
+    .home-user-badge {
+        font-size: 0.75rem;
+    }
+    .hub-tab-title {
+        font-size: 0.82rem;
+    }
+    .option-item {
+        padding: 0.6rem 0.65rem;
+    }
+    .opt-text-ar, .opt-text-en {
+        font-size: 0.82rem;
+    }
+    .opt-prefix, .opt-prefix-badge {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        font-size: 0.82rem;
+    }
+}
+

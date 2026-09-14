@@ -724,7 +724,7 @@
 
 .leaderboard-dual-layout {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
     gap: 1rem;
     width: 100%;
 }
@@ -826,13 +826,59 @@
    RESPONSIVE TRACK & LEADERBOARD QUERIES
    ========================================================================== */
 
+/* ==========================================================================
+   COMPREHENSIVE RESPONSIVE TRACK & HIGHWAY QUERIES
+   ========================================================================== */
+
+/* Small Laptops & Landscape Tablets (<= 1024px) */
 @media (max-width: 1024px) {
     .leaderboard-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
+/* Tablets (<= 768px) */
 @media (max-width: 768px) {
+    .track-section {
+        padding: 0.75rem 0.5rem;
+        border-radius: var(--radius-md);
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .track-view-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.65rem;
+    }
+
+    .track-controls-toolbar {
+        width: 100%;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .track-category-filter-group {
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .track-view-toggle-group {
+        width: 100%;
+        display: flex;
+    }
+
+    .btn-view-mode {
+        flex: 1;
+        text-align: center;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .leaderboard-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.45rem;
@@ -850,30 +896,111 @@
     .pin-sub {
         display: none;
     }
+
+    .sprint-lanes-wrapper {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.5rem;
+    }
+
+    .racing-lane, .track-header-bar {
+        min-width: 340px;
+    }
+
+    .racing-lanes-container {
+        max-height: 480px;
+    }
 }
 
+/* Large Smartphones (<= 480px) */
 @media (max-width: 480px) {
-    .track-view-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .track-view-toggle-group {
+    .track-title-wrap {
         width: 100%;
+        justify-content: space-between;
     }
 
-    .btn-view-mode {
-        flex: 1;
-        text-align: center;
+    .btn-track-filter {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.65rem;
+        min-height: 40px;
     }
 
     .serpentine-road-wrapper {
-        min-height: 240px;
+        min-height: 220px;
+        padding: 0.5rem 0.25rem;
+    }
+
+    .start-signpost {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .finish-arch-banner {
+        font-size: 0.68rem;
+        padding: 0.2rem 0.45rem;
+    }
+
+    .car-name-tag {
+        font-size: 0.5rem;
+        padding: 1px 3px;
+        max-width: 70px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .racing-lane, .track-header-bar {
+        min-width: 310px;
+    }
+
+    .lane-team-badge {
+        font-size: 0.72rem;
+    }
+
+    .lane-pos-display {
+        font-size: 0.72rem;
+        padding: 0.2rem 0.35rem;
     }
 }
 
-@media (max-width: 380px) {
+/* Standard Mobile Devices (<= 375px) */
+@media (max-width: 375px) {
     .leaderboard-grid {
         grid-template-columns: 1fr;
     }
+    .racing-lane, .track-header-bar {
+        min-width: 285px;
+    }
+    .lane-team-badge {
+        font-size: 0.68rem;
+        max-width: 85px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .car-name-tag {
+        display: none;
+    }
+    .serpentine-car-wrapper:hover .car-name-tag,
+    .serpentine-car-wrapper:active .car-name-tag {
+        display: block;
+        position: absolute;
+        bottom: 100%;
+        z-index: 20;
+    }
 }
+
+/* Compact Smartphones (<= 320px) */
+@media (max-width: 320px) {
+    .track-section {
+        padding: 0.4rem 0.2rem;
+    }
+    .racing-lane, .track-header-bar {
+        min-width: 265px;
+    }
+    .lane-stats {
+        min-width: 50px;
+        font-size: 0.65rem;
+    }
+}
+

@@ -12,7 +12,7 @@ foreach ($pages as $name => $url) {
     echo "=== $name ===\n";
     if ($name === 'Home (/)' || $name === 'Home (index.php)') {
         echo (strpos($html, 'The school bell is ringing') !== false ? '✅ Slogan OK' : '❌ Slogan missing') . "\n";
-        echo (strpos($html, 'جرس المدرسة يدق') !== false ? '✅ Arabic Slogan OK' : '❌ Arabic missing') . "\n";
+        echo (strpos($html, 'شارك في تحدى الرجوع للمدرسة') !== false ? '✅ Arabic Slogan OK' : '❌ Arabic missing') . "\n";
         echo (strpos($html, 'login.php') !== false ? '✅ Sign In button OK' : '❌ Sign In button missing') . "\n";
         echo (strpos($html, 'register.php') !== false ? '✅ Register button OK' : '❌ Register button missing') . "\n";
     } elseif ($name === 'Sign In') {

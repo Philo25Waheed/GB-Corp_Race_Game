@@ -97,6 +97,10 @@ $totalPhotos = (int)$pdo->query("SELECT COUNT(*) FROM `photo_submissions`")->fet
 $totalQuizAttempts = (int)$pdo->query("SELECT COUNT(*) FROM `quiz_attempts`")->fetchColumn();
 $totalMileage = (int)$pdo->query("SELECT SUM(`position`) FROM `departments`")->fetchColumn() * 100;
 
+if (session_status() === PHP_SESSION_ACTIVE) {
+    session_write_close();
+}
+
 echo json_encode([
     'success' => true,
     'data' => [

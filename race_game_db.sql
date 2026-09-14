@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `weeks`;
 DROP TABLE IF EXISTS `departments`;
 DROP TABLE IF EXISTS `system_settings`;
+DROP TABLE IF EXISTS `security_rate_limits`;
 
 -- ------------------------------------------------------------------------
 -- 1. Table: `departments` (أقسام الشركة وسيارات السباق)
@@ -40,16 +41,16 @@ CREATE TABLE IF NOT EXISTS `departments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `departments` (`id`, `name_en`, `name_ar`, `code`, `category`, `password`, `color`, `secondary_color`, `car_model`, `livery_style`, `racing_num`, `car_emoji`, `position`, `total_points`) VALUES
--- 1. قطاعات الأعمال والوحدات الرئيسية (Business Units - BU)
-('hr', 'Human Resources', 'قطاع الموارد البشرية', 'BU-HR', 'bu', '1234', '#2b51a4', '#d9d8d6', 'gt_coupe', 'stripes', 1, '🚗', 0, 0),
-('it', 'Information Technology', 'قطاع تكنولوجيا المعلومات', 'BU-IT', 'bu', '1234', '#049eda', '#f3f3f3', 'formula', 'velocity', 2, '🏎️', 0, 0),
-('finance', 'Finance', 'قطاع الإدارة المالية', 'BU-FIN', 'bu', '1234', '#4062ac', '#dcdcda', 'speedster', 'dual_bars', 3, '🏎️', 0, 0),
-('marketing', 'Marketing', 'قطاع التسويق والعلاقات', 'BU-MKT', 'bu', '1234', '#f78c2a', '#2b51a4', 'hypercar', 'arrow', 4, '🏎️', 0, 0),
-('operations', 'Operations', 'قطاع العمليات والتشغيل', 'BU-OPS', 'bu', '1234', '#7f8487', '#3bae49', 'aero_fastback', 'side_swoop', 5, '🚗', 0, 0),
+-- 1. إدارات الأعمال والوحدات الرئيسية (Business Units - BU)
+('hr', 'Human Resources', 'إدارة الموارد البشرية', 'BU-HR', 'bu', '1234', '#2b51a4', '#d9d8d6', 'gt_coupe', 'stripes', 1, '🚗', 0, 0),
+('it', 'Information Technology', 'إدارة تكنولوجيا المعلومات', 'BU-IT', 'bu', '1234', '#049eda', '#f3f3f3', 'formula', 'velocity', 2, '🏎️', 0, 0),
+('finance', 'Finance', 'الإدارة المالية', 'BU-FIN', 'bu', '1234', '#4062ac', '#dcdcda', 'speedster', 'dual_bars', 3, '🏎️', 0, 0),
+('marketing', 'Marketing', 'إدارة التسويق والعلاقات', 'BU-MKT', 'bu', '1234', '#f78c2a', '#2b51a4', 'hypercar', 'arrow', 4, '🏎️', 0, 0),
+('operations', 'Operations', 'إدارة العمليات والتشغيل', 'BU-OPS', 'bu', '1234', '#7f8487', '#3bae49', 'aero_fastback', 'side_swoop', 5, '🚗', 0, 0),
 ('administration', 'Administration', 'الشؤون الإدارية والخدمات العامة', 'BU-ADM', 'bu', '1234', '#8c9093', '#049eda', 'gt_coupe', 'stripes', 6, '🚗', 0, 0),
-('procurement', 'Procurement', 'قطاع المشتريات وسلاسل الإمداد', 'BU-PROC', 'bu', '1234', '#119aaa', '#f79740', 'speedster', 'dual_bars', 7, '🏎️', 0, 0),
+('procurement', 'Procurement', 'إدارة المشتريات وسلاسل الإمداد', 'BU-PROC', 'bu', '1234', '#119aaa', '#f79740', 'speedster', 'dual_bars', 7, '🏎️', 0, 0),
 ('legal_loans', 'Legal & Problem Loans', 'الشؤون القانونية والقروض المتعثرة', 'BU-LEG', 'bu', '1234', '#5574b5', '#d9d8d6', 'aero_fastback', 'chevrons', 8, '🚗', 0, 0),
-('manufacturing', 'Manufacturing', 'قطاع التصنيع والإنتاج', 'BU-MFG', 'bu', '1234', '#3bae49', '#7f8487', 'hauler_truck', 'heavy_shield', 9, '🚛', 0, 0),
+('manufacturing', 'Manufacturing', 'إدارة التصنيع والإنتاج', 'BU-MFG', 'bu', '1234', '#3bae49', '#7f8487', 'hauler_truck', 'heavy_shield', 9, '🚛', 0, 0),
 ('central_warehousing', 'Central Warehousing', 'المستودعات المركزية', 'BU-WH', 'bu', '1234', '#f79740', '#2b51a4', 'aero_van', 'cargo_bars', 10, '🚐', 0, 0),
 ('quality_excellence', 'Quality / Business Excellence', 'الجودة والتميز المؤسسي', 'BU-QUAL', 'bu', '1234', '#4eb75b', '#dcdcda', 'hypercar', 'apex_fin', 11, '🏎️', 0, 0),
 ('digital_transformation', 'Digital Transformation', 'التحول الرقمي والابتكار', 'BU-DIG', 'bu', '1234', '#1da9de', '#f7a454', 'formula', 'cyber_grid', 12, '🏎️', 0, 0),
@@ -59,10 +60,10 @@ INSERT INTO `departments` (`id`, `name_en`, `name_ar`, `code`, `category`, `pass
 ('crm_complaints', 'CRM & Complaints', 'علاقات العملاء والشكاوى', 'BU-CRM', 'bu', '1234', '#35b2e2', '#f78c2a', 'gt_coupe', 'side_swoop', 16, '🚗', 0, 0),
 ('gov_sales', 'Government Sales / Relations', 'المبيعات والعلاقات الحكومية', 'BU-GOV', 'bu', '1234', '#6b85c0', '#e0e0de', 'aero_fastback', 'executive_trim', 17, '🚗', 0, 0),
 ('planning_performance', 'Planning and Performance Monitoring', 'التخطيط ومتابعة الأداء', 'BU-PLAN', 'bu', '1234', '#40aebb', '#f9ae6a', 'rally_suv', 'vector_speed', 18, '🚙', 0, 0),
-('passenger_cars', 'PC (Passenger Cars)', 'قطاع سيارات الركوب (PC)', 'BU-PC', 'bu', '1234', '#049eda', '#2b51a4', 'gt_coupe', 'twin_gt', 19, '🚗', 0, 0),
+('passenger_cars', 'PC (Passenger Cars)', 'إدارة سيارات الركوب (PC)', 'BU-PC', 'bu', '1234', '#049eda', '#2b51a4', 'gt_coupe', 'twin_gt', 19, '🚗', 0, 0),
 ('cv_ce', 'CV & CE (Commercial & Equipment)', 'السيارات التجارية والمعدات الإنشائية', 'BU-CVCE', 'bu', '1234', '#f78c2a', '#7f8487', 'hauler_truck', 'heavy_shield', 20, '🚛', 0, 0),
 ('two_three_wheelers', '2&3 Wheelers', 'الدراجات والمركبات الخفيفة (2&3 Wheelers)', 'BU-23W', 'bu', '1234', '#3bae49', '#049eda', 'trike_racer', 'sprint_slash', 21, '🛵', 0, 0),
-('tires', 'Tires', 'قطاع الإطارات والخدمات', 'BU-TIRE', 'bu', '1234', '#a5a9ac', '#f78c2a', 'hypercar', 'tread_edge', 22, '🏎️', 0, 0),
+('tires', 'Tires', 'إدارة الإطارات والخدمات', 'BU-TIRE', 'bu', '1234', '#a5a9ac', '#f78c2a', 'hypercar', 'tread_edge', 22, '🏎️', 0, 0),
 ('ghabbour_foundation', 'Ghabbour Foundation', 'مؤسسة غبور للتنمية المجتمعية', 'BU-GF', 'bu', '1234', '#62bd6e', '#2b51a4', 'aero_fastback', 'star_beam', 23, '🚗', 0, 0),
 ('gb_group_companies', 'GB Bus / Itamco / Group Companies', 'جي بي باص / إيتامكو / شركات المجموعة', 'BU-GBC', 'bu', '1234', '#2b51a4', '#1da9de', 'transporter', 'aero_express', 24, '🚌', 0, 0),
 -- 2. العائلات والمجالات الوظيفية الكبرى (Job Families)
@@ -110,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `weeks` (
     `week_number` INT NOT NULL UNIQUE,
     `title_en` VARCHAR(150) NOT NULL,
     `title_ar` VARCHAR(150) NOT NULL,
-    `challenge_type` ENUM('quiz', 'photo_challenge', 'team_activity') NOT NULL DEFAULT 'quiz',
+    `challenge_type` VARCHAR(50) NOT NULL DEFAULT 'multi',
     `description_en` TEXT NULL,
     `description_ar` TEXT NULL,
     `points_reward` INT NOT NULL DEFAULT 10,
@@ -120,10 +121,9 @@ CREATE TABLE IF NOT EXISTS `weeks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `weeks` (`id`, `week_number`, `title_en`, `title_ar`, `challenge_type`, `description_en`, `description_ar`, `points_reward`, `is_active`, `is_completed`) VALUES
-(1, 1, 'Week 1: Summer Kickoff Knowledge Quiz', 'الأسبوع الأول: انطلاقة الصيف وكويز المعلومات', 'quiz', 'Answer bilingual trivia questions and advance your department car on the highway!', 'أجب على أسئلة الكويز السريعة واجمع النقاط لتقديم سيارة قسمك نحو خط النهاية!', 10, 1, 0),
-(2, 2, 'Week 2: Summer Vibes Photo Challenge', 'الأسبوع الثاني: تحدي التقاط صور الصيف والمقر', 'photo_challenge', 'Capture and upload team photos embracing summer spirit to earn points!', 'التقط وشارك أجمل صور فريقك في العمل وأجواء الصيف لتحصل على نقاط إضافية فورية!', 15, 0, 0),
-(3, 3, 'Week 3: Department Synergy Team Activity', 'الأسبوع الثالث: تحدي النشاط التعاوني المشترك', 'team_activity', 'Complete collaborative team mission for mega points boost!', 'أنجز المهمة الجماعية المشتركة مع زملائك في القسم لقفزة كبرى في رصيد النقاط!', 30, 0, 0),
-(4, 4, 'Week 4: The Grand Finale & Bonus Reveal', 'الأسبوع الرابع: السباق الختامي ومفاجأة البونص', 'quiz', 'The final week showdown with the grand secret bonus surprise revealed at the end!', 'الأسبوع الختامي الحاسم مع إعلان بطل الموسم وكشف مفاجأة البونص الكبرى!', 20, 0, 0);
+(1, 1, 'Week 1: Season Kickoff', 'الأسبوع الأول: انطلاقة المنافسة', 'multi', 'Complete the Kickoff Quiz, upload team photo, and execute the team collaboration mission!', 'أنجز كويز الأسبوع الأول وتحدي التصوير الصيفي والنشاط الجماعي لحصد أعلى النقاط لقسمك!', 50, 1, 0),
+(2, 2, 'Week 2: Mid-Journey Sprint', 'الأسبوع الثاني: سباق الصدارة', 'multi', 'Week 2 is live! Answer the knowledge quiz, share creativity photos, and complete the department mission!', 'تحديات الأسبوع الثاني: كويز المعرفة، ومشاركة صور إبداع الفريق، ومهمة القسم التعاونية!', 50, 0, 0),
+(3, 3, 'Week 3: Championship Finale', 'الأسبوع الثالث: السباق الختامي والتتويج', 'multi', 'The Grand Finale! Face the ultimate quiz, submit celebration photo, and claim the championship trophy!', 'المرحلة الختامية الكبرى: كويز التتويج، وصورة الاحتفال الجماعية، وحسم درع بطل الموسم!', 50, 0, 0);
 
 -- ------------------------------------------------------------------------
 -- 4. Table: `questions` (بنك أسئلة الكويز ثنائية اللغة)
@@ -150,13 +150,26 @@ CREATE TABLE IF NOT EXISTS `questions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `questions` (`week_id`, `category_en`, `category_ar`, `question_en`, `question_ar`, `option_a_en`, `option_a_ar`, `option_b_en`, `option_b_ar`, `option_c_en`, `option_c_ar`, `option_d_en`, `option_d_ar`, `correct_option`, `points`) VALUES
+-- Week 1 Questions
 (1, 'General Knowledge', 'معلومات عامة', 'What is the official capital city of Egypt?', 'ما هي العاصمة الرسمية لجمهورية مصر العربية؟', 'Alexandria', 'الإسكندرية', 'Cairo', 'القاهرة', 'Giza', 'الجيزة', 'Luxor', 'الأقصر', 'B', 10),
 (1, 'Company & HR', 'الموارد البشرية والشركة', 'Which department is responsible for talent acquisition and onboarding?', 'أي قسم في المؤسسة مسؤول عن استقطاب الكفاءات والتوظيف وإدارة المواهب؟', 'Operations', 'العمليات', 'Finance', 'الإدارة المالية', 'Human Resources (HR)', 'الموارد البشرية', 'IT Support', 'الدعم الفني', 'C', 10),
 (1, 'Technology', 'تكنولوجيا المعلومات', 'What does the abbreviation "HTML" stand for in web technology?', 'إلى ماذا يرمز الاختصار "HTML" في تطوير وتصميم صفحات الويب؟', 'HyperText Markup Language', 'لغة ترميز النص الفائق', 'HighTech Machine Learning', 'تعلم الآلة عالي التقنية', 'Hyper Transfer Main Logic', 'منطق النقل الرئيسي الفائق', 'Home Tool Markup Language', 'لغة أدوات الترميز المنزلية', 'A', 10),
 (1, 'Business & Finance', 'الأعمال والمالية', 'What does the business acronym "ROI" stand for?', 'ماذا يعني الاختصار المالي الشهير "ROI" في قياس نجاح المشاريع والاستثمارات؟', 'Rate of Interest', 'معدل الفائدة', 'Return on Investment', 'العائد على الاستثمار', 'Risk of Inflation', 'مخاطر التضخم', 'Revenue over Income', 'الإيرادات مقارنة بالدخل', 'B', 10),
 (1, 'Operations & Teamwork', 'العمليات والعمل الجماعي', 'What is the key objective of the Summer Road Trip corporate campaign?', 'ما هو الهدف الأساسي من حملة ومسابقة Summer Road Trip الصيفية؟', 'Only working overtime', 'العمل لساعات إضافية فقط', 'Team bonding, engagement and summer spirit', 'تعزيز روح الفريق والترابط الإيجابي والمرح الصيفي', 'Buying more cars', 'شراء سيارات جديدة', 'Individual isolation', 'العمل الفردي المنعزل', 'B', 10),
-(4, 'Corporate Culture', 'ثقافة الشركة والتميز', 'What defines a great team culture during our summer journey?', 'ما الذي يميز ثقافة الفريق المتميز خلال رحلتنا الصيفية؟', 'Collaboration, appreciation, and continuous energy', 'التعاون والتقدير المتبادل والطاقة الإيجابية المستمرة', 'Competition without empathy', 'المنافسة دون تعاطف', 'Working in strict silos', 'الانعزال التام عن باقي الأقسام', 'Avoiding challenges', 'تجنب المشاركة في التحديات', 'A', 20),
-(4, 'Innovation', 'الابتكار والريادة', 'How can every department contribute to overall company excellence?', 'كيف يساهم كل قسم في تحقيق التميز المؤسسي لشركتنا؟', 'By driving continuous improvement and creative ideas', 'من خلال التطوير المستمر وتقديم الأفكار الإبداعية', 'By ignoring feedback', 'بتجاهل آراء الزملاء', 'By doing minimal effort', 'ببذل الحد الأدنى فقط', 'By delaying projects', 'بتأخير إنجاز المشروعات', 'A', 20);
+
+-- Week 2 Questions (Innovation, Technology & Leadership)
+(2, 'Technology & AI', 'التكنولوجيا والذكاء الاصطناعي', 'Which programming language is predominantly used for Artificial Intelligence & Data Science?', 'أي من لغات البرمجة التالية تُستخدم بكثرة وبشكل أساسي في مجالات الذكاء الاصطناعي وعلم البيانات؟', 'C++', 'سي بلس بلس', 'Python', 'بايثون', 'HTML', 'إتش تي إم إل', 'PHP', 'بي إتش بي', 'B', 10),
+(2, 'Cybersecurity', 'الأمن السيبراني وحماية البيانات', 'What is the practice of protecting systems, networks, and data from digital attacks called?', 'ما هو المفهوم الذي يُعبر عن حماية الأنظمة والشبكات والبيانات الرقمية من الهجمات والاختراق؟', 'Cloud Computing', 'الحوسبة السحابية', 'Data Mining', 'التنقيب عن البيانات', 'Cybersecurity', 'الأمن السيبراني', 'Digital Marketing', 'التسويق الرقمي', 'C', 10),
+(2, 'Project Management', 'إدارة المشاريع', 'In project management, what is a "Milestone"?', 'في إدارة وتنفيذ المشاريع، ماذا يعني مصطلح "Milestone"؟', 'A major critical event or achievement in project timeline', 'حدث رئيسي أو نقطة إنجاز هامة في الجدول الزمني', 'The financial penalty for project delay', 'الغرامة المالية للتأخير', 'The project software tool', 'اسم برنامج الإدارة', 'The project cancellation notice', 'إلغاء المشروع', 'A', 10),
+(2, 'General Science', 'علوم عامة', 'What is the most abundant chemical element in Earth atmosphere?', 'ما هو الغاز الكيميائي الأكثر وفرة في الغلاف الجوي لكوكب الأرض؟', 'Oxygen', 'الأكسجين', 'Carbon Dioxide', 'ثاني أكسيد الكربون', 'Nitrogen', 'النيتروجين', 'Hydrogen', 'الهيدروجين', 'C', 10),
+(2, 'Geography', 'جغرافيا ومعالم', 'What is the capital city of France?', 'ما هي عاصمة جمهورية فرنسا؟', 'Lyon', 'ليون', 'Marseille', 'مارسيليا', 'Nice', 'نيس', 'Paris', 'باريس', 'D', 10),
+
+-- Week 3 Questions (Championship, Quality & Business Excellence)
+(3, 'World Geography', 'جغرافيا العالم', 'What is the longest river in the world?', 'ما هو أطول نهر في العالم؟', 'Amazon River', 'نهر الأمازون', 'Nile River', 'نهر النيل', 'Mississippi River', 'نهر المسيسيبي', 'Yangtze River', 'نهر يانجتسي', 'B', 10),
+(3, 'Astronomy', 'علوم الفضاء', 'Which planet in our solar system is famously known as the "Red Planet"?', 'أي كواكب مجموعتنا الشمسية يُعرف باسم "الكوكب الأحمر"؟', 'Venus', 'الزهرة', 'Jupiter', 'المشتري', 'Mars', 'المريخ', 'Saturn', 'زحل', 'C', 10),
+(3, 'Quality & Standards', 'إدارة الجودة والتميز', 'Which international standard is globally renowned for Quality Management Systems (QMS)?', 'ما هي المواصفة والمعيار الدولي الأشهر عالمياً لإدارة وتوكيد الجودة (QMS) في المؤسسات؟', 'ISO 9001', 'آيزو 9001', 'ISO 14001', 'آيزو 14001', 'ISO 27001', 'آيزو 27001', 'ISO 45001', 'آيزو 45001', 'A', 10),
+(3, 'Organizational Excellence', 'التميز المؤسسي والتآزر', 'What is the organizational concept of "Synergy"?', 'في علم الإدارة وثقافة العمل الجماعي، ماذا يعني مفهوم "Synergy" (التآزر)؟', 'Working without communicating', 'العمل دون تواصل', 'Collective teamwork producing greater results than individual efforts combined', 'أن التعاون الجماعي ينتج أثراً ونتائج أعظم من مجموع الجهود الفردية', 'Reducing the work pace', 'تقليل سرعة الإنجاز', 'Relying solely on external consultants', 'الاعتماد على جهات خارجية فقط', 'B', 10),
+(3, 'General Knowledge', 'معلومات عامة', 'How many continents are there in the world?', 'كم عدد قارات العالم المعترف بها جغرافياً؟', '5', '5 قارات', '6', '6 قارات', '7', '7 قارات', '8', '8 قارات', 'C', 10);
 
 -- ------------------------------------------------------------------------
 -- 5. Table: `quiz_attempts` (محاولات وإجابات الكويز)
@@ -167,10 +180,10 @@ CREATE TABLE IF NOT EXISTS `quiz_attempts` (
     `department_id` VARCHAR(32) NOT NULL,
     `week_id` INT NOT NULL,
     `question_id` INT NOT NULL,
-    `selected_option` ENUM('A', 'B', 'C', 'D') NOT NULL,
-    `is_correct` TINYINT(1) NOT NULL,
+    `selected_option` VARCHAR(16) NOT NULL DEFAULT '',
+    `is_correct` TINYINT(1) NOT NULL DEFAULT 0,
     `points_earned` INT NOT NULL DEFAULT 0,
-    `attempted_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`department_id`) REFERENCES `departments`(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`week_id`) REFERENCES `weeks`(`id`) ON DELETE CASCADE,
@@ -185,6 +198,7 @@ CREATE TABLE IF NOT EXISTS `photo_submissions` (
     `user_id` INT NOT NULL,
     `department_id` VARCHAR(32) NOT NULL,
     `week_id` INT NOT NULL,
+    `challenge_type` VARCHAR(50) NOT NULL DEFAULT 'photo_challenge',
     `photo_path` VARCHAR(255) NOT NULL,
     `caption` TEXT NULL,
     `status` ENUM('pending', 'approved', 'rejected') DEFAULT 'approved',
@@ -220,6 +234,7 @@ CREATE TABLE IF NOT EXISTS `weekly_scores` (
     `score` INT NOT NULL DEFAULT 0,
     `is_weekly_winner` TINYINT(1) DEFAULT 0,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY `uk_week_dept` (`week_id`, `department_id`),
     FOREIGN KEY (`week_id`) REFERENCES `weeks`(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`department_id`) REFERENCES `departments`(`id`) ON DELETE CASCADE
@@ -235,6 +250,7 @@ CREATE TABLE IF NOT EXISTS `system_settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `system_settings` (`setting_key`, `setting_value`) VALUES
+('db_schema_version', '1'),
 ('active_week_id', '1'),
 ('race_length', '15'),
 ('gm_pin', '1234'),
@@ -245,5 +261,21 @@ INSERT INTO `system_settings` (`setting_key`, `setting_value`) VALUES
 ('finale_surprise_message_ar', 'ألف مبروك لجميع الأقسام على هذه الرحلة الصيفية الرائعة المليئة بالحماس والطاقة الإيجابية! تهانينا الحارة للقسم البطل المتوج بالمركز الأول ولكل من شارك في صنع هذا الصيف المميز! 🌴☀️🏎️'),
 ('finale_surprise_message_en', 'Huge congratulations to all departments for this unforgettable Summer Road Trip filled with energy, unity and excitement! Special cheers to our crowned champion! 🌴☀️🏎️'),
 ('sound_enabled', '1');
+
+-- ------------------------------------------------------------------------
+-- 10. Table: `security_rate_limits` (حماية النظام وتحديد معدل المحاولات)
+-- ------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `security_rate_limits` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `ip_address` VARCHAR(64) NOT NULL,
+    `action_name` VARCHAR(50) NOT NULL,
+    `identifier` VARCHAR(150) NOT NULL DEFAULT '',
+    `attempts` INT NOT NULL DEFAULT 1,
+    `first_attempt_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `last_attempt_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `locked_until` TIMESTAMP NULL DEFAULT NULL,
+    INDEX `idx_rate_lookup` (`ip_address`, `action_name`, `identifier`),
+    INDEX `idx_lock_lookup` (`locked_until`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

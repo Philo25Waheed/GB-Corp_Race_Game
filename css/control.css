@@ -458,13 +458,49 @@
     min-height: 36px;
 }
 
-@media (max-width: 600px) {
+/* ==========================================================================
+   COMPREHENSIVE RESPONSIVENESS (CONTROL & DRAWER)
+   ========================================================================== */
+
+@media (max-width: 768px) {
     .gm-drawer {
         width: 100vw;
         max-width: 100vw;
     }
-
     .btn-timer, .btn-action {
-        font-size: 0.78rem;
+        min-height: 44px;
+        padding: 0.5rem 0.75rem;
     }
 }
+
+@media (max-width: 480px) {
+    .gm-drawer {
+        padding: 1.25rem 0.85rem;
+    }
+    .btn-timer, .btn-action {
+        font-size: 0.8rem;
+        min-height: 44px;
+        padding: 0.45rem 0.65rem;
+    }
+    .settings-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.45rem;
+    }
+    .settings-select {
+        width: 100%;
+        min-height: 44px;
+        font-size: 16px !important;
+    }
+}
+
+@media (max-width: 320px) {
+    .gm-drawer {
+        padding: 1rem 0.5rem;
+    }
+    .btn-timer, .btn-action {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.5rem;
+    }
+}
+

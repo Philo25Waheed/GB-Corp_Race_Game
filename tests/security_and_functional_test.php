@@ -1,8 +1,8 @@
 <?php
-/**
- * Automated Security & Functional Test Suite
- * GB Corp Summer Road Trip Race Game
- */
+require_once __DIR__ . '/../db.php';
+$pdoTest = getDBConnection();
+$pdoTest->exec("DELETE FROM security_rate_limits");
+@unlink(__DIR__ . '/test_cookie.txt');
 
 echo "====================================================\n";
 echo "🏁 STARTING COMPREHENSIVE TEST SUITE & SECURITY AUDIT\n";
@@ -11,6 +11,7 @@ echo "====================================================\n\n";
 $baseUrl = 'http://localhost/RaceGameOld';
 $testsPassed = 0;
 $testsFailed = 0;
+$latestCsrfToken = '';
 
 function runTest($testName, $fn) {
     global $testsPassed, $testsFailed;
@@ -31,10 +32,17 @@ function runTest($testName, $fn) {
 }
 
 function httpPost($url, $data = [], $headers = []) {
+    global $latestCsrfToken;
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, 1);
+    if (is_array($data) && $latestCsrfToken && empty($data['csrf_token'])) {
+        $data['csrf_token'] = $latestCsrfToken;
+    }
     curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data) : $data);
     $defaultHeaders = ['Content-Type: application/json'];
+    if ($latestCsrfToken) {
+        $defaultHeaders[] = 'X-CSRF-Token: ' . $latestCsrfToken;
+    }
     curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge($defaultHeaders, $headers));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_COOKIEJAR, __DIR__ . '/test_cookie.txt');
@@ -42,7 +50,11 @@ function httpPost($url, $data = [], $headers = []) {
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    return ['code' => $httpCode, 'json' => json_decode($response, true), 'raw' => $response];
+    $json = json_decode($response, true);
+    if (!empty($json['data']['csrf_token'])) {
+        $latestCsrfToken = $json['data']['csrf_token'];
+    }
+    return ['code' => $httpCode, 'json' => $json, 'raw' => $response];
 }
 
 function httpGet($url) {
@@ -139,7 +151,7 @@ runTest("Admin Authentication & Lockout (api/admin.php)", function() use ($baseU
 
     // Valid PIN Authentication
     $resAuth = httpPost("{$baseUrl}/api/auth.php?action=admin_login", ['password' => '1234']);
-    if (!$resAuth['json'] || !$resAuth['json']['success']) return "Valid admin authentication failed";
+    if (!$resAuth['json'] || !$resAuth['json']['success']) return "Valid admin authentication failed: " . ($resAuth['raw'] ?: 'EMPTY');
 
     return true;
 });
@@ -153,7 +165,7 @@ runTest("Minus Points & Direct Penalty Adjustment (api/admin.php)", function() u
         'points' => 30,
         'activity_name' => 'Bonus points test'
     ]);
-    if (!$resAdd['json'] || !$resAdd['json']['success']) return "Failed to add points";
+    if (!$resAdd['json'] || !$resAdd['json']['success']) return "Failed to add points: " . ($resAdd['raw'] ?: 'EMPTY');
 
     // Deduct 15 points (Minus)
     $resDed = httpPost("{$baseUrl}/api/admin.php?action=adjust_points", [
@@ -169,9 +181,9 @@ runTest("Minus Points & Direct Penalty Adjustment (api/admin.php)", function() u
 
 // 6. Test Uploads Directory Security (Directory listing & traversal prevention)
 runTest("Uploads Directory Script Execution & Traversal Prevention", function() {
-    $indexFile = 'c:/xampp/htdocs/RaceGameOld/uploads/index.html';
-    if (!file_exists($indexFile)) return "Missing index.html file in uploads folder";
-    $photosIndex = 'c:/xampp/htdocs/RaceGameOld/uploads/photos/index.html';
+    $indexFile = __DIR__ . '/../uploads/index.html';
+    if (!file_exists($indexFile)) return "Missing uploads/index.html defense";
+    $photosIndex = __DIR__ . '/../uploads/photos/index.html';
     if (!file_exists($photosIndex)) return "Missing index.html file in uploads/photos folder";
     return true;
 });

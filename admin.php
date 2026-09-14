@@ -24,7 +24,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 $currentUser = null;
 $isAdmin = false;
 
-if (!empty($_SESSION['user_id'])) {
+if (!empty($_SESSION['is_admin'])) {
+    $isAdmin = true;
+    if (!empty($_SESSION['user_id'])) {
+        $stmtUser = $pdo->prepare("SELECT * FROM `users` WHERE `id` = ?");
+        $stmtUser->execute([$_SESSION['user_id']]);
+        $currentUser = $stmtUser->fetch();
+    }
+} elseif (!empty($_SESSION['user_id'])) {
     $stmtUser = $pdo->prepare("SELECT * FROM `users` WHERE `id` = ?");
     $stmtUser->execute([$_SESSION['user_id']]);
     $currentUser = $stmtUser->fetch();
@@ -32,8 +39,14 @@ if (!empty($_SESSION['user_id'])) {
         $isAdmin = true;
         $_SESSION['is_admin'] = true;
     }
-} elseif (!empty($_SESSION['is_admin'])) {
-    $isAdmin = true;
+}
+
+$allAdminDepts = [];
+try {
+    $stmtDepts = $pdo->query("SELECT * FROM `departments` ORDER BY `category` ASC, `name_ar` ASC");
+    $allAdminDepts = $stmtDepts ? $stmtDepts->fetchAll() : [];
+} catch (Exception $e) {
+    $allAdminDepts = [];
 }
 ?>
 <!DOCTYPE html>
@@ -49,8 +62,14 @@ if (!empty($_SESSION['user_id'])) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Favicon / Brand Icon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    
     <!-- CSS Stylesheets -->
-    <link rel="stylesheet" href="css/admin.css?v=25">
+    <link rel="stylesheet" href="css/admin.css?v=30">
 </head>
 <body>
 <?php if (!$isAdmin): ?>
@@ -67,7 +86,7 @@ if (!empty($_SESSION['user_id'])) {
                 <div style="display:flex; flex-direction:column; gap:0.75rem;">
                     <a href="login.php" class="btn-auth-submit" style="text-decoration:none; display:block; text-align:center;">🔑 تسجيل الدخول بحساب مسؤول | Sign In as Admin</a>
                     <a href="register.php" class="back-link" style="color:var(--orange-amber, #fb923c); font-weight:700;">✨ تسجيل حساب مشرف جديد برمز التحقق | Register as Admin</a>
-                    <a href="game.php" class="back-link" style="color:#38bdf8;">← العودة للمضمار واللعبة | Back to Game</a>
+                    <a href="game.php" class="back-link" style="color:#38bdf8;">← العودة لمسار السباق واللعبة | Back to Game</a>
                 </div>
             <?php else: ?>
                 <!-- Not logged in at all -->
@@ -96,7 +115,7 @@ if (!empty($_SESSION['user_id'])) {
         </div>
     </div>
     <div id="admin-toast" class="admin-toast-container"></div>
-    <script src="js/admin.js?v=14"></script>
+    <script src="js/admin.js?v=27"></script>
 </body>
 </html>
 <?php exit; endif; ?>
@@ -107,7 +126,11 @@ if (!empty($_SESSION['user_id'])) {
         <!-- TOP ADMIN NAVBAR -->
         <header class="admin-topbar">
             <div class="brand-side">
-                <span class="brand-badge">🚗 GB Corp</span>
+                <a href="index.php" style="text-decoration:none; display:inline-flex; align-items:center;">
+                    <span class="brand-badge" style="background:#ffffff; padding:4px 12px; display:inline-flex; align-items:center; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+                        <img src="GB_Corp.png" alt="GB Corp" style="height:24px; width:auto; display:block;">
+                    </span>
+                </a>
                 <span class="topbar-title">لوحة التحكم المركزية للسباق | Race Game Master Admin</span>
             </div>
 
@@ -130,7 +153,7 @@ if (!empty($_SESSION['user_id'])) {
             <!-- TOP ACTIONS -->
             <div class="topbar-actions">
                 <a href="game.php" target="_blank" class="btn-view-site">
-                    <span>👁️ عرض اللعبة والمضمار | Live Race</span>
+                    <span>👁️ عرض اللعبة ومسار السباق | Live Race</span>
                 </a>
                 <a href="logout.php" id="btn-admin-logout" class="btn-logout" title="تسجيل الخروج | Logout">
                     <span>🚪 خروج | Logout</span>
@@ -145,7 +168,7 @@ if (!empty($_SESSION['user_id'])) {
                 <nav class="admin-nav">
                     <button class="nav-tab-btn active" data-tab="tab-highway">
                         <span class="tab-icon">🛣️</span>
-                        <span>مضمار السباق | Highway Track</span>
+                        <span>مسار السباق | Highway Track</span>
                     </button>
                     <button class="nav-tab-btn" data-tab="tab-weeks">
                         <span class="tab-icon">📅</span>
@@ -194,7 +217,7 @@ if (!empty($_SESSION['user_id'])) {
                     <div class="filter-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.25rem;">
                         <div style="display:flex; gap:0.4rem; flex-wrap:wrap;" id="admin-highway-filter-group">
                             <button type="button" class="btn-admin-filter active" data-cat="all">جميع الأقسام | All (43)</button>
-                            <button type="button" class="btn-admin-filter" data-cat="bu">قطاعات الأعمال | BU (24)</button>
+                            <button type="button" class="btn-admin-filter" data-cat="bu">إدارات الأعمال | BU (24)</button>
                             <button type="button" class="btn-admin-filter" data-cat="job_family">العائلات الوظيفية | Job Families (19)</button>
                         </div>
                         <input type="text" id="admin-search-dept" placeholder="🔍 بحث عن قسم أو سيارة..." class="admin-select" style="max-width:260px; padding:0.4rem 0.85rem; font-size:0.85rem;">
@@ -301,11 +324,24 @@ if (!empty($_SESSION['user_id'])) {
                                 <label for="select-activity-dept">القسم المعني | Department:</label>
                                 <select id="select-activity-dept" class="admin-select" required>
                                     <option value="" disabled selected>اختر القسم | Select department...</option>
-                                    <option value="it">🏎️ قسم IT Department</option>
-                                    <option value="finance">🚙 قسم Finance Department</option>
-                                    <option value="marketing">🏎️ قسم Marketing Department</option>
-                                    <option value="hr">🚕 قسم HR Department</option>
-                                    <option value="operations">🚗 قسم Operations Department</option>
+                                    <?php 
+                                    $buList = array_filter($allAdminDepts, fn($d) => ($d['category'] ?? '') === 'bu');
+                                    $jfList = array_filter($allAdminDepts, fn($d) => ($d['category'] ?? '') === 'job_family');
+                                    ?>
+                                    <optgroup label="🏢 إدارات الأعمال والوحدات (Business Units - BU) (<?= count($buList) ?>)">
+                                        <?php foreach ($buList as $dept): ?>
+                                            <option value="<?= htmlspecialchars($dept['id']) ?>">
+                                                <?= htmlspecialchars($dept['car_emoji'] ?? '🚗') ?> <?= htmlspecialchars($dept['name_ar']) ?> (<?= htmlspecialchars($dept['name_en']) ?>) [<?= htmlspecialchars($dept['code']) ?>]
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </optgroup>
+                                    <optgroup label="💼 العائلات والمجالات الوظيفية (Job Families - JF) (<?= count($jfList) ?>)">
+                                        <?php foreach ($jfList as $dept): ?>
+                                            <option value="<?= htmlspecialchars($dept['id']) ?>">
+                                                <?= htmlspecialchars($dept['car_emoji'] ?? '🚗') ?> <?= htmlspecialchars($dept['name_ar']) ?> (<?= htmlspecialchars($dept['name_en']) ?>) [<?= htmlspecialchars($dept['code']) ?>]
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </optgroup>
                                 </select>
                             </div>
 
@@ -536,6 +572,6 @@ if (!empty($_SESSION['user_id'])) {
     <div id="admin-toast" class="admin-toast-container"></div>
 
     <script src="js/cars.js?v=1"></script>
-    <script src="js/admin.js?v=26"></script>
+    <script src="js/admin.js?v=27"></script>
 </body>
 </html>

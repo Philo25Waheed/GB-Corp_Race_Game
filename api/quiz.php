@@ -4,13 +4,20 @@
  * Handles quiz questions retrieval, user answer submission, scoring, and department car advancement
  */
 
+define('IS_API', true);
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../db.php';
 
 $pdo = getDBConnection();
-$action = $_GET['action'] ?? 'get_questions';
+$action = $_GET['action'] ?? ($_POST['action'] ?? '');
+if (empty($action) && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+    $action = 'get_questions';
+}
 
 function jsonResponse($success, $message = '', $data = null) {
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
     echo json_encode([
         'success' => $success,
         'message' => $message,
@@ -20,7 +27,7 @@ function jsonResponse($success, $message = '', $data = null) {
 }
 
 // 1. Get Questions for the Active Week (or specific week)
-if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' || $action === 'get_questions') {
+if ($action === 'get_questions') {
     $weekId = isset($_GET['week_id']) ? (int)$_GET['week_id'] : null;
 
     if (!$weekId || $weekId <= 0) {
@@ -52,10 +59,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' || $action === 'get_question
         $questions = $stmt->fetchAll();
     }
 
-    // Auto-expire any 'PENDING' attempts that are older than 25 seconds
-    try {
-        $pdo->exec("UPDATE `quiz_attempts` SET `selected_option` = 'TIMEOUT', `is_correct` = 0, `points_earned` = 0 WHERE `selected_option` = 'PENDING' AND `created_at` < NOW() - INTERVAL 25 SECOND");
-    } catch (Exception $e) {}
+    // Fallback: If target week still has no questions, try active week 1 questions
+    if (empty($questions) && $weekId !== 1) {
+        $stmt->execute([1]);
+        $questions = $stmt->fetchAll();
+    }
+
 
     // Check if logged in user already answered any of these
     $answeredMap = [];
@@ -90,8 +99,8 @@ if ($action === 'start_question') {
     }
 
     $questionId = (int)($input['question_id'] ?? 0);
-    // Security: Strict Session-Only User Identity (No client spoofing)
-    $userId = !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+    // Security: Session Identity with input fallback
+    $userId = !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : (int)($input['user_id'] ?? 0);
 
     if (!$questionId || $userId <= 0) {
         jsonResponse(false, 'يرجى تسجيل الدخول أولاً للمشاركة في الكويز | Please sign in first');
@@ -122,25 +131,14 @@ if ($action === 'start_question') {
     $weekId = (int)$qRow['week_id'];
 
     // Check if question already exists in attempts
-    $stmtCheck = $pdo->prepare("SELECT id, selected_option, created_at FROM `quiz_attempts` WHERE `user_id` = ? AND `question_id` = ?");
+    $stmtCheck = $pdo->prepare("SELECT id, selected_option FROM `quiz_attempts` WHERE `user_id` = ? AND `question_id` = ?");
     $stmtCheck->execute([$userId, $questionId]);
     $existing = $stmtCheck->fetch();
 
     if ($existing) {
-        $elapsed = time() - strtotime($existing['created_at']);
         if ($existing['selected_option'] === 'PENDING') {
-            if ($elapsed > 20) {
-                // Expired
-                $stmtUpd = $pdo->prepare("UPDATE `quiz_attempts` SET `selected_option` = 'TIMEOUT', `is_correct` = 0, `points_earned` = 0 WHERE `id` = ?");
-                $stmtUpd->execute([$existing['id']]);
-                jsonResponse(false, 'انتهى الوقت المسموح به لهذا السؤال | Question timed out', [
-                    'status' => 'TIMEOUT',
-                    'already_attempted' => true
-                ]);
-            }
             jsonResponse(true, 'السؤال قيد الإجابة حالياً | Question in progress', [
-                'status' => 'PENDING',
-                'seconds_remaining' => max(0, 15 - $elapsed)
+                'status' => 'PENDING'
             ]);
         } else {
             jsonResponse(false, 'تم الدخول إلى هذا السؤال مسبقاً ولا يمكن إعادته منعاً للغش | Question already attempted', [
@@ -166,8 +164,8 @@ if ($action === 'forfeit_question') {
     if (empty($input)) $input = $_GET;
 
     $questionId = (int)($input['question_id'] ?? 0);
-    // Security: Strict Session-Only User Identity
-    $userId = !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+    // Security: Session Identity with input fallback
+    $userId = !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : (int)($input['user_id'] ?? 0);
     $reason = htmlspecialchars(strip_tags(trim($input['reason'] ?? 'tab_switch')), ENT_QUOTES, 'UTF-8');
 
     if (!$questionId || $userId <= 0) {
@@ -223,14 +221,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'submit_answer') {
 
     $questionId = (int)($input['question_id'] ?? 0);
     $selectedOption = strtoupper(trim($input['selected_option'] ?? ''));
-    // Security: Strict Session-Only User Identity (No parameter tampering)
-    $userId = !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+    // Security: Session Identity with input fallback
+    $userId = !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : (int)($input['user_id'] ?? 0);
 
     if (!$questionId || !in_array($selectedOption, ['A', 'B', 'C', 'D'])) {
         jsonResponse(false, 'بيانات الإجابة غير مكتملة | Invalid answer submission');
     }
 
-    // Require valid logged-in user in session
+    // Require valid logged-in user in session or input
     if ($userId <= 0) {
         jsonResponse(false, 'يرجى تسجيل الدخول أولاً لحساب النقاط لقسمك | Please sign in first');
     }
@@ -253,29 +251,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'submit_answer') {
         jsonResponse(false, 'السؤال غير موجود | Question not found');
     }
 
-    // Anti-Cheat: Mandatory PENDING check - user MUST have called start_question first!
-    $stmtCheck = $pdo->prepare("SELECT id, selected_option, created_at FROM `quiz_attempts` WHERE `user_id` = ? AND `question_id` = ?");
+    // Check existing attempt
+    $stmtCheck = $pdo->prepare("SELECT id, selected_option FROM `quiz_attempts` WHERE `user_id` = ? AND `question_id` = ?");
     $stmtCheck->execute([$userId, $questionId]);
     $attempt = $stmtCheck->fetch();
 
-    if (!$attempt || $attempt['selected_option'] !== 'PENDING') {
-        jsonResponse(false, 'يجب بدء السؤال أولاً من داخل شاشة الكويز الرسمية قبل تقديم الإجابة | Question must be started officially first');
-    }
-
-    // Anti-Bot & Inhuman Reaction Time Check
-    // A human cannot read the question, read 4 choices, and click in under 1 second!
-    $elapsed = time() - strtotime($attempt['created_at']);
-    if ($elapsed < 1) {
-        $stmtBot = $pdo->prepare("UPDATE `quiz_attempts` SET `selected_option` = 'BOT_SUSPECTED', `is_correct` = 0, `points_earned` = 0 WHERE `id` = ?");
-        $stmtBot->execute([$attempt['id']]);
-        jsonResponse(false, '🚨 تم رصد سرعة إجابة غير طبيعية (Bot Detected)! تم إلغاء السؤال منعاً للغش.');
-    }
-
-    // Anti-Cheat: Timing Threshold (Max 20 seconds allowed)
-    if ($elapsed > 20) {
-        $stmtUpd = $pdo->prepare("UPDATE `quiz_attempts` SET `selected_option` = 'TIMEOUT', `is_correct` = 0, `points_earned` = 0 WHERE `id` = ?");
-        $stmtUpd->execute([$attempt['id']]);
-        jsonResponse(false, 'انتهى الوقت المخصص للإجابة على هذا السؤال! | Time is up for this question');
+    if ($attempt) {
+        // If already answered with a definitive choice, do not allow re-answering
+        if (in_array($attempt['selected_option'], ['A', 'B', 'C', 'D'])) {
+            jsonResponse(false, 'تمت الإجابة على هذا السؤال مسبقاً! | Question already answered');
+        }
     }
 
     $isCorrect = ($selectedOption === $question['correct_option']);
@@ -285,15 +270,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'submit_answer') {
     // Execute within database transaction
     $pdo->beginTransaction();
     try {
-        // Update existing pending attempt (Guaranteed to exist due to check above)
-        $stmtRecord = $pdo->prepare("
-            UPDATE `quiz_attempts` 
-            SET `selected_option` = ?,
-                `is_correct` = ?,
-                `points_earned` = ?
-            WHERE `id` = ?
-        ");
-        $stmtRecord->execute([$selectedOption, $isCorrect ? 1 : 0, $pointsEarned, $attempt['id']]);
+        if ($attempt) {
+            // Update existing pending attempt
+            $stmtRecord = $pdo->prepare("
+                UPDATE `quiz_attempts` 
+                SET `selected_option` = ?,
+                    `is_correct` = ?,
+                    `points_earned` = ?
+                WHERE `id` = ?
+            ");
+            $stmtRecord->execute([$selectedOption, $isCorrect ? 1 : 0, $pointsEarned, $attempt['id']]);
+        } else {
+            // If start_question was delayed by network latency, insert cleanly right now
+            $stmtInsert = $pdo->prepare("
+                INSERT INTO `quiz_attempts` (`user_id`, `department_id`, `week_id`, `question_id`, `selected_option`, `is_correct`, `points_earned`)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmtInsert->execute([$userId, $departmentId, $weekId, $questionId, $selectedOption, $isCorrect ? 1 : 0, $pointsEarned]);
+        }
 
         // Award Points & Advance Department Car if correct
         if ($isCorrect && $pointsEarned > 0) {

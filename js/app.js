@@ -68,8 +68,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         challengeBadge: document.getElementById('challenge-badge'),
         categoryBadge: document.getElementById('category-badge'),
         challengePointsBadge: document.getElementById('challenge-points-badge'),
-        timerBox: document.getElementById('timer-box'),
-        timerValue: document.getElementById('timer-value'),
         questionTextAr: document.getElementById('question-text-ar'),
         questionTextEn: document.getElementById('question-text-en'),
         optionsGrid: document.getElementById('options-grid'),
@@ -87,6 +85,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         quizIndicator: document.getElementById('quiz-question-indicator'),
 
         // Photo Challenge Elements
+        photoChallengeTitle: document.getElementById('photo-challenge-title'),
+        photoChallengeDesc: document.getElementById('photo-challenge-desc'),
+        photoChallengePointsBadge: document.getElementById('photo-challenge-points-badge'),
         formPhotoUpload: document.getElementById('form-photo-upload'),
         uploadDropzone: document.getElementById('upload-dropzone'),
         inputPhotoFile: document.getElementById('input-photo-file'),
@@ -97,11 +98,15 @@ document.addEventListener('DOMContentLoaded', async function () {
         btnRemovePreview: document.getElementById('btn-remove-preview'),
         inputPhotoCaption: document.getElementById('input-photo-caption'),
         btnSubmitPhoto: document.getElementById('btn-submit-photo'),
+        btnSubmitPhotoText: document.getElementById('btn-submit-photo-text'),
+        cardTypePhoto: document.getElementById('card-type-photo'),
+        cardTypeTeam: document.getElementById('card-type-team'),
         miniPhotosGrid: document.getElementById('mini-photos-grid'),
 
         // Team Activity Elements
         teamMissionTitle: document.getElementById('team-mission-title'),
         teamMissionDesc: document.getElementById('team-mission-desc'),
+        btnGotoUpload: document.getElementById('btn-goto-upload'),
 
         // Weekly Spotlight Grid
         weeklyChampionsGrid: document.getElementById('weekly-champions-grid'),
@@ -141,8 +146,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         toastContainer: document.getElementById('toast-container')
     };
 
-    let timerInterval = null;
-    let timerSecondsLeft = 15;
     let isQuestionAnswered = false;
     let currentActiveSubTab = 'quiz';
 
@@ -179,10 +182,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                 }
             }
 
-            // Start timer if quiz challenge is currently active
-            if ((currentLoadedType === 'quiz' || currentActiveSubTab === 'quiz') && !isQuestionAnswered) {
-                startQuestionTimer();
-            }
             return;
         }
 
@@ -209,13 +208,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                     }
                 }
 
-                if ((currentLoadedType === 'quiz' || currentActiveSubTab === 'quiz') && !isQuestionAnswered) {
-                    startQuestionTimer();
-                }
             } else {
                 // Only redirect if absolutely unauthenticated and no user object in memory
                 if (!GameState.getUser() && !window.__CURRENT_USER__) {
-                    clearInterval(timerInterval);
                     window.location.href = 'index.php';
                     return;
                 }
@@ -223,7 +218,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         } catch (e) {
             console.warn('Session verification fallback note:', e);
             if (!GameState.getUser() && !window.__CURRENT_USER__) {
-                clearInterval(timerInterval);
                 window.location.href = 'index.php';
                 return;
             }
@@ -294,9 +288,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                     showToast(`مرحباً بك يا ${data.data.user.name.split(' ')[0]} في فريق ${data.data.user.dept_name_ar}! 🎉`);
                     if (typeof AudioEngine !== 'undefined') AudioEngine.play('join');
                     await refreshFullGameState();
-                    if ((currentLoadedType === 'quiz' || currentActiveSubTab === 'quiz') && !isQuestionAnswered) {
-                        startQuestionTimer();
-                    }
                 } else {
                     if (elements.onboardingError) {
                         elements.onboardingError.textContent = data.message || 'حدث خطأ في معالجة الطلب';
@@ -316,7 +307,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (elements.btnSwitchUser) {
         elements.btnSwitchUser.addEventListener('click', (e) => {
             e.preventDefault();
-            clearInterval(timerInterval);
             window.location.href = 'logout.php';
         });
     }
@@ -325,7 +315,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (btnHeaderLogout) {
         btnHeaderLogout.addEventListener('click', (e) => {
             e.preventDefault();
-            clearInterval(timerInterval);
             window.location.href = 'logout.php';
         });
     }
@@ -396,9 +385,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         if (typeof AudioEngine !== 'undefined') AudioEngine.play('countdown');
 
-        // Start question timer for active question
+        // Start active question
         isQuestionAnswered = false;
-        startQuestionTimer();
     }
 
     if (btnStartQuizNow) {
@@ -499,6 +487,29 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
+    // Weekly Photo Challenges Dictionary (Back to School)
+    const WEEKLY_PHOTO_CHALLENGES = {
+        1: {
+            title: '🎒 تحديات الأسبوع 1: العودة للمدارس | Back to School Photo Challenge',
+            desc: '📸 اختر أحد التحديين وارفع صورتك: 1️⃣ صورة مع أطفالك (Take a photo with your kid) أو 2️⃣ صورتك وأنت طفل في المدرسة (Photo when you\'re a kid) لحصد +15 نقطة وميل لقسمك!'
+        },
+        2: {
+            title: '📚 تحديات الأسبوع 2: إبداع المذاكرة | Study Space & Creativity Challenge',
+            desc: '📸 اختر أحد التحديين: 1️⃣ صورة لتجهيز ركن المذاكرة أو مكتبك (Build your study space) أو 2️⃣ ابتكار وإعادة تدوير (Turn something into something) لحصد +15 نقطة وميل لقسمك!'
+        },
+        3: {
+            title: '🎓 تحديات الأسبوع 3: نوستالجيا المدرسة | School Memories & Story Challenge',
+            desc: '📸 اختر أحد التحديين: 1️⃣ حوّل الدرس إلى قصة أو رسمة (Make the lesson a story) أو 2️⃣ أكثر ذكرى/موقف علّق معاك في المدرسة (Most memorable moment) لحصد +15 نقطة وميل لقسمك!'
+        }
+    };
+
+    function updatePhotoChallengeTexts(weekIdOrNum) {
+        const wKey = parseInt(weekIdOrNum, 10) || 1;
+        const ch = WEEKLY_PHOTO_CHALLENGES[wKey] || WEEKLY_PHOTO_CHALLENGES[1];
+        if (elements.photoChallengeTitle) elements.photoChallengeTitle.textContent = ch.title;
+        if (elements.photoChallengeDesc) elements.photoChallengeDesc.textContent = ch.desc;
+    }
+
     // Weekly Sub-Challenge Navigation Hub Handler (Quiz / Photo / Team)
     function switchWeeklySubChallenge(tabName) {
         currentActiveSubTab = tabName || 'quiz';
@@ -515,17 +526,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const activeWeek = GameState.getActiveWeek();
 
-        if (currentActiveSubTab === 'quiz') {
-            // If quiz is shown and question isn't answered yet, resume/start timer
-            if (!isQuestionAnswered && GameState.getUser()) {
-                startQuestionTimer();
-            }
-        } else {
-            // When user switches in-page to Photo or Team, pause countdown timer
-            clearInterval(timerInterval);
-        }
+
 
         if (currentActiveSubTab === 'photo' && activeWeek) {
+            updatePhotoChallengeTexts(activeWeek.week_number || activeWeek.id);
             loadPhotoGallery(activeWeek.id);
         }
 
@@ -592,11 +596,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (!activeWeek) return;
 
         const type = activeWeek.challenge_type;
-        const isMulti = (type === 'multi');
+        // Ensure multi-challenge navigation hub tabs always show
+        const isMulti = (type === 'multi' || !type || type === 'quiz');
 
-        // Always show the hub tabs if week is multi-challenge
+        // Always show the hub tabs
         if (elements.hubChallengeNav) {
-            elements.hubChallengeNav.classList.toggle('hidden', !isMulti);
+            elements.hubChallengeNav.classList.remove('hidden');
         }
 
         // Only reload content if week or challenge type actually changed, or if forceReload is requested
@@ -608,6 +613,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         if (isMulti) {
             // Multi-Challenge Week: Preload Quiz, Photo gallery, and Team Mission
+            updatePhotoChallengeTexts(activeWeek.week_number || activeWeek.id);
             await loadQuizQuestions(activeWeek.id);
             await loadPhotoGallery(activeWeek.id);
             if (elements.teamMissionTitle) elements.teamMissionTitle.textContent = activeWeek.title_ar;
@@ -622,6 +628,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             elements.quizSection.classList.add('hidden');
             elements.photoSection.classList.remove('hidden');
             elements.teamSection.classList.add('hidden');
+            updatePhotoChallengeTexts(activeWeek.week_number || activeWeek.id);
             await loadPhotoGallery(activeWeek.id);
         } else if (type === 'team_activity') {
             elements.quizSection.classList.add('hidden');
@@ -682,7 +689,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         const idx = GameState.getCurrentQuestionIndex();
 
         if (isCompleted || !questions || questions.length === 0 || idx >= questions.length) {
-            clearInterval(timerInterval);
             isQuestionAnswered = true;
             if (elements.quizProgressFill) elements.quizProgressFill.style.width = '100%';
             if (elements.hubQuizCheck) elements.hubQuizCheck.classList.remove('hidden');
@@ -697,14 +703,12 @@ document.addEventListener('DOMContentLoaded', async function () {
             elements.questionTextAr.textContent = '🎉 رائع جداً! لقد أكملت جميع أسئلة هذا الأسبوع!';
             elements.questionTextEn.textContent = 'Awesome! You have completed all questions for this week!';
             if (elements.optionsGrid) elements.optionsGrid.style.display = 'none';
-            if (elements.timerBox) elements.timerBox.style.display = 'none';
             if (elements.btnPrevQuestion) elements.btnPrevQuestion.style.display = 'none';
             if (elements.btnNextQuestion) elements.btnNextQuestion.style.display = 'none';
             return;
         }
 
         if (elements.optionsGrid) elements.optionsGrid.style.display = 'grid';
-        if (elements.timerBox) elements.timerBox.style.display = 'flex';
 
         const q = questions[idx];
         isQuestionAnswered = false;
@@ -749,10 +753,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             item.classList.remove('correct', 'incorrect', 'timeout-disabled');
         });
 
-        // Reset timer box warning animation
-        if (elements.timerBox) {
-            elements.timerBox.classList.remove('timer-warning');
-        }
+
 
         // Anti-Cheat: Immediately lock the question on the backend upon presentation
         const user = GameState.getUser();
@@ -781,13 +782,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                 console.warn('Anti-cheat question lock error:', err);
             }
         }
-
-        // Start Countdown Timer
-        startQuestionTimer();
     }
 
     function advanceToNextQuestion() {
-        clearInterval(timerInterval);
         isQuestionAnswered = true;
         isForfeiting = false;
         const totalQuestions = GameState.getQuestions().length;
@@ -814,7 +811,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         isForfeiting = true;
         isQuestionAnswered = true;
-        clearInterval(timerInterval);
 
         if (typeof AudioEngine !== 'undefined') AudioEngine.play('wrong');
 
@@ -855,67 +851,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     function startQuestionTimer() {
-        clearInterval(timerInterval);
-
-        const user = GameState.getUser();
-        const isQuizModalOpen = quizAnnounceModal && !quizAnnounceModal.classList.contains('hidden') && quizAnnounceModal.style.display === 'flex';
-
-        timerSecondsLeft = 15;
-        if (elements.timerValue) elements.timerValue.textContent = timerSecondsLeft;
-        if (elements.timerBox) elements.timerBox.classList.remove('timer-warning');
-
-        if (!user || isQuizModalOpen) {
-            return;
-        }
-
-        timerInterval = setInterval(() => {
-            if (isQuestionAnswered) {
-                clearInterval(timerInterval);
-                return;
-            }
-            timerSecondsLeft--;
-            if (elements.timerValue) elements.timerValue.textContent = Math.max(0, timerSecondsLeft);
-
-            // Audio & visual tick warning during last 5 seconds
-            if (timerSecondsLeft <= 5 && timerSecondsLeft > 0) {
-                if (typeof AudioEngine !== 'undefined') AudioEngine.play('tick');
-                if (elements.timerBox) elements.timerBox.classList.add('timer-warning');
-            }
-
-            if (timerSecondsLeft <= 0) {
-                clearInterval(timerInterval);
-                isQuestionAnswered = true;
-
-                if (typeof AudioEngine !== 'undefined') AudioEngine.play('timeout');
-                showToast('انتهى الوقت المخصص لهذا السؤال! جاري الانتقال للسؤال التالي... ⏱️ | Time is up!');
-
-                // Disable options visually
-                elements.optionItems.forEach(optEl => {
-                    optEl.classList.add('timeout-disabled');
-                });
-
-                // Inform server of timeout
-                const qUser = GameState.getUser();
-                const qQuestions = GameState.getQuestions();
-                const qIdx = GameState.getCurrentQuestionIndex();
-                if (qUser && qQuestions && qQuestions[qIdx]) {
-                    const timeoutBody = new URLSearchParams({
-                        question_id: qQuestions[qIdx].id,
-                        user_id: qUser.id,
-                        reason: 'timeout'
-                    });
-                    fetch('api/quiz.php?action=forfeit_question', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: timeoutBody.toString()
-                    }).catch(() => {});
-                }
-
-                setTimeout(() => {
-                    advanceToNextQuestion();
-                }, 1200);
-            }
-        }, 1000);
+        // Timer removed from quiz
     }
 
     // Option Click Handler
@@ -935,9 +871,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                 return;
             }
 
-            // Immediately mark as answered to prevent double submission and clear timer
+            // Immediately mark as answered to prevent double submission
             isQuestionAnswered = true;
-            clearInterval(timerInterval);
 
             // Subtle click audio
             if (typeof AudioEngine !== 'undefined') AudioEngine.play('click');
@@ -1032,18 +967,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    window.addEventListener('blur', () => {
-        if ((currentLoadedType === 'quiz' || currentActiveSubTab === 'quiz') && !isQuestionAnswered && !document.hasFocus()) {
-            triggerAntiCheatForfeit('window_blur');
-        }
-    });
-
-    window.addEventListener('beforeunload', () => {
-        if ((currentLoadedType === 'quiz' || currentActiveSubTab === 'quiz') && !isQuestionAnswered) {
-            triggerAntiCheatForfeit('page_unload');
-        }
-    });
-
     // Weekly Multi-Challenge Navigation Hub Tab Button Click Handlers
     if (elements.tabBtnQuiz) {
         elements.tabBtnQuiz.addEventListener('click', () => switchWeeklySubChallenge('quiz'));
@@ -1112,24 +1035,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }, true);
 
-    // Anti-Cheat: DevTools Docked Window Open Detector
-    let devtoolsDetected = false;
-    setInterval(() => {
-        const isQuizActive = (currentLoadedType === 'quiz' || currentActiveSubTab === 'quiz') && !isQuestionAnswered && !isForfeiting;
-        if (isQuizActive) {
-            const widthThreshold = (window.outerWidth - window.innerWidth) > 160;
-            const heightThreshold = (window.outerHeight - window.innerHeight) > 160;
-            if (widthThreshold || heightThreshold) {
-                if (!devtoolsDetected) {
-                    devtoolsDetected = true;
-                    triggerAntiCheatForfeit('devtools_docked_open');
-                }
-            } else {
-                devtoolsDetected = false;
-            }
-        }
-    }, 700);
-
     // ================= PHOTO CHALLENGE ENGINE =================
     if (elements.btnBrowseFile) {
         elements.btnBrowseFile.addEventListener('click', () => elements.inputPhotoFile.click());
@@ -1179,6 +1084,56 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
+    // ================= SUBMISSION TYPE CHOICE HANDLER (+15 vs +30) =================
+    function updateSubmissionTypeUI(selectedType) {
+        const isTeam = (selectedType === 'team_activity');
+        if (elements.cardTypeTeam) elements.cardTypeTeam.classList.toggle('active', isTeam);
+        if (elements.cardTypePhoto) elements.cardTypePhoto.classList.toggle('active', !isTeam);
+
+        if (elements.btnSubmitPhotoText) {
+            elements.btnSubmitPhotoText.textContent = isTeam
+                ? '🚀 رفع صورة النشاط الجماعي وحصد 30 نقطة للقسم | Upload Team Activity (+30 PTS)'
+                : '🚀 رفع صورة تحدي التصوير وحصد 15 نقطة للقسم | Upload Photo (+15 PTS)';
+        }
+
+        if (elements.inputPhotoCaption) {
+            elements.inputPhotoCaption.placeholder = isTeam
+                ? 'مثال: صورة النشاط الجماعي للقسم وأسماء الزملاء المشاركين...'
+                : 'مثال: صورة مع أطفالي / صورتي وأنا طفل في المدرسة...';
+        }
+
+        if (elements.photoChallengePointsBadge) {
+            if (isTeam) {
+                elements.photoChallengePointsBadge.textContent = '+30 نقطة وميل | +30 PTS & MI';
+                elements.photoChallengePointsBadge.classList.add('badge-team-active');
+            } else {
+                elements.photoChallengePointsBadge.textContent = '+15 نقطة وميل | +15 PTS & MI';
+                elements.photoChallengePointsBadge.classList.remove('badge-team-active');
+            }
+        }
+    }
+
+    const radioSubmissionTypes = document.querySelectorAll('input[name="submission_type"]');
+    radioSubmissionTypes.forEach(radio => {
+        radio.addEventListener('change', function () {
+            updateSubmissionTypeUI(this.value);
+        });
+    });
+
+    if (elements.btnGotoUpload) {
+        elements.btnGotoUpload.addEventListener('click', function () {
+            switchWeeklySubChallenge('photo');
+            const radioTeam = document.querySelector('input[name="submission_type"][value="team_activity"]');
+            if (radioTeam) {
+                radioTeam.checked = true;
+                updateSubmissionTypeUI('team_activity');
+            }
+            if (elements.formPhotoUpload) {
+                elements.formPhotoUpload.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    }
+
     // Submit Photo Upload Form
     if (elements.formPhotoUpload) {
         // Allow clicking anywhere on dropzone to choose file
@@ -1206,8 +1161,12 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
 
             const selectedFile = elements.inputPhotoFile.files[0];
+            const selectedRadio = document.querySelector('input[name="submission_type"]:checked');
+            const submissionType = selectedRadio ? selectedRadio.value : 'photo_challenge';
+
             const formData = new FormData();
             formData.append('photo', selectedFile);
+            formData.append('submission_type', submissionType);
             formData.append('caption', elements.inputPhotoCaption ? elements.inputPhotoCaption.value.trim() : '');
             formData.append('user_id', user.id || 0);
             formData.append('user_name', user.name || '');
@@ -1219,7 +1178,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             formData.append('csrf_token', getMetaCsrfToken());
 
             elements.btnSubmitPhoto.disabled = true;
-            elements.btnSubmitPhoto.textContent = 'جاري رفع الصورة والتحقق... ⏳';
+            if (elements.btnSubmitPhotoText) {
+                elements.btnSubmitPhotoText.textContent = 'جاري رفع الصورة والتحقق... ⏳';
+            }
 
             try {
                 const res = await fetch('api/upload_photo.php?action=upload', {
@@ -1244,12 +1205,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                         console.warn('Animation error', animErr);
                     }
 
-                    showToast(data.message || 'تم رفع الصورة بنجاح وحصد 15 نقطة للقسم! 📷🎉');
+                    showToast(data.message || (submissionType === 'team_activity' 
+                        ? 'تم رفع صورة النشاط الجماعي وحصد 30 نقطة للقسم! 👥🎉' 
+                        : 'تم رفع الصورة بنجاح وحصد 15 نقطة للقسم! 📷🎉'));
 
-                    // Reset form & preview
+                    // Reset preview and text inputs, but retain selected submission type
                     try {
-                        elements.formPhotoUpload.reset();
                         elements.inputPhotoFile.value = '';
+                        if (elements.inputPhotoCaption) elements.inputPhotoCaption.value = '';
                         elements.imagePreviewElement.src = '';
                         elements.previewArea.classList.add('hidden');
                         elements.dropzonePrompt.classList.remove('hidden');
@@ -1269,7 +1232,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                 showToast('حدث خطأ أثناء الاتصال بالخادم لرفع الصورة');
             } finally {
                 elements.btnSubmitPhoto.disabled = false;
-                elements.btnSubmitPhoto.textContent = '🚀 رفع الصورة وحصد 15 نقطة للقسم';
+                const curType = (document.querySelector('input[name="submission_type"]:checked')?.value) || 'photo_challenge';
+                updateSubmissionTypeUI(curType);
             }
         });
     }
@@ -1286,13 +1250,22 @@ document.addEventListener('DOMContentLoaded', async function () {
                     return;
                 }
                 data.data.slice(0, 8).forEach(p => {
+                    const isTeam = p.challenge_type === 'team_activity' || parseInt(p.points_awarded, 10) === 30;
+                    const badgeLabel = isTeam ? '👥 Team Activity (+30)' : '📷 Photo Challenge (+15)';
+                    const badgeStyle = isTeam 
+                        ? 'background:rgba(249,115,22,0.22); color:#fb923c; border:1px solid rgba(249,115,22,0.45);' 
+                        : 'background:rgba(56,189,248,0.22); color:#38bdf8; border:1px solid rgba(56,189,248,0.45);';
+
                     const card = document.createElement('div');
                     card.className = 'mini-photo-card';
                     card.innerHTML = `
                         <img src="${p.photo_path}" alt="Photo" class="mini-photo-img" onclick="window.open('${p.photo_path}', '_blank')">
                         <div class="mini-photo-info">
-                            <strong style="color:${p.dept_color};">${p.car_emoji} ${p.dept_code}</strong>
-                            <p style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.caption || p.user_name}</p>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; gap:4px;">
+                                <strong style="color:${p.dept_color}; font-size:0.8rem; white-space:nowrap;">${p.car_emoji} ${p.dept_code}</strong>
+                                <span style="font-size:0.65rem; font-weight:800; padding:1px 6px; border-radius:4px; white-space:nowrap; ${badgeStyle}">${badgeLabel}</span>
+                            </div>
+                            <p style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin:0; font-size:0.75rem;">${p.caption || p.user_name}</p>
                         </div>
                     `;
                     elements.miniPhotosGrid.appendChild(card);

@@ -606,3 +606,214 @@
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ==========================================================================
+   COMPREHENSIVE RESPONSIVENESS FOR MODALS & TOASTS
+   ========================================================================== */
+
+/* Tablets (<= 768px) */
+@media (max-width: 768px) {
+    .modal-backdrop {
+        padding: 0.75rem;
+    }
+    .modal-card,
+    .onboarding-modal-card,
+    .shortcuts-card,
+    .photo-challenge-modal-card,
+    .weekly-winner-card,
+    .finale-grand-card {
+        max-width: min(640px, 100vw - 20px);
+        max-height: calc(100vh - 24px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Large Smartphones (<= 480px) */
+@media (max-width: 480px) {
+    .modal-backdrop {
+        padding: 0.4rem;
+        align-items: center;
+    }
+
+    .modal-card,
+    .onboarding-modal-card,
+    .shortcuts-card,
+    .photo-challenge-modal-card,
+    .weekly-winner-card,
+    .finale-grand-card {
+        max-width: calc(100vw - 12px);
+        max-height: calc(100vh - 16px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 1.25rem 0.85rem;
+        border-radius: var(--radius-md);
+    }
+
+    .btn-modal-close {
+        top: 8px;
+        left: 10px;
+        width: 32px;
+        height: 32px;
+        font-size: 1.2rem;
+    }
+
+    .modal-hero-icons {
+        font-size: 2rem;
+    }
+
+    .modal-header-hero h2 {
+        font-size: 1.18rem;
+    }
+
+    .shortcuts-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    /* Finale card responsiveness */
+    .winner-title {
+        font-size: 1.35rem;
+    }
+
+    .finale-champ-name {
+        font-size: 1.1rem;
+    }
+
+    .winner-car-display {
+        font-size: 2.8rem;
+        margin-bottom: 0.65rem;
+    }
+
+    .podium-display {
+        gap: 0.35rem;
+        margin-bottom: 1.1rem;
+    }
+
+    .podium-pillar {
+        min-width: 68px;
+        padding: 0.45rem 0.3rem;
+    }
+
+    .podium-pillar.rank-1 {
+        height: 105px;
+    }
+
+    .podium-pillar.rank-2 {
+        height: 80px;
+    }
+
+    .podium-pillar.rank-3 {
+        height: 60px;
+    }
+
+    .podium-rank-num {
+        font-size: 1.1rem;
+    }
+
+    .podium-dept-name {
+        font-size: 0.7rem;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    .winner-actions,
+    .weekly-winner-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .winner-actions button,
+    .weekly-winner-actions button {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .toast-container {
+        left: 0.5rem;
+        right: 0.5rem;
+        bottom: 0.75rem;
+    }
+
+    .toast-item {
+        font-size: 0.82rem;
+        padding: 0.7rem 0.85rem;
+        text-align: center;
+    }
+}
+
+/* Standard Mobile Devices (<= 375px) */
+@media (max-width: 375px) {
+    .modal-card,
+    .onboarding-modal-card,
+    .finale-grand-card,
+    .weekly-winner-card {
+        padding: 1.1rem 0.7rem;
+    }
+
+    .podium-pillar {
+        min-width: 58px;
+        padding: 0.35rem 0.2rem;
+    }
+
+    .podium-pillar.rank-1 {
+        height: 95px;
+    }
+
+    .podium-pillar.rank-2 {
+        height: 72px;
+    }
+
+    .podium-pillar.rank-3 {
+        height: 52px;
+    }
+
+    .podium-rank-num {
+        font-size: 0.95rem;
+    }
+
+    .podium-dept-name {
+        font-size: 0.65rem;
+    }
+}
+
+/* Compact Mobile Devices (<= 320px) */
+@media (max-width: 320px) {
+    .modal-backdrop {
+        padding: 0.25rem;
+    }
+
+    .modal-card,
+    .onboarding-modal-card,
+    .finale-grand-card,
+    .weekly-winner-card {
+        padding: 0.9rem 0.5rem;
+    }
+
+    .podium-pillar {
+        min-width: 50px;
+        padding: 0.3rem 0.15rem;
+    }
+
+    .podium-pillar.rank-1 {
+        height: 85px;
+    }
+
+    .podium-pillar.rank-2 {
+        height: 65px;
+    }
+
+    .podium-pillar.rank-3 {
+        height: 48px;
+    }
+
+    .podium-rank-num {
+        font-size: 0.85rem;
+    }
+
+    .podium-dept-name {
+        font-size: 0.6rem;
+    }
+}
+
+

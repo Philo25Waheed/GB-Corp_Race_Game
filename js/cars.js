@@ -122,7 +122,7 @@
             model: 'rally_suv', primary: '#40aebb', secondary: '#f9ae6a', livery: 'vector_speed', num: 18
         },
         'passenger_cars': {
-            id: 'passenger_cars', code: 'BU-PC', name_en: 'PC (Passenger Cars)', name_ar: 'قطاع سيارات الركوب',
+            id: 'passenger_cars', code: 'BU-PC', name_en: 'PC (Passenger Cars)', name_ar: 'إدارة سيارات الركوب',
             model: 'gt_coupe', primary: '#049eda', secondary: '#2b51a4', livery: 'twin_gt', num: 19
         },
         'cv_ce': {
@@ -134,7 +134,7 @@
             model: 'trike_racer', primary: '#3bae49', secondary: '#049eda', livery: 'sprint_slash', num: 21
         },
         'tires': {
-            id: 'tires', code: 'BU-TIRE', name_en: 'Tires', name_ar: 'قطاع الإطارات والخدمات',
+            id: 'tires', code: 'BU-TIRE', name_en: 'Tires', name_ar: 'إدارة الإطارات والخدمات',
             model: 'hypercar', primary: '#a5a9ac', secondary: '#f78c2a', livery: 'tread_edge', num: 22
         },
         'ghabbour_foundation': {

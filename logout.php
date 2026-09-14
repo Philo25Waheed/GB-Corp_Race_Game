@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Instant Logout Handler
  * Completely destroys user session & authentication cookies,

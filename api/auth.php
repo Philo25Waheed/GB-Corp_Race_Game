@@ -4,6 +4,7 @@
  * Native PHP & MySQL Backend
  */
 
+define('IS_API', true);
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../db.php';
 

@@ -64,12 +64,18 @@ if ($isAdminUser) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Favicon / Brand Icon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    
     <!-- CSS Stylesheets -->
-    <link rel="stylesheet" href="css/main.css?v=25">
-    <link rel="stylesheet" href="css/track.css?v=25">
-    <link rel="stylesheet" href="css/control.css?v=20">
-    <link rel="stylesheet" href="css/modals.css?v=20">
-    <link rel="stylesheet" href="css/auth.css?v=20">
+    <link rel="stylesheet" href="css/main.css?v=32">
+    <link rel="stylesheet" href="css/track.css?v=30">
+    <link rel="stylesheet" href="css/control.css?v=30">
+    <link rel="stylesheet" href="css/modals.css?v=30">
+    <link rel="stylesheet" href="css/auth.css?v=30">
 </head>
 <body>
     <div id="app-container" class="app-wrapper">
@@ -77,13 +83,14 @@ if ($isAdminUser) {
         <header class="main-header">
             <!-- BRANDING & ARABIC LOGO TITLE -->
             <div class="header-brand">
-                <div class="corp-logo-badge">
-                    <span class="corp-logo-icon">🚗</span>
-                    <span class="corp-logo-text">GB Corp</span>
-                </div>
-                <div class="summer-brand-titles">
-                    <div class="brand-arabic-title">العودة إلى المدارس <span style="font-weight:400; opacity:0.85; font-size:0.85em;">| Back to School</span></div>
-                </div>
+                <a href="index.php" style="text-decoration:none; display:flex; align-items:center; gap:0.85rem; color:inherit;">
+                    <div class="corp-logo-badge">
+                        <img src="GB_Corp.png" alt="GB Corp" class="corp-logo-img">
+                    </div>
+                    <div class="summer-brand-titles">
+                        <div class="brand-arabic-title">العودة إلى المدارس <span style="font-weight:400; opacity:0.85; font-size:0.85em;">| Back to School</span></div>
+                    </div>
+                </a>
             </div>
             
             <!-- GRAND CENTER TITLE & ACTIVE WEEK BADGE -->
@@ -174,6 +181,49 @@ if ($isAdminUser) {
             </div>
         </section>
 
+        <!-- HOW TO EARN MILEAGE POINTS & RULES (PLACED BEFORE QUIZ & CHALLENGES) -->
+        <section class="how-to-earn-section" id="how-to-earn-info">
+            <div class="mileage-points-card">
+                <div class="dashboard-card-title">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <span style="font-size:1.2rem;">🏁</span>
+                        <span>كيف تكسب النقاط والأميال؟ | How to Earn Points?</span>
+                    </div>
+                    <span style="font-size:0.8rem; color:var(--baby-blue-soft, #7dd3fc); font-weight:600; margin-right:auto;">طرق تجميع سكور قسمك</span>
+                </div>
+                <div class="points-rules-list">
+                    <div class="point-rule-item">
+                        <div class="rule-label">
+                            <span class="rule-icon">❓</span>
+                            <span>كويز المعرفة | Knowledge Quiz</span>
+                        </div>
+                        <span class="rule-pts">10 نقاط | PTS</span>
+                    </div>
+                    <div class="point-rule-item">
+                        <div class="rule-label">
+                            <span class="rule-icon">📷</span>
+                            <span>تحدي التصوير | Photo Challenge</span>
+                        </div>
+                        <span class="rule-pts">15 نقطة | PTS</span>
+                    </div>
+                    <div class="point-rule-item">
+                        <div class="rule-label">
+                            <span class="rule-icon">👥</span>
+                            <span>النشاط الجماعي | Team Activity</span>
+                        </div>
+                        <span class="rule-pts">30 نقطة | PTS</span>
+                    </div>
+                    <div class="point-rule-item">
+                        <div class="rule-label">
+                            <span class="rule-icon">⭐</span>
+                            <span>نقاط تميز إضافية | Extra Bonus</span>
+                        </div>
+                        <span class="rule-pts bonus">+10 نقاط | PTS</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- MAIN GAME ARENA (DYNAMIC CHALLENGE CONTAINER) -->
         <main class="game-arena">
             
@@ -217,13 +267,6 @@ if ($isAdminUser) {
                         <span class="challenge-badge" id="challenge-badge">سؤال 1 / 5 | Question 1 / 5</span>
                         <span class="category-badge" id="category-badge">معلومات عامة | General Knowledge</span>
                         <span class="challenge-points-badge" id="challenge-points-badge">⭐ +10 نقاط | PTS</span>
-                    </div>
-                    
-                    <!-- COUNTDOWN TIMER DISPLAY -->
-                    <div class="timer-display-box" id="timer-box">
-                        <div class="timer-icon">⏱️</div>
-                        <div class="timer-val" id="timer-value">15</div>
-                        <div class="timer-unit">ثانية | SEC</div>
                     </div>
                 </div>
 
@@ -280,16 +323,58 @@ if ($isAdminUser) {
             <section class="challenge-card challenge-mode-container hidden" id="photo-challenge-section">
                 <div class="challenge-header">
                     <div class="challenge-badge-wrap">
-                        <span class="challenge-badge challenge-photo-badge">📷 تحدي التصوير الصيفي | Summer Photo Challenge</span>
+                        <span class="challenge-badge challenge-photo-badge">📷 تحدي التصوير والنشاط الصيفي | Summer Photo & Activity</span>
                         <span class="category-badge">إبداع الفريق | Team Creativity</span>
-                        <span class="challenge-points-badge">+15 نقطة وميل | +15 PTS & MI</span>
+                        <span class="challenge-points-badge" id="photo-challenge-points-badge">+15 نقطة وميل | +15 PTS & MI</span>
                     </div>
                 </div>
 
                 <div class="challenge-body">
                     <div class="photo-challenge-intro">
-                        <h2 class="photo-title-main">شاركنا أجمل لحظات الصيف مع قسمك 📸🌴 | Summer Moments</h2>
-                        <p class="photo-subtitle">ارفع صورة مميزة لفريق العمل وسجل 15 نقطة لسيارة قسمك مباشرة! | Upload team photo to earn +15 PTS & Miles!</p>
+                        <?php
+                        $photoChallengesMap = [
+                            1 => [
+                                'title' => '🎒 تحديات الأسبوع 1: العودة للمدارس | Back to School Photo Challenge',
+                                'desc'  => '📸 اختر أحد التحديين: 1️⃣ صورة مع أطفالك (Take a photo with your kid) أو 2️⃣ صورتك وأنت طفل في المدرسة (Photo when you\'re a kid) لحصد +15 نقطة وميل لقسمك!'
+                            ],
+                            2 => [
+                                'title' => '📚 تحديات الأسبوع 2: إبداع المذاكرة | Study Space & Creativity Challenge',
+                                'desc'  => '📸 اختر أحد التحديين: 1️⃣ صورة لتجهيز ركن المذاكرة أو مكتبك (Build your study space) أو 2️⃣ ابتكار وإعادة تدوير (Turn something into something) لحصد +15 نقطة وميل لقسمك!'
+                            ],
+                            3 => [
+                                'title' => '🎓 تحديات الأسبوع 3: نوستالجيا المدرسة | School Memories & Story Challenge',
+                                'desc'  => '📸 اختر أحد التحديين: 1️⃣ حوّل الدرس إلى قصة أو رسمة (Make the lesson a story) أو 2️⃣ أكثر ذكرى/موقف علّق معاك في المدرسة (Most memorable moment) لحصد +15 نقطة وميل لقسمك!'
+                            ]
+                        ];
+                        $initActiveWeekId = 1;
+                        if (!empty($pdo)) {
+                            try {
+                                $stmtAw = $pdo->query("SELECT setting_value FROM system_settings WHERE setting_key = 'active_week_id'");
+                                $initActiveWeekId = (int)($stmtAw ? $stmtAw->fetchColumn() : 1) ?: 1;
+                            } catch (Exception $ex) {}
+                        }
+                        $initCh = $photoChallengesMap[$initActiveWeekId] ?? $photoChallengesMap[1];
+                        ?>
+                        <h2 class="photo-title-main" id="photo-challenge-title"><?= htmlspecialchars($initCh['title']) ?></h2>
+                        <p class="photo-subtitle" id="photo-challenge-desc"><?= htmlspecialchars($initCh['desc']) ?></p>
+                    </div>
+
+                    <!-- HINT NOTE: UNLIMITED PHOTOS & PHOTO CHALLENGE VS TEAM ACTIVITY -->
+                    <div class="photo-type-notice" style="background:linear-gradient(135deg, rgba(8,47,73,0.75), rgba(8,35,64,0.9)); border:1px solid rgba(56,189,248,0.35); border-radius:var(--radius-md); padding:1rem 1.25rem; margin-bottom:1.5rem; display:flex; align-items:flex-start; gap:0.85rem; box-shadow:0 4px 20px rgba(0,0,0,0.25);">
+                        <span style="font-size:1.8rem; line-height:1;">📌</span>
+                        <div style="flex:1;">
+                            <strong style="color:var(--orange-amber, #fb923c); font-size:1rem; display:block; margin-bottom:0.35rem;">
+                                💡 ملاحظة هامة: اختر نوع المشاركة بالأسفل!
+                            </strong>
+                            <p style="color:#ffffff; font-size:0.92rem; line-height:1.6; margin-bottom:0.4rem;">
+                                اختر <span style="display:inline-block; background:rgba(56,189,248,0.18); border:1px solid rgba(56,189,248,0.35); padding:0.15rem 0.55rem; border-radius:6px; color:#38bdf8; font-weight:700;">📷 Photo Challenge (+15)</span>
+                                لحصد 15 نقطة، أو اختر <span style="display:inline-block; background:rgba(249,115,22,0.18); border:1px solid rgba(249,115,22,0.35); padding:0.15rem 0.55rem; border-radius:6px; color:#fb923c; font-weight:700;">👥 Team Activity (+30)</span>
+                                لحصد 30 نقطة وميل لسيارة إداراتك مباشرة!
+                            </p>
+                            <div style="direction:ltr; text-align:right; font-size:0.82rem; color:var(--baby-blue-soft, #bae6fd);">
+                                Note: Choose your submission type below: <strong>Photo Challenge (+15 PTS)</strong> or <strong>Team Activity (+30 PTS)</strong>.
+                            </div>
+                        </div>
                     </div>
 
                     <!-- PHOTO UPLOADER BOX -->
@@ -312,13 +397,44 @@ if ($isAdminUser) {
                             </div>
                         </div>
 
+                        <!-- SUBMISSION TYPE SELECTOR (CHOICE) -->
+                        <div class="submission-type-selector-wrap">
+                            <label class="submission-type-main-label">
+                                <span>🎯 اختر نوع المشاركة | Select Challenge Type:</span>
+                                <span class="required-tag">(مطلوب | Required)</span>
+                            </label>
+                            <div class="submission-type-cards" id="submission-type-group">
+                                <label class="submission-type-card active" id="card-type-photo">
+                                    <input type="radio" name="submission_type" value="photo_challenge" checked class="type-radio-hidden">
+                                    <div class="card-type-header">
+                                        <span class="card-type-icon">📷</span>
+                                        <span class="card-type-pts badge-photo">+15 PTS</span>
+                                    </div>
+                                    <strong class="card-type-title">Photo Challenge</strong>
+                                    <span class="card-type-sub">تحدي التصوير الأسبوعي</span>
+                                    <span class="card-type-desc">صورة فردية مع أطفالك أو ذكريات المدرسة (+15 نقطة وميل)</span>
+                                </label>
+
+                                <label class="submission-type-card" id="card-type-team">
+                                    <input type="radio" name="submission_type" value="team_activity" class="type-radio-hidden">
+                                    <div class="card-type-header">
+                                        <span class="card-type-icon">👥</span>
+                                        <span class="card-type-pts badge-team">+30 PTS</span>
+                                    </div>
+                                    <strong class="card-type-title">Team Activity</strong>
+                                    <span class="card-type-sub">النشاط الجماعي للقسم</span>
+                                    <span class="card-type-desc">صورة المهمة الجماعية وتجمع الزملاء (+30 نقطة وميل)</span>
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="caption-input-group">
-                            <label for="input-photo-caption">✍️ تعليق على الصورة / أفراد الفريق | Caption / Team members (اختياري / Optional):</label>
-                            <input type="text" id="input-photo-caption" name="caption" placeholder="مثال: فريق الـ IT يستمتع بأجواء الصيف... | e.g. IT Team enjoying summer vibes..." class="input-caption" autocomplete="off">
+                            <label for="input-photo-caption" id="lbl-photo-caption">✍️ التعليق وتفاصيل الصورة | Caption & Details (مطلوب | Required):</label>
+                            <input type="text" id="input-photo-caption" name="caption" placeholder="اكتب تعليقاً يوضح تفاصيل الصورة وأسماء المشاركين..." class="input-caption" autocomplete="off" required>
                         </div>
 
                         <button type="submit" id="btn-submit-photo" class="btn-upload-submit">
-                            <span>🚀 رفع الصورة وحصد 15 نقطة للقسم | Upload Photo (+15 PTS)</span>
+                            <span id="btn-submit-photo-text">🚀 رفع صورة تحدي التصوير وحصد 15 نقطة للقسم | Upload Photo (+15 PTS)</span>
                         </button>
                     </form>
                 </div>
@@ -338,7 +454,7 @@ if ($isAdminUser) {
                     <div class="team-mission-box">
                         <div class="mission-icon">🎯</div>
                         <h2 class="mission-title" id="team-mission-title">مهمة الأسبوع التعاونية للقسم | Weekly Mission</h2>
-                        <p class="mission-desc" id="team-mission-desc">اجتمعوا كفريق لإنجاز المهمة المشتركة وتسليم النتائج لمنسق المسابقة لحصد 30 نقطة دفعة واحدة لسيارة قسمكم!</p>
+                        <p class="mission-desc" id="team-mission-desc">اجتمعوا كفريق لإنجاز المهمة المشتركة وتسليم النتائج لمنسق المسابقة لحصد 30 نقطة دفعة واحدة لسيارة إداراتك!</p>
                         
                         <div class="mission-steps-box">
                             <div class="step-card">
@@ -349,7 +465,8 @@ if ($isAdminUser) {
                             <div class="step-card">
                                 <span class="step-badge">2</span>
                                 <strong>وثقوا الإنجاز | Document</strong>
-                                <p>التقطوا صورة توثيقية أو ارفعوا الملاحظات | Take photo evidence or submit task notes.</p>
+                                <p>ارفعوا الصورة في قسم <strong>تحدي التصوير (Photo Challenge)</strong> واكتبوا في التعليق أنها <strong>(Team Activity)</strong>.</p>
+                                <small style="color:var(--baby-blue-soft); display:block; margin-top:4px; direction:ltr; text-align:right;">(Upload photo in Photo Challenge section and mention in caption: "Team Activity")</small>
                             </div>
                             <div class="step-card">
                                 <span class="step-badge">3</span>
@@ -365,20 +482,20 @@ if ($isAdminUser) {
             <section class="track-section">
                 <div class="track-view-header">
                     <div class="track-title-wrap">
-                        <span class="track-main-heading">🛣️ مضمار سباق الصيف المباشر | SUMMER HIGHWAY RACETRACK</span>
+                        <span class="track-main-heading">🛣️ رحلة العودة إلى المدارس | BACK TO SCHOOL ROAD TRIP</span>
                     </div>
                     
                     <div class="track-controls-toolbar">
                         <!-- Category Filter: All / BU / Job Families -->
                         <div class="track-category-filter-group" id="track-dept-filter-group">
                             <button type="button" class="btn-track-filter active" data-category="all">الكل | All</button>
-                            <button type="button" class="btn-track-filter" data-category="bu">قطاعات الأعمال | BU</button>
+                            <button type="button" class="btn-track-filter" data-category="bu">إدارات الأعمال | BU</button>
                             <button type="button" class="btn-track-filter" data-category="job_family">العائلات الوظيفية | Job Families</button>
                         </div>
 
                         <div class="track-view-toggle-group">
-                            <button id="btn-view-serpentine" class="btn-view-mode active" title="الطريق المتعرج | Serpentine Road">🛣️ الطريق المتعرج | Highway</button>
-                            <button id="btn-view-sprint" class="btn-view-mode" title="المسارات المستقيمة | Sprint Lanes">🏁 مسارات السرعة | Sprint</button>
+                            <button id="btn-view-serpentine" class="btn-view-mode active" title="طريق السرعة | Road Map">🛣️ طريق السرعة | Road map</button>
+                            <button id="btn-view-sprint" class="btn-view-mode" title="الترتيب | Ranking">🏁 الترتيب | Ranking</button>
                         </div>
                     </div>
                 </div>
@@ -429,7 +546,7 @@ if ($isAdminUser) {
                     <!-- Top 3 Individuals -->
                     <div class="leaderboard-column">
                         <div class="leaderboard-subhead">
-                            <span>🌟 أعلى 3 أشخاص في السكور | Top 3 MVP Scorers</span>
+                            <span>🌟 أعلى 3 أشخاص في النقاط | Top 3 MVP Scorers</span>
                         </div>
                         <div class="leaderboard-grid" id="top-users-grid">
                             <!-- Top users auto-generated JS -->
@@ -438,46 +555,9 @@ if ($isAdminUser) {
                 </div>
             </section>
 
-            <!-- BOTTOM SUMMER DASHBOARD (EARN POINTS, FLEET GRID, REWARDS & ODOMETER) -->
+            <!-- BOTTOM SUMMER DASHBOARD (FLEET GRID, REWARDS & ODOMETER) -->
             <section class="summer-dashboard-grid">
-                <!-- CARD 1: HOW TO EARN MILEAGE POINTS -->
-                <div class="mileage-points-card">
-                    <h4 class="dashboard-card-title">
-                        <span>🏁</span> كيف تكسب النقاط والأميال؟ | How to Earn Points?
-                    </h4>
-                    <div class="points-rules-list">
-                        <div class="point-rule-item">
-                            <div class="rule-label">
-                                <span class="rule-icon">❓</span>
-                                <span>كويز المعرفة | Knowledge Quiz</span>
-                            </div>
-                            <span class="rule-pts">10 نقاط | PTS</span>
-                        </div>
-                        <div class="point-rule-item">
-                            <div class="rule-label">
-                                <span class="rule-icon">📷</span>
-                                <span>تحدي التصوير | Photo Challenge</span>
-                            </div>
-                            <span class="rule-pts">15 نقطة | PTS</span>
-                        </div>
-                        <div class="point-rule-item">
-                            <div class="rule-label">
-                                <span class="rule-icon">👥</span>
-                                <span>النشاط الجماعي | Team Activity</span>
-                            </div>
-                            <span class="rule-pts">30 نقطة | PTS</span>
-                        </div>
-                        <div class="point-rule-item">
-                            <div class="rule-label">
-                                <span class="rule-icon">⭐</span>
-                                <span>نقاط تميز إضافية | Extra Bonus</span>
-                            </div>
-                            <span class="rule-pts bonus">+10 نقاط | PTS</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CARD 2: FLEET DEPARTMENT OVERVIEW -->
+                <!-- CARD 1: FLEET DEPARTMENT OVERVIEW -->
                 <div class="fleet-grid-card">
                     <h4 class="dashboard-card-title">
                         <span>🚗</span> أسطول أقسام GB Corp | GB Corp Fleet
@@ -499,9 +579,11 @@ if ($isAdminUser) {
                     </div>
 
                     <div class="summer-polaroid-card">
-                        <div class="polaroid-photo-area">
-                            <span class="polaroid-sun">☀️</span>
-                            <span class="polaroid-van">🚐🌴</span>
+                        <div class="polaroid-photo-area" style="display:flex; align-items:center; justify-content:center; gap:0.65rem; font-size:2.2rem;">
+                            <span title="حقيبة المدرسة">🎒</span>
+                            <span title="أتوبيس المدرسة">🚌</span>
+                            <span title="الكتب المدرسية">📚</span>
+                            <span title="جرس المدرسة">🔔</span>
                         </div>
                         <p class="polaroid-caption">العودة إلى المدارس | Back to School - Unforgettable Journey!</p>
                     </div>
@@ -526,7 +608,7 @@ if ($isAdminUser) {
                 </div>
 
                 <div class="announce-info-box">
-                    <span>⚡ أجب على أسئلة الكويز السريعة بدقة لجمع النقاط ودفع سيارة قسمك نحو خط النهاية!</span>
+                    <span>⚡ أجب على أسئلة الكويز السريعة بدقة لجمع النقاط ودفع سيارة إداراتك نحو خط النهاية!</span>
                     <br>
                     <small style="color:var(--baby-blue-soft);">Answer quickly and correctly to push your department car across the finish line!</small>
                 </div>
@@ -611,8 +693,7 @@ if ($isAdminUser) {
     <script src="js/sync.js?v=16"></script>
     <script src="js/state.js?v=16"></script>
     <script src="js/cars.js?v=1"></script>
-    <script src="js/timer.js?v=16"></script>
     <script src="js/track.js?v=26"></script>
-    <script src="js/app.js?v=36"></script>
+    <script src="js/app.js?v=38"></script>
 </body>
 </html>

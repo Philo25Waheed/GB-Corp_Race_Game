@@ -4,6 +4,7 @@
  * Retrieves active week, challenge settings, department standings, weekly winner, and surprise status
  */
 
+define('IS_API', true);
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../db.php';
 
@@ -150,6 +151,10 @@ if ($activeWeek && !empty($_SESSION['user_id'])) {
         $teamScore = (int)($stmtTeam->fetchColumn() ?: 0);
         $activeWeekProgress['team_activity_done'] = ($teamScore >= 30);
     }
+}
+
+if (session_status() === PHP_SESSION_ACTIVE) {
+    session_write_close();
 }
 
 echo json_encode([

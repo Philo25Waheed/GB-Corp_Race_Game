@@ -26,23 +26,30 @@ if (!empty($_SESSION['user_id'])) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Favicon / Brand Icon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    
     <!-- CSS -->
-    <link rel="stylesheet" href="css/main.css?v=20">
-    <link rel="stylesheet" href="css/auth.css?v=20">
-    <link rel="stylesheet" href="css/modals.css?v=20">
+    <link rel="stylesheet" href="css/main.css?v=30">
+    <link rel="stylesheet" href="css/auth.css?v=30">
+    <link rel="stylesheet" href="css/modals.css?v=30">
 </head>
 <body>
     <div class="app-wrapper">
         <!-- TOP HEADER -->
         <header class="main-header">
             <div class="header-brand">
-                <div class="corp-logo-badge">
-                    <span class="corp-logo-icon">🚗</span>
-                    <span class="corp-logo-text">GB Corp</span>
-                </div>
-                <div class="summer-brand-titles">
-                    <div class="brand-arabic-title">العودة إلى المدارس <span style="font-weight:400; opacity:0.85; font-size:0.85em;">| Back to School</span></div>
-                </div>
+                <a href="index.php" style="text-decoration:none; display:flex; align-items:center; gap:0.85rem; color:inherit;">
+                    <div class="corp-logo-badge">
+                        <img src="GB_Corp.png" alt="GB Corp" class="corp-logo-img">
+                    </div>
+                    <div class="summer-brand-titles">
+                        <div class="brand-arabic-title">العودة إلى المدارس <span style="font-weight:400; opacity:0.85; font-size:0.85em;">| Back to School</span></div>
+                    </div>
+                </a>
             </div>
 
             <div class="header-controls">
@@ -115,7 +122,7 @@ if (!empty($_SESSION['user_id'])) {
                 </div>
 
                 <div class="announce-info-box">
-                    <span>⚡ أجب على أسئلة الكويز السريعة بدقة لجمع النقاط ودفع سيارة قسمك نحو خط النهاية!</span>
+                    <span>⚡ أجب على أسئلة الكويز السريعة بدقة لجمع النقاط ودفع سيارة إداراتك نحو خط النهاية!</span>
                     <br>
                     <small style="color:var(--baby-blue-soft);">Answer quickly and correctly to push your department car across the finish line!</small>
                 </div>

@@ -219,6 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success && data.data) {
                 adminState.gameState = data.data;
                 renderHighwayControls(data.data.departments || []);
+                populateActivityDeptSelect(data.data.departments || []);
                 renderWeeksManager(data.data.all_weeks || [], data.data.active_week);
                 renderFinaleControls(data.data);
                 updateTopStats(data.data);
@@ -231,6 +232,57 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateTopStats(state) {
         if (state.active_week && elements.topActiveWeekVal) {
             elements.topActiveWeekVal.textContent = `الأسبوع ${state.active_week.week_number}`;
+        }
+    }
+
+    // Populate and sync Points Adjustment Department Select with all site departments
+    function populateActivityDeptSelect(departments) {
+        const select = document.getElementById('select-activity-dept');
+        if (!select || !departments || departments.length === 0) return;
+
+        const currentVal = select.value;
+        select.innerHTML = '<option value="" disabled selected>اختر القسم | Select department...</option>';
+
+        const buDepts = departments.filter(d => (d.category || 'bu') === 'bu');
+        const jfDepts = departments.filter(d => (d.category || '') === 'job_family');
+
+        buDepts.sort((a, b) => (a.name_ar || '').localeCompare(b.name_ar || '', 'ar'));
+        jfDepts.sort((a, b) => (a.name_ar || '').localeCompare(b.name_ar || '', 'ar'));
+
+        if (buDepts.length > 0) {
+            const buGroup = document.createElement('optgroup');
+            buGroup.label = `🏢 إدارات الأعمال والوحدات (Business Units - BU) (${buDepts.length})`;
+            buDepts.forEach(dept => {
+                const opt = document.createElement('option');
+                opt.value = dept.id;
+                const emoji = dept.car_emoji || '🚗';
+                const nameAr = dept.name_ar || dept.name || '';
+                const nameEn = dept.name_en || '';
+                const code = dept.code || '';
+                opt.textContent = `${emoji} ${nameAr} (${nameEn}) [${code}]`;
+                buGroup.appendChild(opt);
+            });
+            select.appendChild(buGroup);
+        }
+
+        if (jfDepts.length > 0) {
+            const jfGroup = document.createElement('optgroup');
+            jfGroup.label = `💼 العائلات والمجالات الوظيفية (Job Families - JF) (${jfDepts.length})`;
+            jfDepts.forEach(dept => {
+                const opt = document.createElement('option');
+                opt.value = dept.id;
+                const emoji = dept.car_emoji || '🚗';
+                const nameAr = dept.name_ar || dept.name || '';
+                const nameEn = dept.name_en || '';
+                const code = dept.code || '';
+                opt.textContent = `${emoji} ${nameAr} (${nameEn}) [${code}]`;
+                jfGroup.appendChild(opt);
+            });
+            select.appendChild(jfGroup);
+        }
+
+        if (currentVal && select.querySelector(`option[value="${currentVal}"]`)) {
+            select.value = currentVal;
         }
     }
 
@@ -631,6 +683,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         submissions.forEach(sub => {
+            const isTeam = sub.challenge_type === 'team_activity' || parseInt(sub.points_awarded, 10) === 30;
+            const typeBadgeStyle = isTeam 
+                ? 'background:rgba(249,115,22,0.2); color:#fb923c; border:1px solid rgba(249,115,22,0.4);' 
+                : 'background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.4);';
+            const typeLabel = isTeam ? '👥 Team Activity' : '📷 Photo Challenge';
+            const pts = parseInt(sub.points_awarded, 10) || (isTeam ? 30 : 15);
+
             const card = document.createElement('div');
             card.className = 'photo-sub-card';
             card.innerHTML = `
@@ -642,12 +701,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         <strong style="color:var(--admin-accent);">${escapeHtml(sub.user_name)}</strong>
                         <span class="dept-ctrl-badge" style="background:${escapeHtml(sub.dept_color)}; color:#000;">${escapeHtml(sub.dept_code)}</span>
                     </div>
+                    <div style="margin: 4px 0;">
+                        <span style="font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; ${typeBadgeStyle}">${typeLabel}</span>
+                    </div>
                     <div class="photo-sub-caption">${sub.caption ? `"${escapeHtml(sub.caption)}"` : 'بدون تعليق | No caption'}</div>
                     <div style="font-size:12px; color:var(--admin-text-sub); margin-bottom:10px;">
-                        <span>التاريخ | Date: ${escapeHtml(sub.created_at)}</span> • <strong>+${parseInt(sub.points_awarded, 10)} PTS</strong>
+                        <span>التاريخ | Date: ${escapeHtml(sub.created_at)}</span> • <strong>+${pts} PTS</strong>
                     </div>
                     <div class="photo-sub-actions">
-                        <button class="btn-grade-approve" data-id="${sub.id}" data-status="approved">✓ معتمدة | Approved (+15)</button>
+                        <button class="btn-grade-approve" data-id="${sub.id}" data-status="approved">✓ معتمدة | Approved (+${pts})</button>
                     </div>
                 </div>
             `;

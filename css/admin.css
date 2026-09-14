@@ -143,6 +143,12 @@ body {
     font-size: 14px;
     cursor: pointer;
     transition: var(--transition);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    text-decoration: none;
 }
 
 .btn-logout:hover {
@@ -301,7 +307,7 @@ body {
 /* Tab 1: Highway Race Controls */
 .highway-control-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: 20px;
 }
 
@@ -496,7 +502,7 @@ body {
 /* Tab 2: Weeks & Challenges Manager */
 .weeks-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: 22px;
 }
 
@@ -651,7 +657,7 @@ body {
 /* Photo Submissions Grid */
 .photo-submissions-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
     gap: 20px;
 }
 
@@ -720,7 +726,7 @@ body {
 /* Forms */
 .grid-form {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
     gap: 16px;
 }
 
@@ -1123,20 +1129,170 @@ body {
     to { opacity: 1; transform: translateX(0); }
 }
 
+@media (max-width: 1024px) {
+    .admin-content {
+        padding: 20px 16px;
+    }
+}
+
 @media (max-width: 900px) {
     .admin-container {
         flex-direction: column;
     }
     .admin-sidebar {
         width: 100%;
+        position: sticky;
+        top: 60px;
+        z-index: 100;
+        height: auto;
+        padding: 8px 10px;
         border-left: none;
         border-bottom: 1px solid var(--admin-card-border);
+        background: rgba(14, 25, 53, 0.96);
+        backdrop-filter: blur(14px);
+    }
+    .admin-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        gap: 6px;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+    }
+    .admin-nav::-webkit-scrollbar {
+        display: none;
+    }
+    .nav-tab-btn {
+        padding: 8px 14px;
+        font-size: 13px;
+        flex-shrink: 0;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .nav-tab-btn.active {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(2, 132, 199, 0.25));
+        border-color: var(--admin-accent);
+        color: #ffffff;
+    }
+    .sidebar-danger-zone {
+        display: none;
     }
     .admin-content {
-        padding: 18px;
+        padding: 16px 12px;
     }
     .topbar-stats {
         display: none;
+    }
+    .admin-topbar {
+        padding: 8px 12px;
+        gap: 8px;
+    }
+    .brand-side {
+        font-size: 12px;
+    }
+    .topbar-actions {
+        gap: 6px;
+    }
+    .btn-view-site, .btn-logout {
+        font-size: 12px;
+        padding: 6px 10px;
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-content {
+        padding: 12px 8px;
+    }
+    .dashboard-metrics-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+    .metric-card {
+        padding: 12px 10px;
+    }
+    .metric-card .val {
+        font-size: 1.3rem;
+    }
+    .admin-card {
+        padding: 14px 10px;
+        border-radius: var(--radius-md);
+    }
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 12px;
+    }
+    .data-table {
+        min-width: 480px;
+        font-size: 12px;
+    }
+    .data-table th, .data-table td {
+        padding: 8px 6px;
+    }
+    .admin-input, .admin-select {
+        font-size: 16px !important; /* Prevents auto-zoom on iOS */
+        min-height: 44px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-topbar {
+        flex-wrap: wrap;
+        padding: 8px;
+    }
+    .brand-side {
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+    .topbar-title {
+        font-size: 14px;
+    }
+    .topbar-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .btn-view-site, .btn-logout {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+@media (max-width: 375px) {
+    .dashboard-metrics-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+    }
+    .metric-card {
+        padding: 10px 8px;
+    }
+    .metric-card .val {
+        font-size: 1.15rem;
+    }
+    .metric-card .lbl {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 320px) {
+    .admin-content {
+        padding: 8px 4px;
+    }
+    .dashboard-metrics-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .admin-card {
+        padding: 10px 6px;
+    }
+    .topbar-title {
+        font-size: 12px;
     }
 }
 
@@ -1163,4 +1319,5 @@ body {
     border-color: var(--admin-accent);
     font-weight: 800;
 }
+
 

@@ -196,7 +196,7 @@
 /* Home Features 3-Grid */
 .home-features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: 1.25rem;
     width: 100%;
 }
@@ -666,7 +666,7 @@
 
 .home-leaderboard-dual {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
     gap: 1.5rem;
 }
 
@@ -711,34 +711,48 @@
 }
 
 .podium-row {
-    background: rgba(4, 16, 32, 0.8);
-    border: 1px solid rgba(56, 189, 248, 0.15);
-    border-radius: var(--radius-sm);
+    background: rgba(4, 16, 32, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.18);
+    border-radius: var(--radius-md, 12px);
     padding: 0.85rem 1rem;
     display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    transition: transform var(--transition-fast), border-color var(--transition-fast);
+    flex-direction: column;
+    gap: 0.55rem;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+    position: relative;
+    overflow: hidden;
 }
 
 .podium-row:hover {
-    transform: translateX(-4px);
+    transform: translateY(-2px);
+    border-color: rgba(56, 189, 248, 0.35);
 }
 
 .podium-row.gold-podium {
-    border-color: rgba(245, 158, 11, 0.6);
-    background: linear-gradient(90deg, rgba(245, 158, 11, 0.12), rgba(4, 16, 32, 0.85));
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.55);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(4, 16, 32, 0.9) 65%);
+    box-shadow: 0 4px 18px rgba(245, 158, 11, 0.12);
 }
 
 .podium-row.silver-podium {
-    border-color: rgba(203, 213, 225, 0.5);
-    background: linear-gradient(90deg, rgba(203, 213, 225, 0.08), rgba(4, 16, 32, 0.85));
+    border-color: rgba(203, 213, 225, 0.45);
+    background: linear-gradient(135deg, rgba(203, 213, 225, 0.1) 0%, rgba(4, 16, 32, 0.9) 65%);
+    box-shadow: 0 4px 15px rgba(203, 213, 225, 0.08);
 }
 
 .podium-row.bronze-podium {
-    border-color: rgba(217, 119, 6, 0.4);
-    background: linear-gradient(90deg, rgba(217, 119, 6, 0.08), rgba(4, 16, 32, 0.85));
+    border-color: rgba(217, 119, 6, 0.45);
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.1) 0%, rgba(4, 16, 32, 0.9) 65%);
+    box-shadow: 0 4px 15px rgba(217, 119, 6, 0.08);
+}
+
+/* Primary Top Tier */
+.podium-row-main {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .podium-medal-col {
@@ -746,25 +760,40 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 38px;
+    min-width: 40px;
+    width: 40px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    flex-shrink: 0;
+}
+
+.gold-podium .podium-medal-col {
+    border-color: rgba(245, 158, 11, 0.6);
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, rgba(15, 23, 42, 0.9) 80%);
+}
+
+.silver-podium .podium-medal-col {
+    border-color: rgba(203, 213, 225, 0.5);
+    background: radial-gradient(circle, rgba(203, 213, 225, 0.2) 0%, rgba(15, 23, 42, 0.9) 80%);
+}
+
+.bronze-podium .podium-medal-col {
+    border-color: rgba(217, 119, 6, 0.5);
+    background: radial-gradient(circle, rgba(217, 119, 6, 0.2) 0%, rgba(15, 23, 42, 0.9) 80%);
 }
 
 .podium-medal-symbol {
-    font-size: 1.6rem;
+    font-size: 1.25rem;
     line-height: 1;
 }
 
 .podium-rank-tag {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 800;
-    color: var(--baby-blue-soft);
-}
-
-.podium-avatar-col {
-    font-size: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #ffffff;
+    margin-top: -2px;
 }
 
 .podium-info-col {
@@ -772,73 +801,352 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.15rem;
+    text-align: right;
 }
 
 .podium-title-ar {
-    font-size: 1.05rem;
+    font-size: 0.98rem;
     font-weight: 800;
     color: #ffffff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.35;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .podium-title-en {
-    font-size: 0.8rem;
-    color: var(--white-muted);
+    font-size: 0.78rem;
+    color: var(--white-muted, #94a3b8);
+    line-height: 1.25;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.podium-score-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: left;
+    flex-shrink: 0;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(56, 189, 248, 0.18);
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    min-width: 72px;
+}
+
+.gold-podium .podium-score-col {
+    border-color: rgba(245, 158, 11, 0.35);
+    background: rgba(245, 158, 11, 0.08);
+}
+
+.podium-pts-val {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: #fb923c;
+    line-height: 1.1;
+    display: flex;
+    align-items: baseline;
+    gap: 0.2rem;
+}
+
+.podium-pts-val.individual {
+    color: #38bdf8;
+}
+
+.podium-pts-val small {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--white-muted, #94a3b8);
+}
+
+.podium-mile-val {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--baby-blue-soft, #7dd3fc);
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+}
+
+/* Secondary Footer Tier */
+.podium-row-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-top: 1px dashed rgba(56, 189, 248, 0.15);
+    padding-top: 0.45rem;
+    margin-top: 0.1rem;
 }
 
 .podium-badge-tag {
-    display: inline-block;
-    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
     font-size: 0.72rem;
     font-weight: 700;
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 999px;
-    background: rgba(249, 115, 22, 0.2);
+    background: rgba(249, 115, 22, 0.18);
     color: #fb923c;
     border: 1px solid rgba(249, 115, 22, 0.35);
+    line-height: 1;
 }
 
 .podium-badge-tag.individual {
     background: rgba(56, 189, 248, 0.15);
-    color: var(--baby-blue-light);
+    color: var(--baby-blue-light, #38bdf8);
     border-color: rgba(56, 189, 248, 0.3);
 }
 
-.podium-score-col {
-    text-align: left;
+.podium-avatar-col {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.2rem;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
 }
 
-.podium-pts-val {
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: #fb923c;
-    line-height: 1.1;
+.podium-avatar-col svg {
+    display: block;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+    max-width: 76px;
+    height: auto;
 }
 
-.podium-pts-val small {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--white-muted);
-}
+/* ==========================================================================
+   COMPREHENSIVE RESPONSIVENESS (AUTH & LEADERBOARD PODIUM)
+   ========================================================================== */
 
-.podium-mile-val {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--baby-blue-light);
-}
-
-@media (max-width: 768px) {
+/* Tablets & Below (<= 860px) */
+@media (max-width: 860px) {
     .home-leaderboard-dual {
         grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    .leaderboard-podium-card {
+        padding: 1.25rem 1rem;
     }
 }
+
+/* Tablets (<= 768px) */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 1rem 0.5rem;
+    }
+    .auth-card {
+        padding: 1.75rem 1.25rem;
+        max-width: 100%;
+    }
+    .btn-b2s-primary, .btn-b2s-secondary, .btn-b2s-ghost {
+        font-size: 0.95rem;
+        padding: 0.75rem 1.2rem;
+        min-height: 46px;
+    }
+    .home-section-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.85rem;
+    }
+    .home-section-header .btn-b2s-primary {
+        text-align: center;
+        justify-content: center;
+        display: inline-flex;
+    }
+    .leaderboard-podium-card {
+        padding: 1rem 0.85rem;
+    }
+}
+
+/* Large Smartphones (<= 480px) */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 0.5rem 0.25rem;
+    }
+    .auth-card {
+        padding: 1.35rem 0.95rem;
+        border-radius: var(--radius-md);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .auth-header {
+        margin-bottom: 1.2rem;
+    }
+    .auth-icon-badge {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        margin-bottom: 0.4rem;
+    }
+    .auth-title {
+        font-size: 1.25rem;
+    }
+    .auth-subtitle {
+        font-size: 0.82rem;
+    }
+    .auth-form {
+        gap: 0.85rem;
+    }
+    .auth-input, .auth-select {
+        font-size: 16px !important; /* Prevents auto-zoom on iOS */
+        min-height: 46px;
+        padding: 0.75rem 2.5rem 0.75rem 0.85rem;
+    }
+    .input-icon {
+        right: 0.85rem;
+        font-size: 1rem;
+    }
+    .btn-toggle-pass {
+        left: 0.85rem;
+    }
+    .admin-verify-container {
+        padding: 0.75rem;
+    }
+    .admin-checkbox-label {
+        font-size: 0.85rem;
+    }
+    .btn-b2s-primary, .btn-b2s-secondary, .btn-b2s-ghost {
+        font-size: 0.92rem;
+        padding: 0.7rem 1rem;
+        min-height: 46px;
+    }
+    .home-feature-card {
+        padding: 1.15rem 0.85rem;
+    }
+    .podium-entries {
+        gap: 0.75rem;
+    }
+    .podium-row {
+        padding: 0.75rem 0.85rem;
+        gap: 0.45rem;
+    }
+    .podium-medal-col {
+        min-width: 38px;
+        width: 38px;
+        height: 38px;
+    }
+    .podium-medal-symbol {
+        font-size: 1.15rem;
+    }
+    .podium-rank-tag {
+        font-size: 0.65rem;
+    }
+    .podium-avatar-col svg {
+        max-width: 70px;
+    }
+    .podium-title-ar {
+        font-size: 0.95rem;
+    }
+    .podium-title-en {
+        font-size: 0.75rem;
+    }
+    .podium-score-col {
+        padding: 0.3rem 0.5rem;
+        min-width: 66px;
+    }
+    .podium-pts-val {
+        font-size: 1.05rem;
+    }
+    .podium-mile-val {
+        font-size: 0.72rem;
+    }
+}
+
+/* Standard Mobile Devices (<= 375px) */
+@media (max-width: 375px) {
+    .auth-card {
+        padding: 1.15rem 0.8rem;
+    }
+    .auth-title {
+        font-size: 1.15rem;
+    }
+    .auth-subtitle {
+        font-size: 0.78rem;
+    }
+    .podium-row {
+        padding: 0.65rem 0.75rem;
+        gap: 0.4rem;
+    }
+    .podium-row-main {
+        gap: 0.55rem;
+    }
+    .podium-medal-col {
+        width: 34px;
+        height: 36px;
+        min-width: 34px;
+        border-radius: 8px;
+    }
+    .podium-medal-symbol {
+        font-size: 1.05rem;
+    }
+    .podium-rank-tag {
+        font-size: 0.62rem;
+    }
+    .podium-title-ar {
+        font-size: 0.9rem;
+    }
+    .podium-title-en {
+        font-size: 0.72rem;
+    }
+    .podium-score-col {
+        padding: 0.25rem 0.45rem;
+        min-width: 60px;
+    }
+    .podium-pts-val {
+        font-size: 0.98rem;
+    }
+    .podium-mile-val {
+        font-size: 0.68rem;
+    }
+    .podium-avatar-col svg {
+        max-width: 64px;
+    }
+    .btn-b2s-primary, .btn-b2s-secondary, .btn-b2s-ghost {
+        font-size: 0.88rem;
+        padding: 0.65rem 0.85rem;
+    }
+}
+
+/* Compact Smartphones (<= 320px) */
+@media (max-width: 320px) {
+    .auth-container {
+        padding: 0.35rem 0.15rem;
+    }
+    .auth-card {
+        padding: 1rem 0.6rem;
+    }
+    .auth-title {
+        font-size: 1.05rem;
+    }
+    .auth-input, .auth-select {
+        font-size: 15px !important;
+        min-height: 44px;
+        padding: 0.65rem 2.2rem 0.65rem 0.65rem;
+    }
+    .podium-row {
+        padding: 0.55rem 0.6rem;
+        gap: 0.35rem;
+    }
+    .podium-row-main {
+        gap: 0.4rem;
+    }
+    .podium-medal-col {
+        width: 30px;
+        height: 32px;
+        min-width: 30px;
+    }
+    .podium-title-ar {
+        font-size: 0.85rem;
+    }
+    .podium-title-en {
+        font-size: 0.68rem;
+    }
+    .podium-pts-val {
+        font-size: 0.92rem;
+    }
+    .podium-mile-val {
+        font-size: 0.65rem;
+    }
+    .podium-avatar-col svg {
+        max-width: 58px;
+    }
+}
+

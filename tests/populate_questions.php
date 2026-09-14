@@ -16,7 +16,7 @@ $stmt3 = $pdo->query("SELECT COUNT(*) FROM questions WHERE week_id = 3");
 if ($stmt3->fetchColumn() == 0) {
     $pdo->exec("INSERT INTO `questions` (`week_id`, `category_en`, `category_ar`, `question_en`, `question_ar`, `option_a_en`, `option_a_ar`, `option_b_en`, `option_b_ar`, `option_c_en`, `option_c_ar`, `option_d_en`, `option_d_ar`, `correct_option`, `points`) VALUES
     (3, 'Innovation', 'الابتكار والسرعة', 'What makes a high performance team cross the finish line first?', 'ما الذي يجعل الفريق عالي الأداء يعبر خط النهاية أولاً؟', 'Hesitation', 'التردد والبطء', 'Synergy, speed and accuracy', 'التكامل والسرعة والدقة في التحديات', 'Individual work', 'العمل الفردي', 'Stopping early', 'التوقف قبل النهاية', 'B', 10),
-    (3, 'GB Spirit', 'روح جي بي كورب', 'What is our motto in Back to School challenges?', 'ما هو شعارنا في تحديات العودة إلى المدارس؟', 'Move your car if I make you!', 'جرس المدرسة يدق! حرّك سيارتك إن استطعت!', 'Stay parked', 'ابق في مكانك', 'No race today', 'لا سباق اليوم', 'Quit early', 'الانسحاب مبكراً', 'A', 15)
+    (3, 'GB Spirit', 'روح جي بي كورب', 'What is our motto in Back to School challenges?', 'ما هو شعارنا في تحديات العودة إلى المدارس؟', 'Move your car if you can!', 'جرس المدرسة يدق! حرّك سيارتك إن استطعت!', 'Stay parked', 'ابق في مكانك', 'No race today', 'لا سباق اليوم', 'Quit early', 'الانسحاب مبكراً', 'A', 15)
     ");
 }
 

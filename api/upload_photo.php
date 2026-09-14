@@ -15,6 +15,9 @@ $pdo = getDBConnection();
 $action = $_GET['action'] ?? 'upload';
 
 function jsonResponse($success, $message = '', $data = null) {
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
     echo json_encode([
         'success' => $success,
         'message' => $message,
@@ -40,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($action === 'upload' || empty($act
             jsonResponse(false, 'يرجى تسجيل الدخول أولاً لرفع صورتك والمشاركة في التحدي | Please sign in first');
         }
 
-        // Rate Limit Photo Uploads (Max 5 attempts per 10 minutes)
-        $rateLimit = checkRateLimit($pdo, 'upload_photo', (string)$userId, 5, 600, 900);
+        // Rate Limit Photo Uploads (Allows up to 50 uploads per 10 minutes)
+        $rateLimit = checkRateLimit($pdo, 'upload_photo', (string)$userId, 50, 600, 900);
         if (!$rateLimit['allowed']) {
             jsonResponse(false, $rateLimit['message']);
         }
@@ -64,12 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($action === 'upload' || empty($act
             $weekId = (int)($stmtActive->fetchColumn() ?: 2);
         }
 
-        // Anti-Cheat & Anti-Abuse: Exactly 1 Photo Submission Per User Per Week
-        $stmtAlready = $pdo->prepare("SELECT id FROM `photo_submissions` WHERE `user_id` = ? AND `week_id` = ?");
-        $stmtAlready->execute([$userId, $weekId]);
-        if ($stmtAlready->fetch()) {
-            jsonResponse(false, 'لقد قمت برفع مشاركتك في تحدي الصور لهذا الأسبوع بالفعل! يتاح لكل متسابق مشاركة واحدة أسبوعياً منعاً لتكرار واحتكار النقاط.');
-        }
+        // Allow multiple / unlimited photo uploads per user (e.g. Photo Challenge & Team Activity)
+        // Rate-limit protected to prevent denial of service
 
         // Validate File Upload
         if (!isset($_FILES['photo'])) {
@@ -102,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($action === 'upload' || empty($act
         // Disallow dangerous extensions anywhere in the filename (prevent shell.php.jpg)
         $dangerousExts = ['php', 'phtml', 'phar', 'cgi', 'pl', 'exe', 'sh', 'py', 'asp', 'aspx', 'shtml', 'svg', 'js', 'html', 'htm'];
         foreach ($dangerousExts as $badExt) {
-            if (str_contains($originalName, '.' . $badExt)) {
+            if (strpos($originalName, '.' . $badExt) !== false) {
                 jsonResponse(false, 'نوع الملف غير مسموح به لأسباب أمنية | Security violation: invalid file extension');
             }
         }
@@ -114,20 +113,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($action === 'upload' || empty($act
             jsonResponse(false, 'صيغة الصورة غير مدعومة (يرجى رفع صور JPG أو PNG أو WEBP فقط) | Unsupported image format');
         }
 
-        // Deep MIME inspection using Fileinfo
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $detectedMime = $finfo ? finfo_file($finfo, $file['tmp_name']) : '';
-        if ($finfo) finfo_close($finfo);
+        // Structural Image Dimension Verification via GD
+        $imageInfo = @getimagesize($file['tmp_name']);
+        if (!$imageInfo || empty($imageInfo[0]) || empty($imageInfo[1]) || $imageInfo[0] < 10 || $imageInfo[1] < 10) {
+            jsonResponse(false, 'الملف المرفوع ليس صورة صالحة أو تالف | Corrupted image file');
+        }
+
+        // Deep MIME inspection using Fileinfo with fallback to GD getimagesize MIME
+        $detectedMime = '';
+        if (function_exists('finfo_open')) {
+            $finfo = @finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo) {
+                $detectedMime = @finfo_file($finfo, $file['tmp_name']) ?: '';
+                @finfo_close($finfo);
+            }
+        }
+        if (empty($detectedMime) && !empty($imageInfo['mime'])) {
+            $detectedMime = $imageInfo['mime'];
+        }
 
         $allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!in_array($detectedMime, $allowedMimes)) {
             jsonResponse(false, 'محتوى الملف غير صالح أو تم التلاعب بصيغته | Invalid image MIME content');
-        }
-
-        // Structural Image Dimension Verification
-        $imageInfo = @getimagesize($file['tmp_name']);
-        if (!$imageInfo || $imageInfo[0] < 10 || $imageInfo[1] < 10) {
-            jsonResponse(false, 'الملف المرفوع ليس صورة صالحة أو تالف | Corrupted image file');
         }
 
         // Prepare Target Directory
@@ -150,21 +157,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($action === 'upload' || empty($act
 
         $finalUserId = $userId;
 
-        // Points awarded for photo submission
-        $pointsAwarded = 15;
+        // Auto-migrate challenge_type column in photo_submissions if missing
+        try {
+            $stmtCol = $pdo->query("SHOW COLUMNS FROM `photo_submissions` LIKE 'challenge_type'");
+            if ($stmtCol && $stmtCol->rowCount() === 0) {
+                $pdo->exec("ALTER TABLE `photo_submissions` ADD COLUMN `challenge_type` VARCHAR(50) NOT NULL DEFAULT 'photo_challenge' AFTER `week_id`");
+            }
+        } catch (Exception $e) {}
+
+        // Determine submission type and points awarded
+        $submissionType = trim($_POST['submission_type'] ?? $_POST['challenge_type'] ?? 'photo_challenge');
+        $isTeamActivity = ($submissionType === 'team_activity');
+
+        if ($isTeamActivity) {
+            $pointsAwarded = 30;
+            $steps = 3; // +3 steps (30 miles)
+            $challengeType = 'team_activity';
+            $successMsg = 'تم رفع صورة النشاط الجماعي بنجاح وحصد 30 نقطة وميل لسيارة إداراتك! 👥🎉 | Team Activity photo uploaded (+30 PTS)!';
+        } else {
+            $pointsAwarded = 15;
+            $steps = 2; // +2 steps (20 miles)
+            $challengeType = 'photo_challenge';
+            $successMsg = 'تم رفع صورة تحدي التصوير بنجاح وحصد 15 نقطة وميل لسيارة إداراتك! 📷🎉 | Photo Challenge uploaded (+15 PTS)!';
+        }
 
         // Save record into photo_submissions
-        $stmtSub = $pdo->prepare("
-            INSERT INTO `photo_submissions` (`user_id`, `department_id`, `week_id`, `photo_path`, `caption`, `status`, `points_awarded`)
-            VALUES (?, ?, ?, ?, ?, 'approved', ?)
-        ");
-        $stmtSub->execute([$finalUserId, $departmentId, $weekId, $relativeDbPath, $caption, $pointsAwarded]);
+        try {
+            $stmtSub = $pdo->prepare("
+                INSERT INTO `photo_submissions` (`user_id`, `department_id`, `week_id`, `challenge_type`, `photo_path`, `caption`, `status`, `points_awarded`)
+                VALUES (?, ?, ?, ?, ?, ?, 'approved', ?)
+            ");
+            $stmtSub->execute([$finalUserId, $departmentId, $weekId, $challengeType, $relativeDbPath, $caption, $pointsAwarded]);
+        } catch (Exception $e) {
+            // Fallback if challenge_type column could not be added
+            $stmtSub = $pdo->prepare("
+                INSERT INTO `photo_submissions` (`user_id`, `department_id`, `week_id`, `photo_path`, `caption`, `status`, `points_awarded`)
+                VALUES (?, ?, ?, ?, ?, 'approved', ?)
+            ");
+            $stmtSub->execute([$finalUserId, $departmentId, $weekId, $relativeDbPath, $caption, $pointsAwarded]);
+        }
         $submissionId = $pdo->lastInsertId();
+
+        // If team activity, also log into team_activity_submissions for admin synchronization
+        if ($isTeamActivity) {
+            try {
+                $stmtTAS = $pdo->prepare("
+                    INSERT INTO `team_activity_submissions` (`department_id`, `week_id`, `activity_name`, `notes`, `points_awarded`, `awarded_by`)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ");
+                $stmtTAS->execute([
+                    $departmentId,
+                    $weekId,
+                    'Team Activity (Photo Upload)',
+                    $caption ?: 'Team photo submission',
+                    $pointsAwarded,
+                    $userRow['name'] ?? 'Team Member'
+                ]);
+            } catch (Exception $ex) {}
+        }
 
         // Award Points & Advance Department Car
         $stmtRaceLen = $pdo->query("SELECT `setting_value` FROM `system_settings` WHERE `setting_key` = 'race_length'");
         $raceLen = (int)($stmtRaceLen->fetchColumn() ?: 15);
-        $steps = 2; // +2 steps (20 miles)
 
         $stmtDept = $pdo->prepare("
             UPDATE `departments` 
@@ -187,11 +241,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($action === 'upload' || empty($act
         $stmtDeptFresh->execute([$departmentId]);
         $freshDept = $stmtDeptFresh->fetch();
 
-        jsonResponse(true, 'تم رفع الصورة بنجاح وحصد 15 نقطة لسيارة قسمك! 📷🎉 | Photo uploaded successfully and points awarded!', [
+        jsonResponse(true, $successMsg, [
             'submission_id' => $submissionId,
             'photo_url' => $relativeDbPath,
             'caption' => $caption,
             'points_awarded' => $pointsAwarded,
+            'challenge_type' => $challengeType,
             'department' => $freshDept
         ]);
     } catch (Throwable $e) {
